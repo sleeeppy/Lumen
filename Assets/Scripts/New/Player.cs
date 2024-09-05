@@ -11,7 +11,7 @@ public class Player : MonoBehaviour
     private bool isTouchBottom;
     private bool isTouchLeft;
     private bool isTouchRight;
-    
+
     [Header("Move Horizontal")]
     [SerializeField] private float moveSpeed = 8;
 
@@ -21,10 +21,10 @@ public class Player : MonoBehaviour
     [SerializeField] private float highGravity = 4f;
     [SerializeField] private int maxJumpCount = 1;
     private int currentJumpCount;
-    
+
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private KeyCode jumpKey = KeyCode.Space;
-    
+
     private bool isGrounded;
     private bool isJumpEndArea;
     private Vector2 footPosition;
@@ -33,18 +33,18 @@ public class Player : MonoBehaviour
 
     private Rigidbody2D rigid2D;
     private new Collider2D collider2D;
-    
+
     private SpriteRenderer spriteRenderer;
     private Animator anim;
     public bool IsLongJump { set; get; }
 
-    private bool isFlying;
-    
-    [Header("Gauge")] 
+    [HideInInspector] public bool isFlying;
+
+    [Header("Gauge")]
     [SerializeField] public Slider gauge;
     [SerializeField] private float recoverySpeed = 0.25f;
 
-    [Header("Dash")] 
+    [Header("Dash")]
     private bool isDashing;
     private Vector2 dashDirection;
     [SerializeField] private float dashGauge = 0.25f;
@@ -52,7 +52,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float dashTime = 1f;
     [SerializeField] private GameObject dashParticle;
 
-    [Header("Fly")] 
+    [Header("Fly")]
     [SerializeField] private Sprite flySprite;
     [SerializeField] private float flyGauge = 0.7f;
     [SerializeField] private float flyCoolTime = 0.5f;
@@ -71,7 +71,7 @@ public class Player : MonoBehaviour
     public bool isHit;
     private float curTime;
     Material material;
-    
+
     private void Awake()
     {
         rigid2D = GetComponent<Rigidbody2D>();
@@ -87,32 +87,32 @@ public class Player : MonoBehaviour
         UpdateJump();
         Dash();
         Fly();
-        
-        if(!isFlying)
+
+        if (!isFlying)
             gauge.value += recoverySpeed * Time.deltaTime;
 
         curTime += Time.deltaTime;
-        
+
     }
 
     public void FixedUpdate()
     {
         RigidBodyController();
     }
-    
+
     private void UpdateMove()
     {
         float x = Input.GetAxisRaw("Horizontal");
-        
+
         if (x == 1)
             spriteRenderer.flipX = true;
         else if (x == -1)
             spriteRenderer.flipX = false;
-        
+
         if ((isTouchRight && x == 1) || (isTouchLeft && x == -1))
             x = 0;
-        
-        if(!isFlying && !isDashing)
+
+        if (!isFlying && !isDashing)
             MoveTo(x);
     }
 
@@ -132,9 +132,9 @@ public class Player : MonoBehaviour
         footPosition = new Vector2(bounds.center.x, bounds.min.y);
         footArea = new Vector2((bounds.max.x - bounds.min.x) * 0.5f, 0.1f);
         isGrounded = Physics2D.OverlapBox(footPosition, footArea, 0, groundLayer);
-        
+
         RaycastHit2D hit = Physics2D.Raycast(footPosition, Vector2.down, 1f, groundLayer);
-        
+
         // Jump_Airborne 상태일 때 Ground에 가까워지면 Jump_End 실행
         if (anim.GetCurrentAnimatorStateInfo(0).IsName("Jump_Airborne"))
         {
@@ -143,20 +143,20 @@ public class Player : MonoBehaviour
                 anim.SetBool("isAirborne", false); // Jump_End 실행
             }
         }
-        
-        if ( isGrounded && rigid2D.velocity.y <= 0 )
+
+        if (isGrounded && rigid2D.velocity.y <= 0)
         {
             currentJumpCount = maxJumpCount;
         }
 
-        
-        if ( IsLongJump && rigid2D.velocity.y > 0 && !isFlying)
+
+        if (IsLongJump && rigid2D.velocity.y > 0 && !isFlying)
         {
             rigid2D.gravityScale = lowGravity;
         }
         else
         {
-            if(!isFlying)
+            if (!isFlying)
                 rigid2D.gravityScale = highGravity;
         }
 
@@ -165,11 +165,11 @@ public class Player : MonoBehaviour
             rigid2D.gravityScale = slowFall;
         }
     }
-    
+
     public void MoveTo(float x)
     {
         rigid2D.velocity = new Vector2(x * moveSpeed, rigid2D.velocity.y);
-        
+
         if (isGrounded && x != 0)
         {
             anim.SetBool("isRun", true); // Run 애니메이션 시작
@@ -179,10 +179,10 @@ public class Player : MonoBehaviour
             anim.SetBool("isRun", false); // Run 애니메이션 종료
         }
     }
-    
+
     public bool JumpTo()
     {
-        if ( currentJumpCount > 0)
+        if (currentJumpCount > 0)
         {
             anim.SetTrigger("isJump_Start");
             rigid2D.velocity = new Vector2(rigid2D.velocity.x, jumpForce);
@@ -196,22 +196,22 @@ public class Player : MonoBehaviour
 
     void Dash()
     {
-        if (Input.GetKeyDown(KeyCode.LeftControl) && gauge.value >= dashGauge && !isDashing)
+        if (Input.GetKeyDown(KeyCode.LeftShift) && gauge.value >= dashGauge && !isDashing && isGrounded)
         {
             gauge.value -= dashGauge;
 
             isDashing = true;
-            
+
             StartCoroutine(InvincibilityCoroutine(dashTime, isDashing));
 
             dashDirection = spriteRenderer.flipX ? Vector2.right : Vector2.left;
-            Quaternion dashParticleDir = spriteRenderer.flipX ? Quaternion.Euler(0,90,0) : Quaternion.Euler(0,-90,0);
-            
+            Quaternion dashParticleDir = spriteRenderer.flipX ? Quaternion.Euler(0, 90, 0) : Quaternion.Euler(0, -90, 0);
+
             Vector2 particlePosition = new Vector2(transform.position.x, transform.position.y);
             GameObject particles = Instantiate(dashParticle, particlePosition, Quaternion.identity);
-            
+
             particles.transform.rotation = dashParticleDir;
-            Destroy(particles, 2f); 
+            Destroy(particles, 2f);
             StartCoroutine(DashCoroutine());
         }
     }
@@ -232,27 +232,27 @@ public class Player : MonoBehaviour
 
     void Fly()
     {
-        if (Input.GetKey(KeyCode.LeftShift) && canFly)
+        if (Input.GetKey(KeyCode.LeftShift) && canFly && !isGrounded)
         {
             if (flyCoolTime <= curTime)
             {
                 isFlying = true;
                 isInvincibility = true;
                 gauge.value -= flyGauge * Time.deltaTime;
-                
+
                 flyingParticle = Instantiate(flyParticle, transform.position, Quaternion.Euler(0, 90, -90));
-                
+
                 Vector3 dir = transform.position - flyingParticle.transform.position;
                 flyingParticle.transform.LookAt(dir);
                 flyingParticle.transform.position = transform.position;
-                
+
                 Destroy(flyingParticle, 0.4f);
             }
-            
+
             if (gauge.value <= 0)
             {
                 isFlying = false;
-                
+
                 if (!isHit)
                     isInvincibility = false;
 
@@ -271,60 +271,60 @@ public class Player : MonoBehaviour
                     anim.enabled = false;
                     float x = Input.GetAxisRaw("Horizontal");
                     float y = Input.GetAxisRaw("Vertical");
-                    
+
                     if ((isTouchRight && x == 1) || (isTouchLeft && x == -1))
                         x = 0;
-                    
+
                     if ((isTouchTop && y == 1) || (isTouchBottom && y == -1))
                         y = 0;
-                    
+
                     rigid2D.velocity = new Vector2(x * moveSpeed, y * moveSpeed);
-                    
-                    if(x < 0)
-                        transform.Rotate(0,0,  rotateSpeed * 1000f * Time.deltaTime);
-                    
-                    if(x > 0)
+
+                    if (x < 0)
+                        transform.Rotate(0, 0, rotateSpeed * 1000f * Time.deltaTime);
+
+                    if (x > 0)
                         transform.Rotate(0, 0, rotateSpeed * -1000f * Time.deltaTime);
                 }
             }
         }
-        else if (Input.GetKeyUp(KeyCode.LeftShift))
+        else if (Input.GetKeyUp(KeyCode.LeftShift) || isGrounded)
         {
             isFlying = false;
-            
+
             if (!isHit)
                 isInvincibility = false;
-            
+
             rigid2D.gravityScale = highGravity;
             anim.enabled = true;
             transform.rotation = Quaternion.Euler(0, 0, 0);
             curTime = 0;
             currentJumpCount = 0;
         }
-        
+
         if (gauge.value >= 0.5f)
         {
             canFly = true;
         }
     }
-    
+
     private IEnumerator InvincibilityCoroutine(float waitTime, bool isDash)
     {
         isInvincibility = true;
         yield return new WaitForSeconds(waitTime);
-        if(isDash && isHit)
+        if (isDash && isHit)
             yield break;
-        
-        else if(isDash && !isHit)
+
+        else if (isDash && !isHit)
             isInvincibility = false;
         else if (!isDash && isHit)
         {
             isInvincibility = false;
             isHit = false;
         }
-            
+
     }
-    
+
     public void OnJumpStartAnimationEnd()
     {
         anim.SetBool("isAirborne", true); // Jump_Airborne 애니메이션 실행
@@ -334,19 +334,19 @@ public class Player : MonoBehaviour
     {
         anim.SetTrigger("isJump_End"); // Idle 애니메이션 실행
     }
-    
+
     public void UpdateLifeIcon(int life)
     {
-         // Life icon set
-         for (int i = 0; i < maxLife; i++)
-         {
-             lifeImage[i].color = new Color(1, 1, 1, 0);
-         }
+        // Life icon set
+        for (int i = 0; i < maxLife; i++)
+        {
+            lifeImage[i].color = new Color(1, 1, 1, 0);
+        }
 
-         for (int i = 0; i < life; i++)
-         {
-             lifeImage[i].color = new Color(1, 1, 1, 1);
-         }
+        for (int i = 0; i < life; i++)
+        {
+            lifeImage[i].color = new Color(1, 1, 1, 1);
+        }
     }
 
     void OnTriggerEnter2D(Collider2D collision)
@@ -380,7 +380,7 @@ public class Player : MonoBehaviour
             }
         }
     }
-    
+
     void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Border"))
@@ -402,7 +402,7 @@ public class Player : MonoBehaviour
             }
         }
     }
-    
+
     private IEnumerator HitInvincibility()
     {
         material.SetFloat("_HologramFade", 0.25f);

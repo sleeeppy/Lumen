@@ -48,10 +48,21 @@ public class Boss : MonoBehaviour
         if (HP <= 0)
         {
             phase--;
-            curProfile.sprite = bossProfile[Mathf.Abs(phase - 5)];
-            // phase  5->0 4->1 3->2 2-3 1->4 0->5 
-            PhaseChange(phase);
-            HP = maxHP;
+            int curPhase = Mathf.Abs(phase - 5);
+            curProfile.sprite = bossProfile[curPhase];
+            // curPhase = phase 5->0 4->1 3->2 2-3 1->4 0->5 
+            
+            // this code doesn't work
+            if (phase == 0)
+            {
+                bulletEmitter.Kill();
+                gameObject.SetActive(false);
+            }
+            else
+            {
+                PhaseChange(phase);
+                HP = maxHP;
+            }         
         }
         else if (phase == 0)
         {
@@ -83,32 +94,49 @@ public class Boss : MonoBehaviour
 
     public void PhaseChange(int bossPhase)
     {
-        switch (bossPhase)
+        int curPhase = Mathf.Abs(bossPhase - 5);
+        
+
+        if (bulletEmitter.emitterProfile == null)
         {
-            case 5:
-                if (bulletEmitter.emitterProfile != bossPattern[0])
-                {
-                    bulletEmitter.emitterProfile = bossPattern[0];
-                    bulletEmitter.Play();
-                }
-                break;
-            case 4:
-                if (bulletEmitter.emitterProfile != bossPattern[1])
-                    StartCoroutine(NextPattern(2f, 1));
-                break;
-            case 3:
-                if (bulletEmitter.emitterProfile != bossPattern[2])
-                    StartCoroutine(NextPattern(2f, 2));
-                break;
-            case 2:
-                if (bulletEmitter.emitterProfile != bossPattern[3])
-                    StartCoroutine(NextPattern(2f, 3));
-                break;
-            case 1:
-                if (bulletEmitter.emitterProfile != bossPattern[4])
-                    StartCoroutine(NextPattern(2f, 4));
-                break;
+            bulletEmitter.emitterProfile = bossPattern[0];
+            bulletEmitter.Play();
         }
+        else if ((bulletEmitter.emitterProfile != bossPattern[curPhase]))
+        {
+            if(bulletEmitter.emitterProfile == bossPattern[4])
+                Destroy(gameObject);
+            
+            StartCoroutine(NextPattern(2f, curPhase));
+        }
+
+        
+        // switch (bossPhase)
+        // {
+        //     case 5:
+        //         if (bulletEmitter.emitterProfile != bossPattern[0])
+        //         {
+        //             bulletEmitter.emitterProfile = bossPattern[0];
+        //             bulletEmitter.Play();
+        //         }
+        //         break;
+        //     case 4:
+        //         if (bulletEmitter.emitterProfile != bossPattern[1])
+        //             StartCoroutine(NextPattern(2f, 1));
+        //         break;
+        //     case 3:
+        //         if (bulletEmitter.emitterProfile != bossPattern[2])
+        //             StartCoroutine(NextPattern(2f, 2));
+        //         break;
+        //     case 2:
+        //         if (bulletEmitter.emitterProfile != bossPattern[3])
+        //             StartCoroutine(NextPattern(2f, 3));
+        //         break;
+        //     case 1:
+        //         if (bulletEmitter.emitterProfile != bossPattern[4])
+        //             StartCoroutine(NextPattern(2f, 4));
+        //         break;
+        // }
     }
 }
 

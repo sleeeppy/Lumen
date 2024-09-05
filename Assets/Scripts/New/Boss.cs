@@ -25,6 +25,9 @@ public class Boss : MonoBehaviour
     [SerializeField] public BulletEmitter bulletEmitter;
     [SerializeField] public EmitterProfile[] bossPattern;
 
+    [SerializeField] private Sprite[] bossProfile;
+    [SerializeField] private Image curProfile;
+
     protected virtual void Awake()
     {
         Init();
@@ -38,12 +41,15 @@ public class Boss : MonoBehaviour
 
     void Update()
     {
+            
         slider.value = HP;
         phaseText.text = "x" + phase;
 
         if (HP <= 0)
         {
             phase--;
+            curProfile.sprite = bossProfile[Mathf.Abs(phase - 5)];
+            // phase  5->0 4->1 3->2 2-3 1->4 0->5 
             PhaseChange(phase);
             HP = maxHP;
         }

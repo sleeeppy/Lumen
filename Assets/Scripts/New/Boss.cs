@@ -5,7 +5,9 @@ using BulletPro;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
+using Image = UnityEngine.UI.Image;
+using Slider = UnityEngine.UI.Slider;
 
 // Be sure to set maxHP and HP to the same value in the Inspector.
 // If not, phase starts decremented by 1.
@@ -41,34 +43,28 @@ public class Boss : MonoBehaviour
 
     void Update()
     {
-            
         slider.value = HP;
         phaseText.text = "x" + phase;
 
-        if (HP <= 0)
+        if (HP <= 0 && phase != 0)
         {
             phase--;
-            int curPhase = Mathf.Abs(phase - 5);
-            curProfile.sprite = bossProfile[curPhase];
-            // curPhase = phase 5->0 4->1 3->2 2-3 1->4 0->5 
-            
-            // this code doesn't work
+
             if (phase == 0)
             {
-                bulletEmitter.Kill();
-                gameObject.SetActive(false);
+                Die();
+                return;
             }
-            else
-            {
-                PhaseChange(phase);
-                HP = maxHP;
-            }         
+            
+            int curPhase = Mathf.Abs(phase - 5);
+            
+            // curPhase -> phase (5->0 4->1 3->2 2-3 1->4 0->5) 
+            curProfile.sprite = bossProfile[curPhase];
+            PhaseChange(phase);
+            HP = maxHP;
+       
         }
-        else if (phase == 0)
-        {
-            bulletEmitter.Kill();
-            gameObject.SetActive(false);
-        }
+            
 
         bulletSpawnPos.transform.position = transform.position;
         
@@ -96,47 +92,22 @@ public class Boss : MonoBehaviour
     {
         int curPhase = Mathf.Abs(bossPhase - 5);
         
-
         if (bulletEmitter.emitterProfile == null)
         {
             bulletEmitter.emitterProfile = bossPattern[0];
             bulletEmitter.Play();
         }
-        else if ((bulletEmitter.emitterProfile != bossPattern[curPhase]))
+        // fuck!!!!!!!!!!!!!!!!!! I got win!!!!!!!!! 
+        else if (bulletEmitter.emitterProfile != bossPattern[curPhase])
         {
-            if(bulletEmitter.emitterProfile == bossPattern[4])
-                Destroy(gameObject);
-            
             StartCoroutine(NextPattern(2f, curPhase));
         }
+    }
 
-        
-        // switch (bossPhase)
-        // {
-        //     case 5:
-        //         if (bulletEmitter.emitterProfile != bossPattern[0])
-        //         {
-        //             bulletEmitter.emitterProfile = bossPattern[0];
-        //             bulletEmitter.Play();
-        //         }
-        //         break;
-        //     case 4:
-        //         if (bulletEmitter.emitterProfile != bossPattern[1])
-        //             StartCoroutine(NextPattern(2f, 1));
-        //         break;
-        //     case 3:
-        //         if (bulletEmitter.emitterProfile != bossPattern[2])
-        //             StartCoroutine(NextPattern(2f, 2));
-        //         break;
-        //     case 2:
-        //         if (bulletEmitter.emitterProfile != bossPattern[3])
-        //             StartCoroutine(NextPattern(2f, 3));
-        //         break;
-        //     case 1:
-        //         if (bulletEmitter.emitterProfile != bossPattern[4])
-        //             StartCoroutine(NextPattern(2f, 4));
-        //         break;
-        // }
+    void Die()
+    {
+        bulletEmitter.Kill();
+        gameObject.SetActive(false);
     }
 }
 

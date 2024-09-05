@@ -49,6 +49,7 @@ public class Boss : MonoBehaviour
         if (HP <= 0 && phase != 0)
         {
             phase--;
+            Debug.Log($"{phase}");
 
             if (phase == 0)
             {
@@ -62,10 +63,8 @@ public class Boss : MonoBehaviour
             curProfile.sprite = bossProfile[curPhase];
             PhaseChange(phase);
             HP = maxHP;
-       
         }
-            
-
+        
         bulletSpawnPos.transform.position = transform.position;
         
     }
@@ -106,6 +105,7 @@ public class Boss : MonoBehaviour
 
     void Die()
     {
+        phaseText.text = "x" + phase;
         bulletEmitter.Kill();
         gameObject.SetActive(false);
     }

@@ -49,7 +49,6 @@ public class Boss : MonoBehaviour
         if (HP <= 0 && phase != 0)
         {
             phase--;
-            Debug.Log($"{phase}");
 
             if (phase == 0)
             {

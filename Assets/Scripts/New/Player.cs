@@ -85,8 +85,13 @@ public class Player : MonoBehaviour
     {
         UpdateMove();
         UpdateJump();
-        Dash();
-        Fly();
+        
+        // LeftShift 키를 누를 때 땅에 닿아 있으면 Dash, 그렇지 않으면 Fly
+        if (Input.GetKeyDown(KeyCode.LeftShift) && isGrounded)
+            Dash();
+
+        if(Input.GetKey(KeyCode.LeftShift) && !isGrounded)
+            Fly();
 
         if (!isFlying)
             gauge.value += recoverySpeed * Time.deltaTime;
@@ -196,7 +201,7 @@ public class Player : MonoBehaviour
 
     void Dash()
     {
-        if (Input.GetKeyDown(KeyCode.LeftShift) && gauge.value >= dashGauge && !isDashing && isGrounded)
+        if (gauge.value >= dashGauge && !isDashing)
         {
             gauge.value -= dashGauge;
 
@@ -232,7 +237,7 @@ public class Player : MonoBehaviour
 
     void Fly()
     {
-        if (Input.GetKey(KeyCode.LeftShift) && canFly && !isGrounded)
+        if (canFly)
         {
             if (flyCoolTime <= curTime)
             {
@@ -327,12 +332,12 @@ public class Player : MonoBehaviour
 
     public void OnJumpStartAnimationEnd()
     {
-        anim.SetBool("isAirborne", true); // Jump_Airborne 애니메이션 실행
+        anim.SetBool("isAirborne", true); // Play Jump_Airborne
     }
 
     public void OnJumpEndAnimationEnd()
     {
-        anim.SetTrigger("isJump_End"); // Idle 애니메이션 실행
+        anim.SetTrigger("isJump_End"); // Play Idle Animation
     }
 
     public void UpdateLifeIcon(int life)

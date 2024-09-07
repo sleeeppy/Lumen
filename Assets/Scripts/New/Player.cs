@@ -321,7 +321,8 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(waitTime);
         if (isDash && isHit)
         {
-            yield return null;
+            isInvincibility = false;
+            isHit = false;
             yield break;
         }
         if (isDash && !isHit)

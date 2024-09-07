@@ -319,23 +319,31 @@ public class Player : MonoBehaviour
     {
         isInvincibility = true;
         yield return new WaitForSeconds(waitTime);
-        if (isDash && isHit)
-        {
-            yield return null;
-            yield break;
-        }
-        if (isDash && !isHit)
-        {
+        if (waitTime == dashTime && !isHit)
             isInvincibility = false;
-            yield break;
-        }
 
-        if (!isDash && isHit)
+        if (waitTime == hitInvincibilityTime)
         {
             isInvincibility = false;
             isHit = false;
-            yield break;
         }
+        // if (isDash && isHit)
+        // {
+        //     yield return null;
+        //     yield break;
+        // }
+        // if (isDash && !isHit)
+        // {
+        //     isInvincibility = false;
+        //     yield break;
+        // }
+        //
+        // if (!isDash && isHit)
+        // {
+        //     isInvincibility = false;
+        //     isHit = false;
+        //     yield break;
+        // }
     }
 
     public void OnJumpStartAnimationEnd()

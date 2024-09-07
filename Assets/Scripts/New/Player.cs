@@ -92,14 +92,14 @@ public class Player : MonoBehaviour
         // Dash 쿨다운 체크: 마지막 Dash 후 설정한 시간만큼 지나야 다시 Dash 실행 가능
         if (Input.GetKey(KeyCode.LeftShift) && Time.time >= lastDashTime + dashCooldown)
         {
-            if (isGrounded && !isFlying && !isDashing)  
+            if (isGrounded && !isFlying && !isDashing)
                 Dash();
-            
+
             // 공중에 있거나, 이미 비행 중이면 Fly
-            else if (!isGrounded || isFlying) 
+            else if (!isGrounded || isFlying)
                 Fly();
         }
-        
+
         if (Input.GetKeyUp(KeyCode.LeftShift) && isFlying)
             EndFly();
 
@@ -121,7 +121,7 @@ public class Player : MonoBehaviour
 
         if (x == 1)
             spriteRenderer.flipX = true;
-        
+
         else if (x == -1)
             spriteRenderer.flipX = false;
 
@@ -242,7 +242,7 @@ public class Player : MonoBehaviour
                 (Time.time - startTime) / dashTime);
             yield return null;
         }
-        isDashing = false;  
+        isDashing = false;
     }
 
     void Fly()
@@ -314,27 +314,34 @@ public class Player : MonoBehaviour
         curTime = 0;
         currentJumpCount = 0;
     }
-    
+
     private IEnumerator InvincibilityCoroutine(float waitTime, bool isDash)
     {
         isInvincibility = true;
         yield return new WaitForSeconds(waitTime);
         if (isDash && isHit)
+        {
+            yield return null;
             yield break;
-
+        }
         if (isDash && !isHit)
+        {
             isInvincibility = false;
-        else if (!isDash && isHit)
+            yield break;
+        }
+
+        if (!isDash && isHit)
         {
             isInvincibility = false;
             isHit = false;
+            yield break;
         }
     }
 
-    public void OnJumpStartAnimationEnd() 
+    public void OnJumpStartAnimationEnd()
         => anim.SetBool("isAirborne", true); // Play Jump_Airborne
 
-    public void OnJumpEndAnimationEnd() 
+    public void OnJumpEndAnimationEnd()
         => anim.SetTrigger("isJump_End"); // Play Idle Animation
 
     public void UpdateLifeIcon(int life)
@@ -351,7 +358,7 @@ public class Player : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Border"))
             BorderCheck(collision);
-        
+
         else if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("EnemyBullet"))
         {
             if (!isInvincibility)

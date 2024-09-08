@@ -68,7 +68,6 @@ public class Player : MonoBehaviour
     [SerializeField] private Image[] lifeImage;
     [SerializeField] private float hitInvincibilityTime = 1f;
     public bool isInvincibility;
-    public bool isDashInvincibility;
     public bool isHit;
     private float curTime;
     Material material;
@@ -218,7 +217,7 @@ public class Player : MonoBehaviour
             isDashing = true;
 
             lastDashTime = Time.time;  // Dash 실행 시간을 기록
-            StartCoroutine(DashInvincibilityCoroutine());
+            StartCoroutine(InvincibilityCoroutine(dashTime, isDashing));
 
             dashDirection = spriteRenderer.flipX ? Vector2.right : Vector2.left;
             Quaternion dashParticleDir = spriteRenderer.flipX ? Quaternion.Euler(0, 90, 0) : Quaternion.Euler(0, -90, 0);
@@ -316,20 +315,27 @@ public class Player : MonoBehaviour
         currentJumpCount = 0;
     }
 
-    private IEnumerator InvincibilityCoroutine()
+    private IEnumerator InvincibilityCoroutine(float waitTime, bool isDash)
     {
         isInvincibility = true;
-        yield return new WaitForSeconds(hitInvincibilityTime);
-        isInvincibility = false;
-        isHit = false;
-        Debug.Log("맞아서 멈춤");
-    }
-    private IEnumerator DashInvincibilityCoroutine()
-    {
-        isDashInvincibility = true;
-        yield return new WaitForSeconds(dashTime);
-        isDashInvincibility = false;
-        Debug.Log("대쉬로 멈춤");
+        yield return new WaitForSeconds(waitTime);
+        if (isDash && isHit)
+        {
+            yield return null;
+            yield break;
+        }
+        if (isDash && !isHit)
+        {
+            isInvincibility = false;
+            yield break;
+        }
+
+        if (!isDash && isHit)
+        {
+            isInvincibility = false;
+            isHit = false;
+            yield break;
+        }
     }
 
     public void OnJumpStartAnimationEnd()
@@ -359,7 +365,7 @@ public class Player : MonoBehaviour
             {
                 life--;
                 UpdateLifeIcon(life);
-                StartCoroutine(InvincibilityCoroutine());
+                StartCoroutine(InvincibilityCoroutine(hitInvincibilityTime, isDashing));
                 StartCoroutine(HitInvincibility());
             }
         }
@@ -399,15 +405,13 @@ public class Player : MonoBehaviour
 
     public void OnHitByBullet()
     {
-        Debug.Log("보내기전");
-        if (!isInvincibility || !isDashInvincibility)
+        if (!isInvincibility)
         {
             isHit = true;
             life--;
             UpdateLifeIcon(life);
-            StartCoroutine(InvincibilityCoroutine());
+            StartCoroutine(InvincibilityCoroutine(hitInvincibilityTime, isDashing));
             StartCoroutine(HitInvincibility());
-            Debug.Log("고쳐졌나?");
         }
     }
 }

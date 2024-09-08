@@ -400,7 +400,7 @@ public class Player : MonoBehaviour
     public void OnHitByBullet()
     {
         Debug.Log("보내기전");
-        if (!isInvincibility || !isDashInvincibility)
+        if (!isInvincibility && !isDashInvincibility)
         {
             isHit = true;
             life--;

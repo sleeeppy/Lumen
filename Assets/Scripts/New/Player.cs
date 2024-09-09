@@ -13,7 +13,7 @@ public class Player : MonoBehaviour
     private bool isTouchRight;
 
     [Header("Move Horizontal")]
-    [SerializeField] private float moveSpeed = 8;
+    [SerializeField] public float moveSpeed = 8;
 
     [Header("Move Vertical (Jump)")]
     [SerializeField] private float jumpForce = 10;

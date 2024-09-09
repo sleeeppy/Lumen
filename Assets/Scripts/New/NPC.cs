@@ -7,16 +7,18 @@ using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using TMPro;
 using DG.Tweening;
+using Unity.VisualScripting;
+using UnityEngine.Serialization;
 
 public class NPC : MonoBehaviour
 {
     [SerializeField] private GameObject buttonE;
     [SerializeField] private GameObject textBox;
+    [SerializeField] private GameObject dialoguePointer;
 
     [SerializeField] private TextMeshProUGUI nameText;
     [SerializeField] private TextMeshProUGUI chatText;
     [SerializeField, Range(0, 30f)] private float textSpeed = 15f;
-    
     
     [Header("Key")]
     [SerializeField] private string Name;
@@ -30,10 +32,10 @@ public class NPC : MonoBehaviour
     
     private int dialogueIndex;
     private bool isTyping;
-    
     private bool playerInside;
     private bool justOnce;
-    
+    private string currentFullText; // 현재 대화의 전체 텍스트
+
     void Start()
     {
         StartCoroutine(ObtainSheetData());
@@ -43,14 +45,27 @@ public class NPC : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.E) && playerInside && !isTyping && !justOnce) 
         {
+            GameObject.Find("Virtual Camera").SetActive(false);
+            var playerScript = GameObject.FindWithTag("Player").GetComponent<Player>();
+            playerScript.moveSpeed = 0;
             textBox.SetActive(true);
             StartDialogue();
             justOnce = true;
         }
         
-        if (textBox.activeSelf && Input.anyKeyDown && !isTyping)
+        // 텍스트 출력 중에 anyKeyDown을 눌렀을 때 즉시 출력 완료
+        if (textBox.activeSelf && Input.anyKeyDown)
         {
-            ShowNextDialogue();
+            if (isTyping) 
+            {
+                // 현재 텍스트가 출력 중이면 즉시 출력 완료
+                CompleteTextImmediately();
+            }
+            else
+            {
+                // 텍스트 출력이 완료되면 다음 대화로 넘어감
+                ShowNextDialogue();
+            }
         }
     }
 
@@ -62,8 +77,8 @@ public class NPC : MonoBehaviour
 
         if (uwr.isNetworkError || uwr.isHttpError || uwr.timeout > 2)
         {
-            Debug.Log("Error: " + uwr.error);
-            Debug.Log("Offline");
+            Debug.LogError("Error: " + uwr.error);
+            Debug.LogError("Offline");
         }
         else
         {
@@ -111,7 +126,6 @@ public class NPC : MonoBehaviour
         }
     }
 
-
     void StartDialogue()
     {
         string key = Name + Id;
@@ -120,6 +134,7 @@ public class NPC : MonoBehaviour
         {
             currentDialogue = dialoguesByNameAndId[key];
             dialogueIndex = 0;
+            chatText.text = ""; 
             ShowNextDialogue();
         }
         else
@@ -142,20 +157,35 @@ public class NPC : MonoBehaviour
         }
     }
 
+
     IEnumerator AnimateText(string text)
     {
         isTyping = true;
         chatText.text = "";
         nameText.text = Name;
         string myString = "";
+        currentFullText = text; // 현재 텍스트 전체 저장
 
         // DOTween을 사용하여 텍스트를 한 글자씩 타이핑 효과로 출력
-        
+        dialoguePointer.SetActive(false); // 화살표 비활성화
         DOTween.To(() => myString, x => myString = x, text, text.Length / textSpeed)
             .OnUpdate(() => chatText.text = myString)
-            .OnComplete(() => isTyping = false);
+            .OnComplete(() => 
+            {
+                isTyping = false; // 타이핑 완료
+                dialoguePointer.SetActive(true); // 화살표 활성화
+            });
 
         yield return new WaitUntil(() => !isTyping);
+    }
+
+    // 텍스트 즉시 출력 완료
+    void CompleteTextImmediately()
+    {
+        DOTween.KillAll(); // DOTween 애니메이션을 중지하고
+        chatText.text = currentFullText; // 전체 텍스트를 즉시 출력
+        isTyping = false; // 타이핑 완료로 전환
+        dialoguePointer.SetActive(true); // 화살표 활성화
     }
 
     void LoadNextScene()

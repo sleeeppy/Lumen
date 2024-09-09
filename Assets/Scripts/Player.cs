@@ -330,14 +330,12 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(hitInvincibilityTime);
         isInvincibility = false;
         isHit = false;
-        Debug.Log("맞아서 멈춤");
     }
     private IEnumerator DashInvincibilityCoroutine()
     {
         isDashInvincibility = true;
         yield return new WaitForSeconds(dashTime);
         isDashInvincibility = false;
-        Debug.Log("대쉬로 멈춤");
     }
 
     public void OnJumpStartAnimationEnd()
@@ -361,16 +359,16 @@ public class Player : MonoBehaviour
         if (collision.gameObject.CompareTag("Border"))
             BorderCheck(collision);
 
-        else if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("EnemyBullet"))
-        {
-            if (!isInvincibility)
-            {
-                life--;
-                UpdateLifeIcon(life);
-                StartCoroutine(InvincibilityCoroutine());
-                StartCoroutine(HitInvincibility());
-            }
-        }
+        // else if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("EnemyBullet"))
+        // {
+        //     if (!isInvincibility)
+        //     {
+        //         life--;
+        //         UpdateLifeIcon(life);
+        //         StartCoroutine(InvincibilityCoroutine());
+        //         StartCoroutine(HitInvincibility());
+        //     }
+        // }
     }
 
     void OnTriggerExit2D(Collider2D collision)
@@ -407,7 +405,6 @@ public class Player : MonoBehaviour
 
     public void OnHitByBullet()
     {
-        Debug.Log("보내기전");
         if (!isInvincibility && !isDashInvincibility)
         {
             isHit = true;
@@ -415,7 +412,6 @@ public class Player : MonoBehaviour
             UpdateLifeIcon(life);
             StartCoroutine(InvincibilityCoroutine());
             StartCoroutine(HitInvincibility());
-            Debug.Log("고쳐졌나?");
         }
     }
 }

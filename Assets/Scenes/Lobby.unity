@@ -938,7 +938,7 @@ GameObject:
   - component: {fileID: 394854808}
   - component: {fileID: 394854812}
   - component: {fileID: 394854811}
-  - component: {fileID: 394854810}
+  - component: {fileID: 394854813}
   m_Layer: 0
   m_Name: tempNPC2
   m_TagString: Untagged
@@ -1013,24 +1013,6 @@ Transform:
   m_Father: {fileID: 2029608096}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &394854810
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 394854807}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0e8881a13df502248b4f029b1b783cc0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  e: {fileID: 1015739361}
-  textBox: {fileID: 1544867411}
-  nameText: {fileID: 270424153}
-  chatText: {fileID: 2037327057}
-  characterName: Demo NPC 2
-  textSpeed: 0.03
 --- !u!61 &394854811
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1078,6 +1060,25 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &394854813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 394854807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8814749ee0780f54a867dc0dd977ec09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonE: {fileID: 1015739361}
+  textBox: {fileID: 1544867411}
+  nameText: {fileID: 270424153}
+  chatText: {fileID: 2037327057}
+  textSpeed: 15
+  Name: HalfSeal
+  Id: 2
 --- !u!1 &397961555
 GameObject:
   m_ObjectHideFlags: 0
@@ -1746,7 +1747,7 @@ GameObject:
   - component: {fileID: 526000844}
   m_Layer: 0
   m_Name: Border
-  m_TagString: Untagged
+  m_TagString: Border
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1759,7 +1760,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 526000843}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.0062512, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.84372, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1870,7 +1871,7 @@ GameObject:
   - component: {fileID: 727938072}
   - component: {fileID: 727938076}
   - component: {fileID: 727938075}
-  - component: {fileID: 727938074}
+  - component: {fileID: 727938077}
   m_Layer: 0
   m_Name: tempNPC3
   m_TagString: Untagged
@@ -1945,24 +1946,6 @@ Transform:
   m_Father: {fileID: 2029608096}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &727938074
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 727938071}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0e8881a13df502248b4f029b1b783cc0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  e: {fileID: 1585136673}
-  textBox: {fileID: 790156711}
-  nameText: {fileID: 252388704}
-  chatText: {fileID: 405600431}
-  characterName: Demo NPC 3
-  textSpeed: 0.03
 --- !u!61 &727938075
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2010,6 +1993,25 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &727938077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 727938071}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8814749ee0780f54a867dc0dd977ec09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonE: {fileID: 1585136673}
+  textBox: {fileID: 790156711}
+  nameText: {fileID: 252388704}
+  chatText: {fileID: 405600431}
+  textSpeed: 15
+  Name: MushBoy
+  Id: 3
 --- !u!1 &732602267
 GameObject:
   m_ObjectHideFlags: 0
@@ -3550,8 +3552,9 @@ MonoBehaviour:
   - {fileID: 0}
   hitInvincibilityTime: 2
   isInvincibility: 0
+  isDashInvincibility: 0
   isHit: 0
-  dashCooldown: 0
+  dashCooldown: 0.2
 --- !u!50 &1288732758
 Rigidbody2D:
   serializedVersion: 4
@@ -4024,7 +4027,7 @@ GameObject:
   - component: {fileID: 1415135243}
   - component: {fileID: 1415135247}
   - component: {fileID: 1415135246}
-  - component: {fileID: 1415135245}
+  - component: {fileID: 1415135248}
   m_Layer: 0
   m_Name: tempNPC1
   m_TagString: Untagged
@@ -4099,24 +4102,6 @@ Transform:
   m_Father: {fileID: 2029608096}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1415135245
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1415135242}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0e8881a13df502248b4f029b1b783cc0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  e: {fileID: 1269518515}
-  textBox: {fileID: 300021092}
-  nameText: {fileID: 473081783}
-  chatText: {fileID: 768994900}
-  characterName: Demo NPC 1
-  textSpeed: 0.03
 --- !u!61 &1415135246
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4164,6 +4149,25 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &1415135248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1415135242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8814749ee0780f54a867dc0dd977ec09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonE: {fileID: 1269518515}
+  textBox: {fileID: 300021092}
+  nameText: {fileID: 473081783}
+  chatText: {fileID: 768994900}
+  textSpeed: 15
+  Name: Penguin
+  Id: 1
 --- !u!1 &1487355075
 GameObject:
   m_ObjectHideFlags: 0
@@ -4746,7 +4750,7 @@ GameObject:
   - component: {fileID: 1858234833}
   - component: {fileID: 1858234837}
   - component: {fileID: 1858234836}
-  - component: {fileID: 1858234835}
+  - component: {fileID: 1858234838}
   m_Layer: 0
   m_Name: tempNPC4
   m_TagString: Untagged
@@ -4821,24 +4825,6 @@ Transform:
   m_Father: {fileID: 2029608096}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1858234835
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1858234832}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0e8881a13df502248b4f029b1b783cc0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  e: {fileID: 1804264800}
-  textBox: {fileID: 1326869791}
-  nameText: {fileID: 1051388265}
-  chatText: {fileID: 1230767931}
-  characterName: Demo NPC 4
-  textSpeed: 0.03
 --- !u!61 &1858234836
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4886,6 +4872,25 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &1858234838
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1858234832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8814749ee0780f54a867dc0dd977ec09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonE: {fileID: 1804264800}
+  textBox: {fileID: 1326869791}
+  nameText: {fileID: 1051388265}
+  chatText: {fileID: 1230767931}
+  textSpeed: 15
+  Name: GunGirl
+  Id: 4
 --- !u!1 &2029608095
 GameObject:
   m_ObjectHideFlags: 0

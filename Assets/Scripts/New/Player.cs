@@ -76,6 +76,8 @@ public class Player : MonoBehaviour
     [SerializeField] private float dashCooldown; // Dash 쿨다운 시간
     private float lastDashTime;  // 마지막 Dash 실행 시간
 
+    private bool spendAllGauge;
+    
     private void Awake()
     {
         rigid2D = GetComponent<Rigidbody2D>();
@@ -97,7 +99,7 @@ public class Player : MonoBehaviour
                 Dash();
 
             // 공중에 있거나, 이미 비행 중이면 Fly
-            else if (!isGrounded || isFlying)
+            else if ((!isGrounded || isFlying) && !spendAllGauge )
                 Fly();
         }
 
@@ -109,6 +111,11 @@ public class Player : MonoBehaviour
             gauge.value += recoverySpeed * Time.deltaTime;
 
         curTime += Time.deltaTime;
+
+        if (spendAllGauge && gauge.value >= 0.3)
+        {
+            spendAllGauge = false;
+        }
     }
 
     public void FixedUpdate()
@@ -268,6 +275,7 @@ public class Player : MonoBehaviour
             if (gauge.value <= 0)
             {
                 EndFly();
+                spendAllGauge = true;
             }
             else
             {

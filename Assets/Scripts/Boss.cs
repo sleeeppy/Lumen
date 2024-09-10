@@ -4,10 +4,8 @@ using System.Collections.Generic;
 using BulletPro;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
-using UnityEngine.UIElements;
-using Image = UnityEngine.UI.Image;
-using Slider = UnityEngine.UI.Slider;
+using UnityEngine.UI;
+using DG.Tweening;
 
 // Be sure to set maxHP and HP to the same value in the Inspector.
 // If not, phase starts decremented by 1.
@@ -22,6 +20,7 @@ public class Boss : MonoBehaviour
     
     [Header("HP Slider")]
     [SerializeField] public Slider slider;
+    [SerializeField] private Slider delaySlider;
 
     [SerializeField] public GameObject bulletSpawnPos;
     [SerializeField] public BulletEmitter bulletEmitter;
@@ -29,6 +28,9 @@ public class Boss : MonoBehaviour
 
     [SerializeField] private Sprite[] bossProfile;
     [SerializeField] private Image curProfile;
+    
+    private bool isHit = false;
+    private float hitTimer = 0f;
 
     protected virtual void Awake()
     {
@@ -65,7 +67,19 @@ public class Boss : MonoBehaviour
         }
         
         bulletSpawnPos.transform.position = transform.position;
-        
+
+        if (isHit)
+        {
+            hitTimer += Time.deltaTime;
+
+            // 0.5초가 지나면 delaySlider 업데이트
+            if (hitTimer > 0.3f || HP == 0 || slider.value < (delaySlider.value - 13))
+            {
+                DOTween.To(() => delaySlider.value, x => delaySlider.value = x, slider.value, 0.2f);
+                hitTimer = 0f; // 타이머 리셋
+                isHit = false; // 피격 상태 해제
+            }
+        }
     }
 
     IEnumerator NextPattern(float time, int profileNum)
@@ -82,9 +96,19 @@ public class Boss : MonoBehaviour
         {
             Bullet bulletScript = other.gameObject.GetComponent<Bullet>();
             HP -= bulletScript.Damage;
+
+            // 슬라이더 애니메이션
+            float targetHP = HP;
+            DOTween.To(() => slider.value, x => slider.value = x, targetHP, 0.2f);
+
+            // 피격 상태 설정 및 타이머 리셋
+            isHit = true;
+            hitTimer = 0f;
+
             Destroy(other.gameObject);
         }
     }
+
 
     public void PhaseChange(int bossPhase)
     {

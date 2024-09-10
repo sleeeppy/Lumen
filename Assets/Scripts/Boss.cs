@@ -68,18 +68,18 @@ public class Boss : MonoBehaviour
         
         bulletSpawnPos.transform.position = transform.position;
 
-        if (isHit)
-        {
-            hitTimer += Time.deltaTime;
-
-            // 0.5초가 지나면 delaySlider 업데이트
-            if (hitTimer > 0.3f || HP == 0 || slider.value < (delaySlider.value - 13))
-            {
-                DOTween.To(() => delaySlider.value, x => delaySlider.value = x, slider.value, 0.2f);
-                hitTimer = 0f; // 타이머 리셋
-                isHit = false; // 피격 상태 해제
-            }
-        }
+        // if (isHit)
+        // {
+        //     hitTimer += Time.deltaTime;
+        //
+        //     // 0.5초가 지나면 delaySlider 업데이트
+        //     if (hitTimer > 0.3f || HP == 0 || slider.value < (delaySlider.value - 13))
+        //     {
+        //         DOTween.To(() => delaySlider.value, x => delaySlider.value = x, slider.value, 0.2f);
+        //         hitTimer = 0f; // 타이머 리셋
+        //         isHit = false; // 피격 상태 해제
+        //     }
+        // }
     }
 
     IEnumerator NextPattern(float time, int profileNum)
@@ -104,6 +104,7 @@ public class Boss : MonoBehaviour
             // 피격 상태 설정 및 타이머 리셋
             isHit = true;
             hitTimer = 0f;
+            StartCoroutine(DelaySliderValue());
 
             Destroy(other.gameObject);
         }
@@ -131,6 +132,12 @@ public class Boss : MonoBehaviour
         phaseText.text = "x" + phase;
         bulletEmitter.Kill();
         gameObject.SetActive(false);
+    }
+
+    IEnumerator DelaySliderValue()
+    {
+        yield return new WaitForSeconds(0.3f);
+        DOTween.To(() => delaySlider.value, x => delaySlider.value = x, slider.value, 0.2f);
     }
 }
 

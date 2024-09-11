@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
 using UnityEngine.UI;
+using DG.Tweening;
+using UnityEngine.Rendering.Universal;
 
 public class Player : MonoBehaviour
 {
@@ -62,6 +64,7 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject flyParticle;
     private GameObject flyingParticle;
     private bool canFly = true;
+    private bool canFlyAgainAfterLanding = true;
 
     [Header("Life")]
     [SerializeField] private int life;
@@ -78,6 +81,7 @@ public class Player : MonoBehaviour
     private float lastDashTime;  // 마지막 Dash 실행 시간
 
     private bool spendAllGauge;
+    private float airBorneTime;
 
     [SerializeField] private Image HPImage;
     [SerializeField] private TextMeshProUGUI lifeText;
@@ -95,17 +99,18 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        RigidBodyController();
         UpdateMove();
         UpdateJump();
 
         // Dash 쿨다운 체크: 마지막 Dash 후 설정한 시간만큼 지나야 다시 Dash 실행 가능
-        if (Input.GetKey(KeyCode.LeftShift) && Time.time >= lastDashTime + dashCooldown)
+        if (Input.GetKey(KeyCode.LeftShift))
         {
-            if (isGrounded && !isFlying && !isDashing)
+            if (isGrounded && !isFlying && !isDashing && Time.time >= lastDashTime + dashCooldown)
                 Dash();
 
             // 공중에 있거나, 이미 비행 중이면 Fly
-            else if ((!isGrounded || isFlying) && !spendAllGauge )
+            else if ((!isGrounded || isFlying) && !spendAllGauge && canFlyAgainAfterLanding)
                 Fly();
         }
 
@@ -122,11 +127,18 @@ public class Player : MonoBehaviour
         {
             spendAllGauge = false;
         }
+        
+        if(!isGrounded && !isFlying)
+            airBorneTime += Time.deltaTime;
+        
+                
+        if(isGrounded)
+            airBorneTime = 0;
     }
 
     public void FixedUpdate()
     {
-        RigidBodyController();
+
     }
 
     private void UpdateMove()
@@ -175,9 +187,13 @@ public class Player : MonoBehaviour
         }
 
         if (isGrounded && rigid2D.velocity.y <= 0)
+        {
             currentJumpCount = maxJumpCount;
+            airBorneTime = 0;  // 땅에 닿으면 airborneTime 초기화
+            canFlyAgainAfterLanding = true;
+        }
 
-
+        // Space를 누르고 있고, Y축 속도가 양수일 때 lowGravity 적용
         if (IsLongJump && rigid2D.velocity.y > 0 && !isFlying)
         {
             rigid2D.gravityScale = lowGravity;
@@ -185,14 +201,29 @@ public class Player : MonoBehaviour
         else
         {
             if (!isFlying)
+            {
                 rigid2D.gravityScale = highGravity;
+            }
         }
 
-        if (!isGrounded && Input.GetKey(KeyCode.Space) && !isFlying && rigid2D.velocity.y < 0)
+        // 공중에 있고 Space를 누르고 있으며, 3초 이하일 때 slowFall 적용
+        if (!isGrounded && Input.GetKey(KeyCode.Space) && !isFlying && rigid2D.velocity.y < 0 && airBorneTime <= 3)
         {
             rigid2D.gravityScale = slowFall;
         }
+        // 공중에 있는 시간이 3초 이상이면 gravityScale을 1로 설정
+        else if (airBorneTime > 3)
+        {
+            rigid2D.gravityScale = lowGravity;
+        }
+
+        // 땅에 닿지 않고 있으면 airborneTime 증가
+        if (!isGrounded && !isFlying)
+        {
+            airBorneTime += Time.deltaTime;
+        }
     }
+
 
     public void MoveTo(float x)
     {
@@ -244,6 +275,7 @@ public class Player : MonoBehaviour
             StartCoroutine(DashCoroutine());
         }
     }
+    
     private IEnumerator DashCoroutine()
     {
         float startTime = Time.time;
@@ -261,7 +293,7 @@ public class Player : MonoBehaviour
 
     void Fly()
     {
-        if (canFly)
+        if (canFly && canFlyAgainAfterLanding) // Check if flying is allowed
         {
             if (flyCoolTime <= curTime)
             {
@@ -270,11 +302,9 @@ public class Player : MonoBehaviour
                 gauge.value -= flyGauge * Time.deltaTime;
 
                 flyingParticle = Instantiate(flyParticle, transform.position, Quaternion.Euler(0, 90, -90));
-
                 Vector3 dir = transform.position - flyingParticle.transform.position;
                 flyingParticle.transform.LookAt(dir);
                 flyingParticle.transform.position = transform.position;
-
                 Destroy(flyingParticle, 0.4f);
             }
 
@@ -287,35 +317,36 @@ public class Player : MonoBehaviour
             {
                 if (flyCoolTime <= curTime)
                 {
-                    rigid2D.gravityScale = 0;
+                    rigid2D.gravityScale = 0; // 중력 비활성화
                     spriteRenderer.sprite = flySprite;
                     anim.enabled = false;
-                    float x = Input.GetAxisRaw("Horizontal");
-                    float y = Input.GetAxisRaw("Vertical");
 
-                    if ((isTouchRight && x == 1) || (isTouchLeft && x == -1))
+                    float x = Input.GetAxis("Horizontal");
+                    float y = Input.GetAxis("Vertical");
+
+                    if ((isTouchRight && x <= 1) || (isTouchLeft && x <= -1))
                         x = 0;
 
-                    if ((isTouchTop && y == 1) || (isTouchBottom && y == -1))
+                    if ((isTouchTop && y <= 1) || (isTouchBottom && y <= -1))
                         y = 0;
 
-                    rigid2D.velocity = new Vector2(x * moveSpeed, y * moveSpeed);
+                    // 위치 업데이트
+                    Vector3 newPosition = transform.position + new Vector3(x * moveSpeed * Time.deltaTime, y * moveSpeed * Time.deltaTime, 0);
+                    transform.position = newPosition;
 
+                    // 회전 코드
                     if (x < 0)
                         transform.Rotate(0, 0, rotateSpeed * 1000f * Time.deltaTime);
-
-                    if (x > 0)
+                    else if (x > 0)
                         transform.Rotate(0, 0, rotateSpeed * -1000f * Time.deltaTime);
                 }
             }
         }
-        // else if (Input.GetKeyUp(KeyCode.LeftShift) || isGrounded)
-        //     EndFly();
 
         if (gauge.value >= 0.5f)
             canFly = true;
-
     }
+
 
     private void EndFly()
     {
@@ -328,6 +359,8 @@ public class Player : MonoBehaviour
         transform.rotation = Quaternion.Euler(0, 0, 0);
         curTime = 0;
         currentJumpCount = 0;
+
+        canFlyAgainAfterLanding = false;
     }
 
     private IEnumerator InvincibilityCoroutine()

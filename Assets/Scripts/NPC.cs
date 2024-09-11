@@ -7,8 +7,6 @@ using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using TMPro;
 using DG.Tweening;
-using Unity.VisualScripting;
-using UnityEngine.Serialization;
 
 public class NPC : MonoBehaviour
 {

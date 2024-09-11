@@ -9,7 +9,6 @@ public class Attack : MonoBehaviour
     [SerializeField, Range(0, 100)] private float distance;
     [SerializeField] private float bulletCoolTime;
     [SerializeField] private float bulletForce = 10f;
-    [SerializeField]
     private Player PlayerScript;
     private float curTime;
 

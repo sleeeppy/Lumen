@@ -1237,6 +1237,7 @@ MonoBehaviour:
   textSpeed: 15
   Name: HalfSeal
   Id: 2
+  SpreadSheetLink: https://sheets.googleapis.com/v4/spreadsheets/1v_3dQlqmcSTiuKhtogBPrJjRIwciuZ0abSshqSMP6JA/values/sheet1?key=AIzaSyC09LuyZVWm5f8RrC7_HtIhzooF9J8Bcsg
 --- !u!1 &397961555
 GameObject:
   m_ObjectHideFlags: 0
@@ -2238,6 +2239,7 @@ MonoBehaviour:
   textSpeed: 15
   Name: MushBoy
   Id: 3
+  SpreadSheetLink: https://sheets.googleapis.com/v4/spreadsheets/1v_3dQlqmcSTiuKhtogBPrJjRIwciuZ0abSshqSMP6JA/values/sheet1?key=AIzaSyC09LuyZVWm5f8RrC7_HtIhzooF9J8Bcsg
 --- !u!1 &732602267
 GameObject:
   m_ObjectHideFlags: 0
@@ -4185,6 +4187,7 @@ MonoBehaviour:
   textSpeed: 15
   Name: Penguin
   Id: 1
+  SpreadSheetLink: https://sheets.googleapis.com/v4/spreadsheets/1v_3dQlqmcSTiuKhtogBPrJjRIwciuZ0abSshqSMP6JA/values/sheet1?key=AIzaSyC09LuyZVWm5f8RrC7_HtIhzooF9J8Bcsg
 --- !u!1 &1425487620
 GameObject:
   m_ObjectHideFlags: 0
@@ -5118,6 +5121,7 @@ MonoBehaviour:
   textSpeed: 15
   Name: GunGirl
   Id: 4
+  SpreadSheetLink: https://sheets.googleapis.com/v4/spreadsheets/1v_3dQlqmcSTiuKhtogBPrJjRIwciuZ0abSshqSMP6JA/values/sheet1?key=AIzaSyC09LuyZVWm5f8RrC7_HtIhzooF9J8Bcsg
 --- !u!1 &1862555723
 GameObject:
   m_ObjectHideFlags: 0

@@ -2,8 +2,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using Unity.VisualScripting;
+using DG.Tweening;
+using TMPro;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -65,7 +66,7 @@ public class Player : MonoBehaviour
     [Header("Life")]
     [SerializeField] private int life;
     [SerializeField] private int maxLife;
-    [SerializeField] private Image[] lifeImage;
+    //[SerializeField] private Image[] lifeImage;
     [SerializeField] private float hitInvincibilityTime = 1f;
     public bool isInvincibility;
     public bool isDashInvincibility;
@@ -77,6 +78,9 @@ public class Player : MonoBehaviour
     private float lastDashTime;  // 마지막 Dash 실행 시간
 
     private bool spendAllGauge;
+
+    [SerializeField] private Image HPImage;
+    [SerializeField] private TextMeshProUGUI lifeText;
     
     private void Awake()
     {
@@ -85,6 +89,8 @@ public class Player : MonoBehaviour
         anim = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         material = spriteRenderer.material;
+
+        UpdateLifeIcon(life);
     }
 
     private void Update()
@@ -107,7 +113,7 @@ public class Player : MonoBehaviour
             EndFly();
 
 
-        if (!isFlying)
+        if (!isFlying && !isDashing)
             gauge.value += recoverySpeed * Time.deltaTime;
 
         curTime += Time.deltaTime;
@@ -347,11 +353,10 @@ public class Player : MonoBehaviour
     public void UpdateLifeIcon(int life)
     {
         // Life icon set
-        for (int i = 0; i < maxLife; i++)
-            lifeImage[i].color = new Color(1, 1, 1, 0);
-
-        for (int i = 0; i < life; i++)
-            lifeImage[i].color = new Color(1, 1, 1, 1);
+        //HPImage.fillAmount = (float)life / maxLife;
+        lifeText.text = life.ToString();
+        DOTween.To(()=>HPImage.fillAmount, x=>HPImage.fillAmount = x, (float)life / maxLife, 0.2f)
+            .SetEase(Ease.OutBounce);
     }
 
     void OnTriggerEnter2D(Collider2D collision)

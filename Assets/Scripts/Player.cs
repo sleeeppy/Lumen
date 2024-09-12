@@ -6,7 +6,8 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine.UI;
 using DG.Tweening;
-using UnityEngine.Rendering.Universal;
+using Unity.VisualScripting;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -59,11 +60,10 @@ public class Player : MonoBehaviour
     [SerializeField] private Sprite flySprite;
     [SerializeField] private float flyGauge = 0.7f;
     [SerializeField] private float flyCoolTime = 0.5f;
-    [SerializeField] private float slowFall = 1f;
+    [SerializeField] private float slowFall = 0.15f;
     [SerializeField] private float rotateSpeed = 30f;
     [SerializeField] private GameObject flyParticle;
     private GameObject flyingParticle;
-    private bool canFly = true;
     private bool canFlyAgainAfterLanding = true;
 
     [Header("Life")]
@@ -79,12 +79,12 @@ public class Player : MonoBehaviour
 
     [SerializeField] private float dashCooldown; // Dash 쿨다운 시간
     private float lastDashTime;  // 마지막 Dash 실행 시간
-
-    private bool spendAllGauge;
+    
     private float airBorneTime;
 
     [SerializeField] private Image HPImage;
     [SerializeField] private TextMeshProUGUI lifeText;
+    
     
     private void Awake()
     {
@@ -94,7 +94,8 @@ public class Player : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         material = spriteRenderer.material;
 
-        UpdateLifeIcon(life);
+        if(SceneManager.GetActiveScene().name == "GameScene")
+            UpdateLifeIcon(life);
     }
 
     private void Update()
@@ -103,42 +104,30 @@ public class Player : MonoBehaviour
         UpdateMove();
         UpdateJump();
 
-        // Dash 쿨다운 체크: 마지막 Dash 후 설정한 시간만큼 지나야 다시 Dash 실행 가능
-        if (Input.GetKey(KeyCode.LeftShift))
+        // Dash cooldown check
+        if (Input.GetKey(KeyCode.LeftShift) || Input.GetMouseButton(1))
         {
             if (isGrounded && !isFlying && !isDashing && Time.time >= lastDashTime + dashCooldown)
                 Dash();
 
-            // 공중에 있거나, 이미 비행 중이면 Fly
-            else if ((!isGrounded || isFlying) && !spendAllGauge && canFlyAgainAfterLanding)
+            // Fly logic, ensuring it activates correctly
+            if ((!isGrounded || isFlying) && canFlyAgainAfterLanding)
                 Fly();
         }
-
-        if (Input.GetKeyUp(KeyCode.LeftShift) && isFlying)
+        
+        if ((Input.GetKeyUp(KeyCode.LeftShift) || Input.GetMouseButtonUp(1)) && isFlying)
             EndFly();
-
 
         if (!isFlying && !isDashing)
             gauge.value += recoverySpeed * Time.deltaTime;
 
         curTime += Time.deltaTime;
 
-        if (spendAllGauge && gauge.value >= 0.3)
-        {
-            spendAllGauge = false;
-        }
-        
-        if(!isGrounded && !isFlying)
+        if (!isGrounded && !isFlying)
             airBorneTime += Time.deltaTime;
-        
-                
-        if(isGrounded)
+
+        if (isGrounded)
             airBorneTime = 0;
-    }
-
-    public void FixedUpdate()
-    {
-
     }
 
     private void UpdateMove()
@@ -293,63 +282,68 @@ public class Player : MonoBehaviour
 
     void Fly()
     {
-        if (canFly && canFlyAgainAfterLanding) // Check if flying is allowed
-        {
-            if (flyCoolTime <= curTime)
-            {
-                isFlying = true;
-                isInvincibility = true;
-                gauge.value -= flyGauge * Time.deltaTime;
+        // Ensure flying can only start if the left shift key is held down and conditions are met
+        if ((!Input.GetKey(KeyCode.LeftShift) && !Input.GetMouseButton(1))|| !canFlyAgainAfterLanding)
+            return;
 
-                flyingParticle = Instantiate(flyParticle, transform.position, Quaternion.Euler(0, 90, -90));
-                Vector3 dir = transform.position - flyingParticle.transform.position;
-                flyingParticle.transform.LookAt(dir);
-                flyingParticle.transform.position = transform.position;
-                Destroy(flyingParticle, 0.4f);
+        if (flyCoolTime <= curTime)
+        {
+            if (!isFlying)
+            {
+                gauge.value -= 0.2f;
+                isFlying = true;
             }
 
-            if (gauge.value <= 0)
+            isInvincibility = true;
+            gauge.value -= flyGauge * Time.deltaTime;
+
+            flyingParticle = Instantiate(flyParticle, transform.position, Quaternion.Euler(0, 90, -90));
+            Vector3 dir = transform.position - flyingParticle.transform.position;
+            flyingParticle.transform.LookAt(dir);
+            flyingParticle.transform.position = transform.position;
+            Destroy(flyingParticle, 0.4f);
+
+            if (gauge.value <= 0 && !isTouchBottom)
             {
                 EndFly();
-                spendAllGauge = true;
+                return;
             }
-            else
+
+            rigid2D.gravityScale = 0;
+            spriteRenderer.sprite = flySprite;
+            anim.enabled = false;
+
+            float flyX = Input.GetAxis("Horizontal");
+            float flyY = Input.GetAxis("Vertical");
+            
+            // 이동 방향 벡터 생성
+            Vector2 moveDirection = new Vector2(flyX, flyY).normalized;
+
+            
+            rigid2D.velocity = moveDirection * moveSpeed * 1.5f;
+            
+            
+            // 현재 속도를 초기화하여 관성을 제거
+            // rigid2D.velocity = Vector2.zero;
+            //
+            // // 힘을 적용하여 이동
+            // rigid2D.AddForce(moveDirection * moveSpeed, ForceMode2D.Impulse);
+
+            //rigid2D.velocity = new Vector2(flyX * moveSpeed, flyY * moveSpeed);
+            //transform.Translate(flyX * moveSpeed * Time.deltaTime, flyY * moveSpeed * Time.deltaTime, 0);
+
+            if (flyX != 0)
             {
-                if (flyCoolTime <= curTime)
-                {
-                    rigid2D.gravityScale = 0; // 중력 비활성화
-                    spriteRenderer.sprite = flySprite;
-                    anim.enabled = false;
-
-                    float x = Input.GetAxis("Horizontal");
-                    float y = Input.GetAxis("Vertical");
-
-                    if ((isTouchRight && x <= 1) || (isTouchLeft && x <= -1))
-                        x = 0;
-
-                    if ((isTouchTop && y <= 1) || (isTouchBottom && y <= -1))
-                        y = 0;
-
-                    // 위치 업데이트
-                    Vector3 newPosition = transform.position + new Vector3(x * moveSpeed * Time.deltaTime, y * moveSpeed * Time.deltaTime, 0);
-                    transform.position = newPosition;
-
-                    // 회전 코드
-                    if (x < 0)
-                        transform.Rotate(0, 0, rotateSpeed * 1000f * Time.deltaTime);
-                    else if (x > 0)
-                        transform.Rotate(0, 0, rotateSpeed * -1000f * Time.deltaTime);
-                }
+                float rotationAmount = rotateSpeed * Time.deltaTime;
+                transform.Rotate(0, 0, flyX < 0 ? rotationAmount : -rotationAmount);
             }
         }
-
-        if (gauge.value >= 0.5f)
-            canFly = true;
     }
-
-
+    
     private void EndFly()
     {
+        rigid2D.velocity = new Vector2(0, 0);
+
         isFlying = false;
         if (!isHit)
             isInvincibility = false;
@@ -361,6 +355,7 @@ public class Player : MonoBehaviour
         currentJumpCount = 0;
 
         canFlyAgainAfterLanding = false;
+        
     }
 
     private IEnumerator InvincibilityCoroutine()
@@ -395,7 +390,7 @@ public class Player : MonoBehaviour
     void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Border"))
-            BorderCheck(collision);
+            BorderCheckT(collision);
 
         // else if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("EnemyBullet"))
         // {
@@ -412,10 +407,29 @@ public class Player : MonoBehaviour
     void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Border"))
-            BorderCheck(collision);
+            BorderCheckF(collision);
     }
 
-    private void BorderCheck(Collider2D borderCollider)
+    private void BorderCheckT(Collider2D borderCollider)
+    {
+        switch (borderCollider.gameObject.name)
+        {
+            case "Top":
+                isTouchTop = true;
+                break;
+            case "Bottom":
+                isTouchBottom = true;
+                break;
+            case "Left":
+                isTouchLeft = true;
+                break;
+            case "Right":
+                isTouchRight = true;
+                break;
+        }
+    }
+    
+    private void BorderCheckF(Collider2D borderCollider)
     {
         switch (borderCollider.gameObject.name)
         {

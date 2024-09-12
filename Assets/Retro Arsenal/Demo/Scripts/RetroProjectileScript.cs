@@ -65,7 +65,7 @@ namespace RetroArsenal
                 GameObject impactP = Instantiate(impactParticle, myTransform.position, Quaternion.FromToRotation(Vector3.up, hit.normal)) as GameObject;
 
                 if (hit.transform.tag == "Target") // Projectile will affect objects tagged as Target
-{
+                {
 					RetroTarget retroTarget = hit.transform.GetComponent<RetroTarget>();
 					if (retroTarget != null)
 					{

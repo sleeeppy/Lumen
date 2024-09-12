@@ -2713,7 +2713,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.4862745}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.5568628}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -26649,7 +26649,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &538371511
 RectTransform:
   m_ObjectHideFlags: 0
@@ -79111,7 +79111,7 @@ PrefabInstance:
     - target: {fileID: 4608836435586106130, guid: 72f1f417e8776bd4fa84d5844205ff46,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -8.87
+      value: -6.499
       objectReference: {fileID: 0}
     - target: {fileID: 4608836435586106130, guid: 72f1f417e8776bd4fa84d5844205ff46,
         type: 3}
@@ -91371,8 +91371,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1950142354}
   m_Layer: 0
-  m_Name: Grounds
-  m_TagString: Untagged
+  m_Name: Bottom
+  m_TagString: Border
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -100339,7 +100339,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b243ec2f077ec6149860031671660ebb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 10
+  moveSpeed: 8
   jumpForce: 7
   lowGravity: 2
   highGravity: 4
@@ -100357,9 +100357,9 @@ MonoBehaviour:
   dashParticle: {fileID: 1616104946086206, guid: 7de70f44faed1d74a8dcd5491fb69000,
     type: 3}
   flySprite: {fileID: 21300000, guid: a0b26ea5c9e66984aaa71aa983508943, type: 3}
-  flyGauge: 0.9
+  flyGauge: 0.4
   flyCoolTime: 0.3
-  slowFall: 0.1
+  slowFall: 0.15
   rotateSpeed: 1
   flyParticle: {fileID: 7548961018975747747, guid: d2cd4ec7d8a2b1347931576b51ddf195,
     type: 3}

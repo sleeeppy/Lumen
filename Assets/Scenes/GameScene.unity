@@ -22054,8 +22054,8 @@ RectTransform:
   - {fileID: 224805587}
   - {fileID: 58720021}
   - {fileID: 196748695}
-  - {fileID: 538371511}
   - {fileID: 916771407}
+  - {fileID: 538371511}
   m_Father: {fileID: 1428316044}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -26662,7 +26662,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 436559665}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -44932,7 +44932,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 436559665}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -44952,7 +44952,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.5568628}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -100372,6 +100372,8 @@ MonoBehaviour:
   dashCooldown: 0.25
   HPImage: {fileID: 224805588}
   lifeText: {fileID: 1875055871}
+  leftBorderCollider: {fileID: 1449153190}
+  rightBorderCollider: {fileID: 1358617654}
 --- !u!50 &2121168802
 Rigidbody2D:
   serializedVersion: 4

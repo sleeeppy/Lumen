@@ -87,6 +87,11 @@ public class Player : MonoBehaviour
     
     private bool dashEndedAndCanFly = false;
     
+    [SerializeField] private Collider2D leftBorderCollider;
+    [SerializeField] private Collider2D rightBorderCollider;
+
+    private float leftBorder, rightBorder;
+    
     private void Awake()
     {
         rigid2D = GetComponent<Rigidbody2D>();
@@ -97,6 +102,12 @@ public class Player : MonoBehaviour
 
         if(SceneManager.GetActiveScene().name == "GameScene")
             UpdateLifeIcon(life);
+        
+        if (leftBorderCollider != null)
+            leftBorder = leftBorderCollider.bounds.max.x;
+
+        if (rightBorderCollider != null)
+            rightBorder = rightBorderCollider.bounds.min.x;
     }
 
     private void Update()
@@ -286,11 +297,12 @@ public class Player : MonoBehaviour
             gauge.value -= dashGauge;
 
             isDashing = true;
-            lastDashTime = Time.time;  // Dash 실행 시간을 기록
+            lastDashTime = Time.time; // Dash 실행 시간을 기록
             StartCoroutine(DashInvincibilityCoroutine());
 
             dashDirection = spriteRenderer.flipX ? Vector2.right : Vector2.left;
-            Quaternion dashParticleDir = spriteRenderer.flipX ? Quaternion.Euler(0, 90, 0) : Quaternion.Euler(0, -90, 0);
+            Quaternion dashParticleDir =
+                spriteRenderer.flipX ? Quaternion.Euler(0, 90, 0) : Quaternion.Euler(0, -90, 0);
 
             Vector2 particlePosition = new Vector2(transform.position.x, transform.position.y);
             GameObject particles = Instantiate(dashParticle, particlePosition, Quaternion.identity);
@@ -298,16 +310,19 @@ public class Player : MonoBehaviour
             particles.transform.rotation = dashParticleDir;
             Destroy(particles, 2f);
 
-            // Dash를 DOTween으로 처리
-            Vector2 dashTargetPosition = (Vector2)transform.position + dashDirection * dashSpeed;
-        
-            // DOTween으로 Dash 이동
-            transform.DOMove(dashTargetPosition, dashTime)
+            Vector2 currentPosition = transform.position;
+            Vector2 dashTargetPosition = currentPosition + dashDirection * dashSpeed;
+
+            // Clamp the target position within the border bounds
+            float clampedX = Mathf.Clamp(dashTargetPosition.x, leftBorder, rightBorder);
+
+            // Use DOTween to move the player to the clamped position
+            transform.DOMoveX(clampedX, dashTime)
                 .SetEase(Ease.OutQuad)
-                .OnComplete(() => isDashing = false);  // Dash 완료 후 상태 초기화
+                .OnComplete(() => isDashing = false); // Dash 완료 후 상태 초기화
         }
     }
-
+    
     void Fly()
     {
         // Ensure flying can only start if the left shift key is held down and conditions are met

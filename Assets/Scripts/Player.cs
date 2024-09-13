@@ -85,6 +85,7 @@ public class Player : MonoBehaviour
     [SerializeField] private Image HPImage;
     [SerializeField] private TextMeshProUGUI lifeText;
     
+    private bool dashEndedAndCanFly = false;
     
     private void Awake()
     {
@@ -104,20 +105,48 @@ public class Player : MonoBehaviour
         UpdateMove();
         UpdateJump();
 
-        // Dash cooldown check
-        if (Input.GetKey(KeyCode.LeftShift) || Input.GetMouseButton(1))
+        // Shift가 눌렸을 때 한 번만 Dash 실행
+        if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetMouseButtonDown(1))
         {
             if (isGrounded && !isFlying && !isDashing && Time.time >= lastDashTime + dashCooldown)
-                Dash();
-
-            // Fly logic, ensuring it activates correctly
-            if ((!isGrounded || isFlying) && canFlyAgainAfterLanding)
-                Fly();
+            {
+                if (!Input.GetKey(KeyCode.W))  // W 키가 눌리지 않은 경우에만 Dash 가능
+                {
+                    Dash();  // Dash 실행
+                    dashEndedAndCanFly = false;  // Dash 중이므로 Fly 전환 불가
+                }
+            }
         }
-        
-        if ((Input.GetKeyUp(KeyCode.LeftShift) || Input.GetMouseButtonUp(1)) && isFlying)
-            EndFly();
 
+        // Dash가 실행 중일 때 W 키가 눌리면 Dash가 끝난 후 Fly 상태로 전환할 수 있도록 플래그 설정
+        if (isDashing && Input.GetKey(KeyCode.W))
+        {
+            dashEndedAndCanFly = true;
+        }
+
+        // Dash가 끝난 후 W 키가 눌려 있으면 Fly로 전환 (Fly 상태가 아니고 공중에 있는 상태가 아닌 경우)
+        if (!isDashing && dashEndedAndCanFly && Input.GetKey(KeyCode.W) && !isFlying && !isGrounded)
+        {
+            Fly();  // 기존 Fly 로직 그대로 실행
+            dashEndedAndCanFly = false;  // Fly 상태로 전환 후 플래그 리셋
+        }
+
+        // 기존 Fly 상태 로직 유지 (Shift를 누른 상태에서 실행)
+        if (Input.GetKey(KeyCode.LeftShift) || Input.GetMouseButton(1))
+        {
+            if ((Input.GetKey(KeyCode.W) || !isGrounded || isFlying) && canFlyAgainAfterLanding)
+            {
+                Fly();
+            }
+        }
+
+        // Shift를 떼면 Fly 종료
+        if ((Input.GetKeyUp(KeyCode.LeftShift) || Input.GetMouseButtonUp(1)) && isFlying)
+        {
+            EndFly();
+        }
+
+        // 게이지 회복 로직
         if (!isFlying && !isDashing)
             gauge.value += recoverySpeed * Time.deltaTime;
 
@@ -129,6 +158,7 @@ public class Player : MonoBehaviour
         if (isGrounded)
             airBorneTime = 0;
     }
+
 
     private void UpdateMove()
     {
@@ -180,6 +210,12 @@ public class Player : MonoBehaviour
             currentJumpCount = maxJumpCount;
             airBorneTime = 0;  // 땅에 닿으면 airborneTime 초기화
             canFlyAgainAfterLanding = true;
+
+            // Fly 모드가 활성화 되어 있다면 Fly 종료
+            if (isFlying)
+            {
+                EndFly();
+            }
         }
 
         // Space를 누르고 있고, Y축 속도가 양수일 때 lowGravity 적용
@@ -212,6 +248,7 @@ public class Player : MonoBehaviour
             airBorneTime += Time.deltaTime;
         }
     }
+
 
 
     public void MoveTo(float x)
@@ -249,7 +286,6 @@ public class Player : MonoBehaviour
             gauge.value -= dashGauge;
 
             isDashing = true;
-
             lastDashTime = Time.time;  // Dash 실행 시간을 기록
             StartCoroutine(DashInvincibilityCoroutine());
 
@@ -261,23 +297,15 @@ public class Player : MonoBehaviour
 
             particles.transform.rotation = dashParticleDir;
             Destroy(particles, 2f);
-            StartCoroutine(DashCoroutine());
-        }
-    }
-    
-    private IEnumerator DashCoroutine()
-    {
-        float startTime = Time.time;
-        Vector2 startPosition = transform.position;
 
-        while (Time.time < startTime + dashTime && !(isTouchRight || isTouchLeft))
-        {
-            // Lerp를 사용하여 부드럽게 이동
-            transform.position = Vector2.Lerp(startPosition, startPosition + dashDirection * dashSpeed,
-                (Time.time - startTime) / dashTime);
-            yield return null;
+            // Dash를 DOTween으로 처리
+            Vector2 dashTargetPosition = (Vector2)transform.position + dashDirection * dashSpeed;
+        
+            // DOTween으로 Dash 이동
+            transform.DOMove(dashTargetPosition, dashTime)
+                .SetEase(Ease.OutQuad)
+                .OnComplete(() => isDashing = false);  // Dash 완료 후 상태 초기화
         }
-        isDashing = false;
     }
 
     void Fly()
@@ -321,16 +349,6 @@ public class Player : MonoBehaviour
 
             
             rigid2D.velocity = moveDirection * moveSpeed * 1.5f;
-            
-            
-            // 현재 속도를 초기화하여 관성을 제거
-            // rigid2D.velocity = Vector2.zero;
-            //
-            // // 힘을 적용하여 이동
-            // rigid2D.AddForce(moveDirection * moveSpeed, ForceMode2D.Impulse);
-
-            //rigid2D.velocity = new Vector2(flyX * moveSpeed, flyY * moveSpeed);
-            //transform.Translate(flyX * moveSpeed * Time.deltaTime, flyY * moveSpeed * Time.deltaTime, 0);
 
             if (flyX != 0)
             {
@@ -390,7 +408,7 @@ public class Player : MonoBehaviour
     void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Border"))
-            BorderCheckT(collision);
+            BorderCheck(collision, true);
 
         // else if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("EnemyBullet"))
         // {
@@ -407,47 +425,28 @@ public class Player : MonoBehaviour
     void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Border"))
-            BorderCheckF(collision);
+            BorderCheck(collision, false);
     }
 
-    private void BorderCheckT(Collider2D borderCollider)
+    private void BorderCheck(Collider2D borderCollider, bool isTouching)
     {
         switch (borderCollider.gameObject.name)
         {
             case "Top":
-                isTouchTop = true;
+                isTouchTop = isTouching;
                 break;
             case "Bottom":
-                isTouchBottom = true;
+                isTouchBottom = isTouching;
                 break;
             case "Left":
-                isTouchLeft = true;
+                isTouchLeft = isTouching;
                 break;
             case "Right":
-                isTouchRight = true;
+                isTouchRight = isTouching;
                 break;
         }
     }
     
-    private void BorderCheckF(Collider2D borderCollider)
-    {
-        switch (borderCollider.gameObject.name)
-        {
-            case "Top":
-                isTouchTop = false;
-                break;
-            case "Bottom":
-                isTouchBottom = false;
-                break;
-            case "Left":
-                isTouchLeft = false;
-                break;
-            case "Right":
-                isTouchRight = false;
-                break;
-        }
-    }
-
     private IEnumerator HitInvincibility()
     {
         material.SetFloat("_HologramFade", 0.25f);

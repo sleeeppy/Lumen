@@ -151,11 +151,11 @@ public class Player : MonoBehaviour
         // Dash가 끝난 후 W 키가 눌려 있으면 Fly로 전환 (Fly 상태가 아니고 공중에 있는 상태가 아닌 경우)
         if (!isDashing && dashEndedAndCanFly && Input.GetKey(KeyCode.W) && !isFlying && !isGrounded)
         {
-            Fly();  // 기존 Fly 로직 그대로 실행
+            Fly();
             dashEndedAndCanFly = false;  // Fly 상태로 전환 후 플래그 리셋
         }
 
-        // 기존 Fly 상태 로직 유지 (Shift를 누른 상태에서 실행)
+        // Shift를 누른 상태에서 실행
         if (Input.GetKey(KeyCode.LeftShift) || Input.GetMouseButton(1))
         {
             if ((Input.GetKey(KeyCode.W) || !isGrounded || isFlying) && canFlyAgainAfterLanding)
@@ -170,8 +170,14 @@ public class Player : MonoBehaviour
     private void UpdateMove()
     {
         float x = Input.GetAxisRaw("Horizontal");
+        
+        //spriteRenderer.flipX = (x == 1);
 
-        spriteRenderer.flipX = (x == 1);
+        if (x == 1)
+            spriteRenderer.flipX = true;
+        
+        else if (x == -1)
+            spriteRenderer.flipX = false;
 
         if ((isTouchRight && x == 1) || (isTouchLeft && x == -1))
             x = 0;
@@ -236,7 +242,8 @@ public class Player : MonoBehaviour
 
         // 공중에 있고 Space를 누르고 있으며, 3초 이하일 때 slowFall 적용
         // Add Input.GetKey(KeyCode.W)? 
-        if (!isGrounded && Input.GetKey(KeyCode.Space) && !isFlying && rigid2D.velocity.y < 0 && airBorneTime <= 3)
+        if (!isGrounded && !isFlying && rigid2D.velocity.y < 0 && airBorneTime <= 3
+            && Input.GetKey(KeyCode.Space))
         {
             rigid2D.gravityScale = slowFall;
         }

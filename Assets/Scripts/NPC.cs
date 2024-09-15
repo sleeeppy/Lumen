@@ -44,14 +44,16 @@ public class NPC : MonoBehaviour
         if (Input.GetKey(KeyCode.E) && playerInside && !isTyping && !justOnce) 
         {
             //GameObject.Find("Virtual Camera").SetActive(false);
-            GameObject playerObj = GameObject.FindWithTag("Player");
-            Player playerScript = playerObj.GetComponent<Player>();
-            Animator anim = playerObj.GetComponent<Animator>();
+            Player playerScript = GameObject.FindWithTag("Player").GetComponent<Player>();
+            Animator anim = playerScript.GetComponent<Animator>();
+            
             anim.SetBool("isRun", false);
             playerScript.moveSpeed = 0;
             playerScript.maxJumpCount = 0;
+            
             textBox.SetActive(true);
             buttonE.SetActive(false);
+            
             StartDialogue();
             justOnce = true;
         }

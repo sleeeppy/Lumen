@@ -107,7 +107,6 @@ public class Boss : MonoBehaviour
             bulletEmitter.emitterProfile = bossPattern[0];
             bulletEmitter.Play();
         }
-        // fuck!!!!!!!!!!!!!!!!!! I got win!!!!!!!!! 
         else if (bulletEmitter.emitterProfile != bossPattern[curPhase])
         {
             StartCoroutine(NextPattern(2f, curPhase));

@@ -6,7 +6,6 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine.UI;
 using DG.Tweening;
-using Unity.VisualScripting;
 using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
@@ -23,7 +22,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float jumpForce = 10;
     [SerializeField] private float lowGravity = 2f;
     [SerializeField] private float highGravity = 4f;
-    [SerializeField] private int maxJumpCount = 1;
+    [SerializeField] public int maxJumpCount = 1;
     private int currentJumpCount;
 
     [SerializeField] private LayerMask groundLayer;
@@ -40,7 +39,7 @@ public class Player : MonoBehaviour
 
     private SpriteRenderer spriteRenderer;
     private Animator anim;
-    public bool IsLongJump { set; get; }
+    public bool IsLongJump { set; private get; }
 
     [HideInInspector] public bool isFlying;
 
@@ -398,7 +397,6 @@ public class Player : MonoBehaviour
     public void UpdateLifeIcon(int life)
     {
         // Life icon set
-        //HPImage.fillAmount = (float)life / maxLife;
         lifeText.text = life.ToString();
         DOTween.To(()=>HPImage.fillAmount, x=>HPImage.fillAmount = x, (float)life / maxLife, 0.2f)
             .SetEase(Ease.OutBounce);

@@ -76,8 +76,8 @@ public class Player : MonoBehaviour
     private float curTime;
     Material material;
 
-    [SerializeField] private float dashCooldown; // Dash 쿨다운 시간
-    private float lastDashTime;  // 마지막 Dash 실행 시간
+    [SerializeField] private float dashCooldown;
+    private float lastDashTime;
     
     private float airBorneTime;
 
@@ -138,7 +138,7 @@ public class Player : MonoBehaviour
             {
                 if (!Input.GetKey(KeyCode.W))  // W 키가 눌리지 않은 경우에만 Dash 가능
                 {
-                    Dash();  // Dash 실행
+                    Dash();
                     dashEndedAndCanFly = false;  // Dash 중이므로 Fly 전환 불가
                 }
             }
@@ -210,7 +210,7 @@ public class Player : MonoBehaviour
         {
             if (hit.collider != null && hit.distance < 0.5f)
             {
-                anim.SetBool("isAirborne", false); // Jump_End 실행
+                anim.SetBool("isAirborne", false); // Play Jump_End
             }
         }
 
@@ -302,11 +302,9 @@ public class Player : MonoBehaviour
 
             Vector2 currentPosition = transform.position;
             Vector2 dashTargetPosition = currentPosition + dashDirection * dashSpeed;
-
-            // Clamp the target position within the border bounds
+            
             float clampedX = Mathf.Clamp(dashTargetPosition.x, leftBorder, rightBorder);
-
-            // Use DOTween to move the player to the clamped position
+            
             transform.DOMoveX(clampedX, dashTime)
                 .SetEase(Ease.OutQuad)
                 .OnComplete(() => isDashing = false); // Dash 완료 후 상태 초기화
@@ -315,7 +313,6 @@ public class Player : MonoBehaviour
     
     void Fly()
     {
-        // Ensure flying can only start if the left shift key is held down and conditions are met
         if ((!Input.GetKey(KeyCode.LeftShift) && !Input.GetMouseButton(1))|| !canFlyAgainAfterLanding)
             return;
 
@@ -349,7 +346,7 @@ public class Player : MonoBehaviour
             float flyX = Input.GetAxis("Horizontal");
             float flyY = Input.GetAxis("Vertical");
             
-            // 이동 방향 벡터 생성
+            // 이동 방향 벡터
             Vector2 moveDirection = new Vector2(flyX, flyY).normalized;
 
             
@@ -403,13 +400,19 @@ public class Player : MonoBehaviour
 
     public void UpdateLifeIcon(int life)
     {
-        // Life icon set
+        // // Life icon set
+        // for (int i = 0; i < maxLife; i++)
+        //     lifeImage[i].color = new Color(1, 1, 1, 0);
+        //
+        // for (int i = 0; i < life; i++)
+        //     lifeImage[i].color = new Color(1, 1, 1, 1);
+        
         lifeText.text = life.ToString();
         DOTween.To(()=>HPImage.fillAmount, x=>HPImage.fillAmount = x, (float)life / maxLife, 0.2f)
             .SetEase(Ease.OutBounce);
     }
 
-    void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Border"))
             BorderCheck(collision, true);

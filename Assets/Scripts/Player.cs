@@ -344,9 +344,10 @@ public class Player : MonoBehaviour
             float flyX = Input.GetAxis("Horizontal");
             float flyY = Input.GetAxis("Vertical");
             
+            if (isTouchTop) flyY = 0;
+            
             // 이동 방향 벡터
             Vector2 moveDirection = new Vector2(flyX, flyY).normalized;
-
             
             rigid2D.velocity = moveDirection * moveSpeed * 1.5f;
 
@@ -413,7 +414,12 @@ public class Player : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Border"))
+        {
             BorderCheck(collision, true);
+            Debug.Log($"{collision.name}");
+        }
+        
+        
 
         // else if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("EnemyBullet"))
         // {
@@ -435,18 +441,19 @@ public class Player : MonoBehaviour
 
     private void BorderCheck(Collider2D borderCollider, bool isTouching)
     {
+        Debug.Log($"{borderCollider.gameObject.name}");
         switch (borderCollider.gameObject.name)
         {
-            case "Top":
+            case "Top2D":
                 isTouchTop = isTouching;
                 break;
-            case "Bottom":
+            case "Bottom2D":
                 isTouchBottom = isTouching;
                 break;
-            case "Left":
+            case "Left2D":
                 isTouchLeft = isTouching;
                 break;
-            case "Right":
+            case "Right2D":
                 isTouchRight = isTouching;
                 break;
         }

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7432409341565523831}
   m_Layer: 0
   m_Name: LaserMissileRedOBJ
-  m_TagString: Missile
+  m_TagString: PlayerBullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

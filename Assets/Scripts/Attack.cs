@@ -63,20 +63,33 @@ public class Attack : MonoBehaviour
 
     void Fire()
     {
-        if (!Input.GetMouseButton(0))
+        if (!Input.GetMouseButton(0)) // Left click to fire
             return;
 
-        if (PlayerScript.isFlying)
+        if (PlayerScript.isFlying) // Prevent firing while flying
             return;
 
+        // Instantiate the new projectile from the asset instead of the old bulletPrefab
         GameObject bullet = Instantiate(bulletPrefab, firePos.transform.position, firePos.transform.rotation);
+
+        // Ensure it has the correct orientation and position
         bullet.transform.position = firePos.transform.position;
+        bullet.transform.rotation = firePos.transform.rotation;
 
-        Rigidbody2D rigid = bullet.GetComponent<Rigidbody2D>();
+        // Get the RetroProjectileScript to handle the projectile's behavior
+        RetroArsenal.RetroProjectileScript projectileScript = bullet.GetComponent<RetroArsenal.RetroProjectileScript>();
 
-        Vector2 targetPosition = firePos.transform.position;
-        rigid.AddForce((targetPosition - (Vector2)transform.position).normalized * bulletForce, ForceMode2D.Impulse);
+        // Apply force or velocity to the projectile based on your original method
+        Rigidbody rb = bullet.GetComponent<Rigidbody>(); // Use Rigidbody (3D)
+    
+        // If you're working in a 2D plane, force movement in only the X and Y direction
+        Vector3 direction = (firePos.transform.position - transform.position).normalized;
+        direction.z = 0; // Keep the Z axis movement restricted if needed
 
+        rb.AddForce(direction * bulletForce, ForceMode.Impulse); // Adjust force for 3D
+
+        // Reset the cooldown
         curTime = 0;
     }
+
 }

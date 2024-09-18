@@ -38,6 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
+  m_IndirectSpecularColor: {r: 0.063493334, g: 0.0520377, b: 0.056690488, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -68498,7 +68499,6 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -100244,11 +100244,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   firePos: {fileID: 698233647}
-  bulletPrefab: {fileID: 3725602385002149662, guid: 1b729d98ab697df49a8e92defefb592a,
+  bulletPrefab: {fileID: 7148810250495089234, guid: 72f1f417e8776bd4fa84d5844205ff46,
     type: 3}
   distance: 1.5
-  bulletCoolTime: 0.1
-  bulletForce: 15
+  bulletCoolTime: 0.13
+  bulletForce: 13
 --- !u!4 &2121797647 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4288290544214720, guid: d99be88d3e406fe4da2993f04389ec97,

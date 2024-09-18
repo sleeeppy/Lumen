@@ -345,6 +345,7 @@ public class Player : MonoBehaviour
             float flyY = Input.GetAxis("Vertical");
             
             if (isTouchTop) flyY = 0;
+            if (isTouchLeft || isTouchRight) flyX = 0;
             
             // 이동 방향 벡터
             Vector2 moveDirection = new Vector2(flyX, flyY).normalized;
@@ -361,6 +362,8 @@ public class Player : MonoBehaviour
     
     private void EndFly()
     {
+        anim.SetBool("isAirborne", true);
+        
         rigid2D.velocity = new Vector2(0, 0);
 
         isFlying = false;
@@ -414,13 +417,7 @@ public class Player : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Border"))
-        {
             BorderCheck(collision, true);
-            Debug.Log($"{collision.name}");
-        }
-        
-        
-
         // else if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("EnemyBullet"))
         // {
         //     if (!isInvincibility)

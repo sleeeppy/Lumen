@@ -60,7 +60,6 @@ public class Boss : MonoBehaviour
             
             int curPhase = Mathf.Abs(phase - 5);
             
-            // curPhase -> phase (5->0 4->1 3->2 2-3 1->4 0->5) 
             curProfile.sprite = bossProfile[curPhase];
             PhaseChange(phase);
             HP = maxHP;
@@ -69,19 +68,11 @@ public class Boss : MonoBehaviour
         bulletSpawnPos.transform.position = transform.position;
     }
 
-    IEnumerator NextPattern(float time, int profileNum)
+    public void HandleCollision(GameObject bulletObject)
     {
-        bulletEmitter.Pause();
-        yield return new WaitForSeconds(time);
-        bulletEmitter.emitterProfile = bossPattern[profileNum];
-        bulletEmitter.Play();
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.gameObject.CompareTag("PlayerBullet"))
+        Bullet bulletScript = bulletObject.GetComponent<Bullet>();
+        if (bulletScript != null)
         {
-            Bullet bulletScript = other.gameObject.GetComponent<Bullet>();
             HP -= bulletScript.Damage;
 
             // 슬라이더 애니메이션
@@ -93,10 +84,9 @@ public class Boss : MonoBehaviour
             hitTimer = 0f;
             StartCoroutine(DelaySliderValue());
 
-            Destroy(other.gameObject);
+            Destroy(bulletObject);
         }
     }
-
 
     public void PhaseChange(int bossPhase)
     {
@@ -111,6 +101,14 @@ public class Boss : MonoBehaviour
         {
             StartCoroutine(NextPattern(2f, curPhase));
         }
+    }
+    
+    IEnumerator NextPattern(float time, int profileNum)
+    {
+        bulletEmitter.Pause();
+        yield return new WaitForSeconds(time);
+        bulletEmitter.emitterProfile = bossPattern[profileNum];
+        bulletEmitter.Play();
     }
 
     void Die()

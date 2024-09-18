@@ -58,8 +58,18 @@ namespace RetroArsenal
             }
 
             RaycastHit hit;
-            if (Physics.SphereCast(myTransform.position, rad, dir, out hit, dist))
+            if (Physics.SphereCast(myTransform.position, rad, dir, out hit, dist)
+                && !hit.collider.CompareTag("Border"))
             {
+                if (hit.collider.CompareTag("Boss3DCollider"))
+                {
+                    Boss boss = hit.collider.gameObject.GetComponentInParent<Boss>();
+                    if (boss != null)
+                    {
+                        boss.HandleCollision(gameObject);
+                    }
+                }
+                
                 myTransform.position = hit.point + (hit.normal * collideOffset);
 
                 GameObject impactP = Instantiate(impactParticle, myTransform.position, Quaternion.FromToRotation(Vector3.up, hit.normal)) as GameObject;

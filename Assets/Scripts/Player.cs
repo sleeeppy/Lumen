@@ -152,24 +152,21 @@ public class Player : MonoBehaviour
             dashHoldTime += Time.deltaTime;  // 대시 버튼을 누르고 있는 시간 누적
         }
 
-        // 대시 중에 W 키가 눌리면 대시 후 비행 모드로 전환 가능
-        if (isDashing && Input.GetKey(KeyCode.W))
+        // 대시가 완료되었는지 확인
+        if (!isDashing && dashEndedAndCanFly && !isFlying && !isGrounded)
         {
-            dashEndedAndCanFly = true;
-            rigid2D.velocity = Vector2.zero;
-        }
-
-        // 대시 종료 후 W 키가 눌려 있으면 비행 모드로 전환
-        if (!isDashing && dashEndedAndCanFly && Input.GetKey(KeyCode.W) && !isFlying && !isGrounded)
-        {
-            Fly();
-            dashEndedAndCanFly = false;
+            // 대시가 끝났고, W 키가 눌려 있으면 비행 모드로 전환
+            if (Input.GetKey(KeyCode.W))
+            {
+                Fly(); // Fly 호출
+            }
+            dashEndedAndCanFly = false; // 비행 모드 전환 후 플래그 초기화
         }
 
         // 비행 상태 전환
         if (Input.GetKey(KeyCode.LeftShift) || Input.GetMouseButton(1))
         {
-            if ((Input.GetKey(KeyCode.W) || !isGrounded || isFlying) && canFlyAgainAfterLanding)
+            if ((Input.GetKey(KeyCode.W) || !isGrounded || isFlying) && canFlyAgainAfterLanding && !isDashing)
             {
                 Fly();
             }
@@ -295,10 +292,11 @@ public class Player : MonoBehaviour
         return false;
     }
 
-     private void Dash()
+         private void Dash()
     {
         if (gauge.value >= dashGauge && !isDashing)
         {
+            dashEndedAndCanFly = false;  // 초기화
             StartCoroutine(DashCoroutine());
         }
     }
@@ -313,11 +311,25 @@ public class Player : MonoBehaviour
         // Perform the initial dash phase
         yield return StartCoroutine(PerformDashPhase(initialDashFactor));
 
+        // 첫 번째 대시가 끝난 후 W 키가 눌려 있는지 체크
+        if (Input.GetKey(KeyCode.W) && !isGrounded)
+        {
+            dashEndedAndCanFly = true;  // 대시 후 Fly 가능 여부 설정
+        }
+
         // Continue to check if the key was held long enough during the first dash phase
         if (dashHoldTime >= longDashThreshold)
         {
             // Execute the additional dash phase if key was held long enough
             yield return StartCoroutine(PerformDashPhase(additionalDashFactor));
+        }
+        else
+        {
+            // 첫 번째 대시만 끝난 상태에서 Fly 모드 전환 체크
+            if (dashEndedAndCanFly)
+            {
+                Fly();  // Fly 모드로 전환
+            }
         }
     }
 
@@ -356,7 +368,7 @@ public class Player : MonoBehaviour
             // Move to the target position
             float dashDuration = dashTime * dashFactor;
             transform.DOMoveX(clampedX, dashDuration)
-                .SetEase(Ease.Linear)    
+                .SetEase(Ease.Linear)
                 .OnComplete(() => isDashing = false);  // Reset dashing status after completion
 
             // Wait for the dash duration to complete

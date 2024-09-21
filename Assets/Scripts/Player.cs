@@ -46,12 +46,16 @@ public class Player : MonoBehaviour
     [SerializeField] private float recoverySpeed = 0.25f;
 
     [Header("Dash")]
+    [SerializeField] private float dashGauge = 0.2f;
+    [SerializeField] private float dashSpeed = 7f;
+    [SerializeField] private float dashTime = 0.4f;
+    [SerializeField] private GameObject dashParticle;
+    
     private bool isDashing;
     private Vector2 dashDirection;
-    [SerializeField] private float dashGauge = 0.25f;
-    [SerializeField] private float dashSpeed = 1f;
-    [SerializeField] private float dashTime = 1f;
-    [SerializeField] private GameObject dashParticle;
+    
+    private float dashHoldTime = 0f; // 대시 버튼을 누르고 있는 시간
+    private const float longDashThreshold = 0.1f; // 긴 대시 판단 기준 시간
 
     [Header("Fly")]
     [SerializeField] private Sprite flySprite;
@@ -129,40 +133,53 @@ public class Player : MonoBehaviour
 
     private void HandleState()
     {
-        // Shift가 눌렸을 때 한 번만 Dash 실행
+        // 대시 버튼을 눌렀을 때 시간을 초기화하고 첫 번째 대시 실행
         if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetMouseButtonDown(1))
         {
+            dashHoldTime = 0f;  // 대시 버튼을 누를 때 초기화
             if (isGrounded && !isFlying && !isDashing && Time.time >= lastDashTime + dashCooldown)
             {
                 if (!Input.GetKey(KeyCode.W))  // W 키가 눌리지 않은 경우에만 Dash 가능
                 {
                     Dash();
-                    dashEndedAndCanFly = false;  // Dash 중이므로 Fly 전환 불가
                 }
             }
         }
 
-        // Dash가 실행 중일 때 W 키가 눌리면 Dash가 끝난 후 Fly 상태로 전환할 수 있도록 플래그 설정
-        if (isDashing && Input.GetKey(KeyCode.W)) 
-            dashEndedAndCanFly = true;
+        // 대시 버튼을 누르고 있는 동안 시간을 누적
+        if (Input.GetKey(KeyCode.LeftShift) || Input.GetMouseButton(1))
+        {
+            dashHoldTime += Time.deltaTime;  // 대시 버튼을 누르고 있는 시간 누적
+        }
 
-        // Dash가 끝난 후 W 키가 눌려 있으면 Fly로 전환 (Fly 상태가 아니고 공중에 있는 상태가 아닌 경우)
+        // 대시 중에 W 키가 눌리면 대시 후 비행 모드로 전환 가능
+        if (isDashing && Input.GetKey(KeyCode.W))
+        {
+            dashEndedAndCanFly = true;
+            rigid2D.velocity = Vector2.zero;
+        }
+
+        // 대시 종료 후 W 키가 눌려 있으면 비행 모드로 전환
         if (!isDashing && dashEndedAndCanFly && Input.GetKey(KeyCode.W) && !isFlying && !isGrounded)
         {
             Fly();
-            dashEndedAndCanFly = false;  // Fly 상태로 전환 후 플래그 리셋
+            dashEndedAndCanFly = false;
         }
 
-        // Shift를 누른 상태에서 실행
+        // 비행 상태 전환
         if (Input.GetKey(KeyCode.LeftShift) || Input.GetMouseButton(1))
         {
             if ((Input.GetKey(KeyCode.W) || !isGrounded || isFlying) && canFlyAgainAfterLanding)
+            {
                 Fly();
+            }
         }
 
-        // Shift를 떼면 Fly 종료
+        // 비행 종료
         if ((Input.GetKeyUp(KeyCode.LeftShift) || Input.GetMouseButtonUp(1)) && isFlying)
+        {
             EndFly();
+        }
     }
     
     private void UpdateMove()
@@ -278,34 +295,72 @@ public class Player : MonoBehaviour
         return false;
     }
 
-    void Dash()
+     private void Dash()
     {
         if (gauge.value >= dashGauge && !isDashing)
         {
-            gauge.value -= dashGauge;
+            StartCoroutine(DashCoroutine());
+        }
+    }
+
+    private IEnumerator DashCoroutine()
+    {
+        // Start the dash for the initial 65%
+        float initialDashFactor = 0.65f;
+        float additionalDashFactor = 0.35f;
+        float dashPhaseTime = dashTime * initialDashFactor;
+
+        // Perform the initial dash phase
+        yield return StartCoroutine(PerformDashPhase(initialDashFactor));
+
+        // Continue to check if the key was held long enough during the first dash phase
+        if (dashHoldTime >= longDashThreshold)
+        {
+            // Execute the additional dash phase if key was held long enough
+            yield return StartCoroutine(PerformDashPhase(additionalDashFactor));
+        }
+    }
+
+    private IEnumerator PerformDashPhase(float dashFactor)
+    {
+        if (gauge.value >= dashGauge)
+        {
+            // Calculate gauge consumption and movement distance
+            float dashGaugeFactor = dashFactor;
+            gauge.value -= dashGauge * dashGaugeFactor;
 
             isDashing = true;
-            lastDashTime = Time.time; // Dash 실행 시간을 기록
+            lastDashTime = Time.time;  // Record the time of dash initiation
             StartCoroutine(DashInvincibilityCoroutine());
 
+            // Determine dash direction and particle effect
             dashDirection = spriteRenderer.flipX ? Vector2.right : Vector2.left;
-            Quaternion dashParticleDir =
-                spriteRenderer.flipX ? Quaternion.Euler(0, 90, 0) : Quaternion.Euler(0, -90, 0);
+            Quaternion dashParticleDir = spriteRenderer.flipX ? Quaternion.Euler(0, 90, 0) : Quaternion.Euler(0, -90, 0);
 
-            Vector2 particlePosition = new Vector2(transform.position.x, transform.position.y);
-            GameObject particles = Instantiate(dashParticle, particlePosition, Quaternion.identity);
+            // Instantiate dash particle
+            if (dashFactor != 0.35f)
+            {
+                Vector2 particlePosition = new Vector2(transform.position.x, transform.position.y);
+                GameObject particles = Instantiate(dashParticle, particlePosition, Quaternion.identity);
+                particles.transform.rotation = dashParticleDir;
+                Destroy(particles, 2f);
+            }
 
-            particles.transform.rotation = dashParticleDir;
-            Destroy(particles, 2f);
-
+            // Calculate the target position for the dash
             Vector2 currentPosition = transform.position;
-            Vector2 dashTargetPosition = currentPosition + dashDirection * dashSpeed;
-            
+            Vector2 dashTargetPosition = currentPosition + dashDirection * dashSpeed * dashFactor;
+
+            // Clamp the target position within X boundaries
             float clampedX = Mathf.Clamp(dashTargetPosition.x, leftBorder, rightBorder);
-            
-            transform.DOMoveX(clampedX, dashTime)
-                .SetEase(Ease.OutQuad)
-                .OnComplete(() => isDashing = false); // Dash 완료 후 상태 초기화
+
+            // Move to the target position
+            float dashDuration = dashTime * dashFactor;
+            transform.DOMoveX(clampedX, dashDuration)
+                .SetEase(Ease.Linear)    
+                .OnComplete(() => isDashing = false);  // Reset dashing status after completion
+
+            // Wait for the dash duration to complete
+            yield return new WaitForSeconds(dashDuration);
         }
     }
     

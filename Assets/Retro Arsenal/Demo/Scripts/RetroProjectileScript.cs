@@ -61,6 +61,7 @@ namespace RetroArsenal
             if (Physics.SphereCast(myTransform.position, rad, dir, out hit, dist)
                 && !hit.collider.CompareTag("Border"))
             {
+                // If Hit Boss
                 if (hit.collider.CompareTag("Boss3DCollider"))
                 {
                     Boss boss = hit.collider.gameObject.GetComponentInParent<Boss>();

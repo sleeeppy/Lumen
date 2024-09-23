@@ -51,11 +51,11 @@ public class Player : MonoBehaviour
     [SerializeField] private float dashTime = 0.4f;
     [SerializeField] private GameObject dashParticle;
     
+    [SerializeField] private const float longDashThreshold = 0.15f; // 긴 대시 판단 기준 시간
+    private float dashHoldTime = 0f; // 대시 버튼을 누르고 있는 시간
+    
     private bool isDashing;
     private Vector2 dashDirection;
-    
-    private float dashHoldTime = 0f; // 대시 버튼을 누르고 있는 시간
-    private const float longDashThreshold = 0.1f; // 긴 대시 판단 기준 시간
 
     [Header("Fly")]
     [SerializeField] private Sprite flySprite;
@@ -292,7 +292,7 @@ public class Player : MonoBehaviour
         return false;
     }
 
-         private void Dash()
+    private void Dash()
     {
         if (gauge.value >= dashGauge && !isDashing)
         {

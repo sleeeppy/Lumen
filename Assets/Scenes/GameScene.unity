@@ -100702,7 +100702,7 @@ MonoBehaviour:
   jumpKey: 32
   isFlying: 0
   gauge: {fileID: 196748696}
-  recoverySpeed: 0.4
+  recoverySpeed: 0.5
   delaySlider: {fileID: 1058513915}
   dashGauge: 0.37
   dashSpeed: 7

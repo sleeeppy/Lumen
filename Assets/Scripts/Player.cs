@@ -515,7 +515,6 @@ public class Player : MonoBehaviour
 
     private void BorderCheck(Collider2D borderCollider, bool isTouching)
     {
-        Debug.Log($"{borderCollider.gameObject.name}");
         switch (borderCollider.gameObject.name)
         {
             case "Top2D":

@@ -77,7 +77,7 @@ public class Boss : MonoBehaviour
 
             // 슬라이더 애니메이션
             float targetHP = HP;
-            DOTween.To(() => slider.value, x => slider.value = x, targetHP, 0.2f);
+            DOTween.To(() => slider.value, x => slider.value = x, targetHP, 0.15f);
 
             // 피격 상태 설정 및 타이머 리셋
             isHit = true;
@@ -121,7 +121,7 @@ public class Boss : MonoBehaviour
     IEnumerator DelaySliderValue()
     {
         yield return new WaitForSeconds(0.3f);
-        DOTween.To(() => delaySlider.value, x => delaySlider.value = x, slider.value, 0.2f);
+        DOTween.To(() => delaySlider.value, x => delaySlider.value = x, slider.value, 0.15f);
     }
 }
 

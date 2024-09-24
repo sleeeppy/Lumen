@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
@@ -44,14 +45,15 @@ public class Player : MonoBehaviour
     [Header("Gauge")]
     [SerializeField] public Slider gauge;
     [SerializeField] private float recoverySpeed = 0.25f;
+    [SerializeField] private Slider delaySlider;
+    private float targetGauge;
 
     [Header("Dash")]
     [SerializeField] private float dashGauge = 0.2f;
     [SerializeField] private float dashSpeed = 7f;
     [SerializeField] private float dashTime = 0.4f;
     [SerializeField] private GameObject dashParticle;
-    
-    [SerializeField] private const float longDashThreshold = 0.15f; // 긴 대시 판단 기준 시간
+    [SerializeField] private float longDashThreshold = 0.2f; // 긴 대시 판단 기준 시간
     private float dashHoldTime = 0f; // 대시 버튼을 누르고 있는 시간
     
     private bool isDashing;
@@ -119,7 +121,7 @@ public class Player : MonoBehaviour
         HandleState();
 
         // 게이지 회복 로직
-        if (!isFlying && !isDashing)
+        if (!isFlying && !isDashing && isGrounded)
             gauge.value += recoverySpeed * Time.deltaTime;
 
         curTime += Time.deltaTime;
@@ -129,6 +131,9 @@ public class Player : MonoBehaviour
 
         if (isGrounded)
             airBorneTime = 0;
+
+        if (!isDashing)
+            delaySlider.value = gauge.value;
     }
 
     private void HandleState()
@@ -335,11 +340,16 @@ public class Player : MonoBehaviour
 
     private IEnumerator PerformDashPhase(float dashFactor)
     {
-        if (gauge.value >= dashGauge)
+        if (gauge.value >= dashGauge * dashFactor)
         {
             // Calculate gauge consumption and movement distance
             float dashGaugeFactor = dashFactor;
-            gauge.value -= dashGauge * dashGaugeFactor;
+            targetGauge = gauge.value;
+            targetGauge -= dashGauge * dashGaugeFactor;
+            DOTween.To(() => gauge.value, x => gauge.value = x, targetGauge, 0.15f)
+                .SetEase(Ease.OutQuint);
+            
+            StartCoroutine(DelaySliderValue());
 
             isDashing = true;
             lastDashTime = Time.time;  // Record the time of dash initiation
@@ -540,5 +550,11 @@ public class Player : MonoBehaviour
             StartCoroutine(InvincibilityCoroutine());
             StartCoroutine(HitInvincibility());
         }
+    }
+    
+    IEnumerator DelaySliderValue()
+    {
+        yield return new WaitForSeconds(0.15f);
+        DOTween.To(() => delaySlider.value, x => delaySlider.value = x, gauge.value, 0.15f);
     }
 }

@@ -77,9 +77,9 @@ public class Attack : MonoBehaviour
         
         Rigidbody rb = bullet.GetComponent<Rigidbody>();
     
-        // If you're working in a 2D plane, force movement in only the X and Y direction
         Vector3 direction = (firePos.transform.position - transform.position).normalized;
-        direction.z = 0; // Keep the Z axis movement restricted if needed
+        direction.z = 0; 
+        
 
         rb.AddForce(direction * bulletForce, ForceMode.Impulse);
         

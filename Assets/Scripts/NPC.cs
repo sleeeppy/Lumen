@@ -80,7 +80,8 @@ public class NPC : MonoBehaviour
 
         yield return uwr.SendWebRequest();
 
-        if (uwr.isNetworkError || uwr.isHttpError || uwr.timeout > 2)
+        if ((uwr.result == UnityWebRequest.Result.ConnectionError) || uwr.timeout > 2000
+             || (uwr.result == UnityWebRequest.Result.ProtocolError) )
         {
             Debug.LogError("Error: " + uwr.error);
             Debug.LogError("Offline");
@@ -95,7 +96,7 @@ public class NPC : MonoBehaviour
             string currentName = "";
             
             // 대화를 저장할 리스트
-            List<string> currentDialogues = new List<string>();
+            List<string> currentDialogues = new List<string>(); 
 
             for (int i = 1; i < valuesArray.Count; i++)
             {

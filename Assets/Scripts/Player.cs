@@ -18,7 +18,7 @@ public class Player : MonoBehaviour
     [SerializeField] public float moveSpeed = 8;
 
     [Header("수직 이동 (점프)")]
-    [SerializeField] private float jumpForce = 10;
+    [SerializeField] private float jumpForce = 7;
     [SerializeField] private float lowGravity = 2f;
     [SerializeField] private float highGravity = 4f;
     [SerializeField] public int maxJumpCount = 1;
@@ -44,12 +44,13 @@ public class Player : MonoBehaviour
 
     [Header("게이지")]
     [SerializeField] public Slider gauge;
-    [SerializeField] private float recoverySpeed = 0.25f;
     [SerializeField] private Slider delaySlider;
+    [SerializeField] private float recoverySpeed = 0.5f;
+
     private float targetGauge;
 
     [Header("대시")]
-    [SerializeField] private float dashGauge = 0.2f;
+    [SerializeField] private float dashGauge = 0.37f;
     [SerializeField] private float dashSpeed = 7f;
     [SerializeField] private float dashTime = 0.4f;
     [SerializeField] private GameObject dashParticle;
@@ -61,32 +62,32 @@ public class Player : MonoBehaviour
 
     [Header("비행")]
     [SerializeField] private Sprite flySprite;
-    [SerializeField] private float flyGauge = 0.7f;
-    [SerializeField] private float flyCoolTime = 0.5f;
+    [SerializeField] private float flyGauge = 0.5f;
+    [SerializeField] private float flyCoolTime = 0.3f;
     [SerializeField] private float slowFall = 0.15f;
-    [SerializeField] private float rotateSpeed = 30f;
+    [SerializeField] private float rotateSpeed = 1f;
     [SerializeField] private GameObject flyParticle;
     private GameObject flyingParticle;
     private bool canFlyAgainAfterLanding = true;
 
-    [Header("생명")]
+    [Header("체력")]
     [SerializeField] private int life;
     [SerializeField] private int maxLife;
     //[SerializeField] private Image[] lifeImage;
-    [SerializeField] private float hitInvincibilityTime = 1f;
-    public bool isInvincibility;
-    public bool isDashInvincibility;
-    public bool isHit;
+    [SerializeField] private Image HPImage;
+    [SerializeField] private TextMeshProUGUI lifeText;
+
+    [SerializeField] private float hitInvincibilityTime = 0.8f;
+    
+    [HideInInspector] public bool isInvincibility;
+    [HideInInspector] public bool isDashInvincibility;
+    [HideInInspector] public bool isHit;
     private float curTime;
     Material material;
 
     [SerializeField] private float dashCooldown;
     private float lastDashTime;
-
     private float airBorneTime;
-
-    [SerializeField] private Image HPImage;
-    [SerializeField] private TextMeshProUGUI lifeText;
 
     private bool dashEndedAndCanFly = false;
 

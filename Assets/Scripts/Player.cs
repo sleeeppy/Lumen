@@ -14,10 +14,10 @@ public class Player : MonoBehaviour
     private bool isTouchLeft;
     private bool isTouchRight;
 
-    [Header("Move Horizontal")]
+    [Header("수평 이동")]
     [SerializeField] public float moveSpeed = 8;
 
-    [Header("Move Vertical (Jump)")]
+    [Header("수직 이동 (점프)")]
     [SerializeField] private float jumpForce = 10;
     [SerializeField] private float lowGravity = 2f;
     [SerializeField] private float highGravity = 4f;
@@ -42,24 +42,24 @@ public class Player : MonoBehaviour
 
     [HideInInspector] public bool isFlying;
 
-    [Header("Gauge")]
+    [Header("게이지")]
     [SerializeField] public Slider gauge;
     [SerializeField] private float recoverySpeed = 0.25f;
     [SerializeField] private Slider delaySlider;
     private float targetGauge;
 
-    [Header("Dash")]
+    [Header("대시")]
     [SerializeField] private float dashGauge = 0.2f;
     [SerializeField] private float dashSpeed = 7f;
     [SerializeField] private float dashTime = 0.4f;
     [SerializeField] private GameObject dashParticle;
     [SerializeField] private float longDashThreshold = 0.2f; // 긴 대시 판단 기준 시간
     private float dashHoldTime = 0f; // 대시 버튼을 누르고 있는 시간
-    
+
     private bool isDashing;
     private Vector2 dashDirection;
 
-    [Header("Fly")]
+    [Header("비행")]
     [SerializeField] private Sprite flySprite;
     [SerializeField] private float flyGauge = 0.7f;
     [SerializeField] private float flyCoolTime = 0.5f;
@@ -69,7 +69,7 @@ public class Player : MonoBehaviour
     private GameObject flyingParticle;
     private bool canFlyAgainAfterLanding = true;
 
-    [Header("Life")]
+    [Header("생명")]
     [SerializeField] private int life;
     [SerializeField] private int maxLife;
     //[SerializeField] private Image[] lifeImage;
@@ -82,19 +82,19 @@ public class Player : MonoBehaviour
 
     [SerializeField] private float dashCooldown;
     private float lastDashTime;
-    
+
     private float airBorneTime;
 
     [SerializeField] private Image HPImage;
     [SerializeField] private TextMeshProUGUI lifeText;
-    
+
     private bool dashEndedAndCanFly = false;
-    
+
     [SerializeField] private Collider2D leftBorderCollider;
     [SerializeField] private Collider2D rightBorderCollider;
 
     private float leftBorder, rightBorder;
-    
+
     private void Awake()
     {
         rigid2D = GetComponent<Rigidbody2D>();
@@ -103,9 +103,9 @@ public class Player : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         material = spriteRenderer.material;
 
-        if(SceneManager.GetActiveScene().name == "GameScene")
+        if (SceneManager.GetActiveScene().name == "GameScene")
             UpdateLifeIcon(life);
-        
+
         if (leftBorderCollider != null)
             leftBorder = leftBorderCollider.bounds.max.x;
 
@@ -183,16 +183,15 @@ public class Player : MonoBehaviour
             EndFly();
         }
     }
-    
+
     private void UpdateMove()
     {
         float x = Input.GetAxisRaw("Horizontal");
-        
+
         //spriteRenderer.flipX = (x == 1);
 
         if (x == 1)
             spriteRenderer.flipX = true;
-        
         else if (x == -1)
             spriteRenderer.flipX = false;
 
@@ -227,7 +226,7 @@ public class Player : MonoBehaviour
         {
             if (hit.collider != null && hit.distance < 0.5f)
             {
-                anim.SetBool("isAirborne", false); // Play Jump_End
+                anim.SetBool("isAirborne", false); // Jump_End 재생
             }
         }
 
@@ -276,25 +275,21 @@ public class Player : MonoBehaviour
             airBorneTime += Time.deltaTime;
         }
     }
-    
+
     private void MoveTo(float x)
     {
         rigid2D.velocity = new Vector2(x * moveSpeed, rigid2D.velocity.y);
         anim.SetBool("isRun", isGrounded && x != 0);
     }
 
-    public bool JumpTo()
+    private void JumpTo()
     {
         if (currentJumpCount > 0)
         {
             anim.SetTrigger("isJump_Start");
             rigid2D.velocity = new Vector2(rigid2D.velocity.x, jumpForce);
             currentJumpCount--;
-
-            return true;
         }
- 
-        return false;
     }
 
     private void Dash()
@@ -308,12 +303,12 @@ public class Player : MonoBehaviour
 
     private IEnumerator DashCoroutine()
     {
-        // Start the dash for the initial 65%
+        // 대시의 65% 시작
         float initialDashFactor = 0.65f;
         float additionalDashFactor = 0.35f;
         float dashPhaseTime = dashTime * initialDashFactor;
 
-        // Perform the initial dash phase
+        // 대시 단계 수행
         yield return StartCoroutine(PerformDashPhase(initialDashFactor));
 
         // 첫 번째 대시가 끝난 후 W 키가 눌려 있는지 체크
@@ -322,10 +317,10 @@ public class Player : MonoBehaviour
             dashEndedAndCanFly = true;  // 대시 후 Fly 가능 여부 설정
         }
 
-        // Continue to check if the key was held long enough during the first dash phase
+        // 대시 버튼이 충분히 길게 눌렸는지 계속 체크
         if (dashHoldTime >= longDashThreshold)
         {
-            // Execute the additional dash phase if key was held long enough
+            // 키가 충분히 길게 눌렸다면 추가 대시 단계 수행
             yield return StartCoroutine(PerformDashPhase(additionalDashFactor));
         }
         else
@@ -342,24 +337,24 @@ public class Player : MonoBehaviour
     {
         if (gauge.value >= dashGauge * dashFactor)
         {
-            // Calculate gauge consumption and movement distance
+            // 게이지 소모 및 이동 거리 계산
             float dashGaugeFactor = dashFactor;
             targetGauge = gauge.value;
             targetGauge -= dashGauge * dashGaugeFactor;
             DOTween.To(() => gauge.value, x => gauge.value = x, targetGauge, 0.15f)
                 .SetEase(Ease.OutQuint);
-            
+
             StartCoroutine(DelaySliderValue());
 
             isDashing = true;
-            lastDashTime = Time.time;  // Record the time of dash initiation
+            lastDashTime = Time.time;  // 대시 시작 시간 기록
             StartCoroutine(DashInvincibilityCoroutine());
 
-            // Determine dash direction and particle effect
+            // 대시 방향 및 파티클 효과 결정
             dashDirection = spriteRenderer.flipX ? Vector2.right : Vector2.left;
             Quaternion dashParticleDir = spriteRenderer.flipX ? Quaternion.Euler(0, 90, 0) : Quaternion.Euler(0, -90, 0);
 
-            // Instantiate dash particle
+            // 대시 파티클 인스턴스 생성
             if (dashFactor != 0.35f)
             {
                 Vector2 particlePosition = new Vector2(transform.position.x, transform.position.y);
@@ -368,27 +363,27 @@ public class Player : MonoBehaviour
                 Destroy(particles, 2f);
             }
 
-            // Calculate the target position for the dash
+            // 대시 목표 위치 계산
             Vector2 currentPosition = transform.position;
             Vector2 dashTargetPosition = currentPosition + dashDirection * dashSpeed * dashFactor;
 
-            // Clamp the target position within X boundaries
+            // X 경계 내로 목표 위치 제한
             float clampedX = Mathf.Clamp(dashTargetPosition.x, leftBorder, rightBorder);
 
-            // Move to the target position
+            // 목표 위치로 이동
             float dashDuration = dashTime * dashFactor;
             transform.DOMoveX(clampedX, dashDuration)
                 .SetEase(Ease.Linear)
-                .OnComplete(() => isDashing = false);  // Reset dashing status after completion
+                .OnComplete(() => isDashing = false);  // 완료 후 대시 상태 리셋
 
-            // Wait for the dash duration to complete
+            // 대시 지속 시간만큼 대기
             yield return new WaitForSeconds(dashDuration);
         }
     }
-    
+
     void Fly()
     {
-        if ((!Input.GetKey(KeyCode.LeftShift) && !Input.GetMouseButton(1))|| !canFlyAgainAfterLanding)
+        if ((!Input.GetKey(KeyCode.LeftShift) && !Input.GetMouseButton(1)) || !canFlyAgainAfterLanding)
             return;
 
         if (flyCoolTime <= curTime)
@@ -420,13 +415,13 @@ public class Player : MonoBehaviour
 
             float flyX = Input.GetAxis("Horizontal");
             float flyY = Input.GetAxis("Vertical");
-            
+
             if (isTouchTop) flyY = 0;
             if (isTouchLeft || isTouchRight) flyX = 0;
-            
+
             // 이동 방향 벡터
             Vector2 moveDirection = new Vector2(flyX, flyY).normalized;
-            
+
             rigid2D.velocity = moveDirection * moveSpeed * 1.5f;
 
             if (flyX != 0)
@@ -436,11 +431,11 @@ public class Player : MonoBehaviour
             }
         }
     }
-    
+
     private void EndFly()
     {
         anim.SetBool("isAirborne", true);
-        
+
         rigid2D.velocity = new Vector2(0, 0);
 
         isFlying = false;
@@ -454,7 +449,6 @@ public class Player : MonoBehaviour
         currentJumpCount = 0;
 
         canFlyAgainAfterLanding = false;
-        
     }
 
     private IEnumerator InvincibilityCoroutine()
@@ -464,6 +458,7 @@ public class Player : MonoBehaviour
         isInvincibility = false;
         isHit = false;
     }
+
     private IEnumerator DashInvincibilityCoroutine()
     {
         isDashInvincibility = true;
@@ -472,22 +467,22 @@ public class Player : MonoBehaviour
     }
 
     public void OnJumpStartAnimationEnd()
-        => anim.SetBool("isAirborne", true); // Play Jump_Airborne
+        => anim.SetBool("isAirborne", true); // Jump_Airborne 재생
 
     public void OnJumpEndAnimationEnd()
-        => anim.SetTrigger("isJump_End"); // Play Idle Animation
+        => anim.SetTrigger("isJump_End"); // Idle 애니메이션 재생
 
     public void UpdateLifeIcon(int life)
     {
-        // // Life icon set
+        // // 라이프 아이콘 설정
         // for (int i = 0; i < maxLife; i++)
         //     lifeImage[i].color = new Color(1, 1, 1, 0);
         //
         // for (int i = 0; i < life; i++)
         //     lifeImage[i].color = new Color(1, 1, 1, 1);
-        
+
         lifeText.text = life.ToString();
-        DOTween.To(()=>HPImage.fillAmount, x=>HPImage.fillAmount = x, (float)life / maxLife, 0.2f)
+        DOTween.To(() => HPImage.fillAmount, x => HPImage.fillAmount = x, (float)life / maxLife, 0.2f)
             .SetEase(Ease.OutBounce);
     }
 
@@ -531,7 +526,7 @@ public class Player : MonoBehaviour
                 break;
         }
     }
-    
+
     private IEnumerator HitInvincibility()
     {
         material.SetFloat("_HologramFade", 0.25f);
@@ -550,7 +545,7 @@ public class Player : MonoBehaviour
             StartCoroutine(HitInvincibility());
         }
     }
-    
+
     IEnumerator DelaySliderValue()
     {
         yield return new WaitForSeconds(0.15f);

@@ -6839,7 +6839,7 @@ MonoBehaviour:
   m_LookAt: {fileID: 1400118937}
   m_Follow: {fileID: 1400118937}
   m_Lens:
-    FieldOfView: 53.3
+    FieldOfView: 57
     OrthographicSize: 10
     NearClipPlane: 0.1
     FarClipPlane: 5000
@@ -25989,7 +25989,7 @@ Camera:
     height: 1
   near clip plane: 0.1
   far clip plane: 5000
-  field of view: 53.3
+  field of view: 57
   orthographic: 0
   orthographic size: 10
   m_Depth: -1
@@ -26015,7 +26015,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.00035259276, y: 0.013380006, z: -10}
+  m_LocalPosition: {x: 0.0013303738, y: 0.42438996, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -100782,8 +100782,8 @@ MonoBehaviour:
   delaySlider: {fileID: 1058513915}
   recoverySpeed: 0.5
   dashGauge: 0.37
-  dashSpeed: 7
-  dashTime: 0.4
+  dashSpeed: 8.3
+  dashTime: 0.35
   dashParticle: {fileID: 1616104946086206, guid: 7de70f44faed1d74a8dcd5491fb69000,
     type: 3}
   longDashThreshold: 0.2
@@ -100798,11 +100798,11 @@ MonoBehaviour:
   maxLife: 5
   HPImage: {fileID: 224805588}
   lifeText: {fileID: 1875055871}
-  hitInvincibilityTime: 0.8
+  hitInvincibilityTime: 2
   isInvincibility: 0
   isDashInvincibility: 0
   isHit: 0
-  dashCooldown: 0.2
+  dashCooldown: 0
   leftBorderCollider: {fileID: 270762385}
   rightBorderCollider: {fileID: 76763392}
 --- !u!50 &2121168802

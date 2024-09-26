@@ -312,6 +312,9 @@ public class Player : MonoBehaviour
         // 대시 단계 수행
         yield return StartCoroutine(PerformDashPhase(initialDashFactor));
 
+        // 대쉬 방향 저장
+        Vector2 lastDashDirection = dashDirection; // 마지막 대쉬 방향 저장
+
         // 첫 번째 대시가 끝난 후 W 키가 눌려 있는지 체크
         if (Input.GetKey(KeyCode.W) && !isGrounded)
         {
@@ -322,7 +325,7 @@ public class Player : MonoBehaviour
         if (dashHoldTime >= longDashThreshold)
         {
             // 키가 충분히 길게 눌렸다면 추가 대시 단계 수행
-            yield return StartCoroutine(PerformDashPhase(additionalDashFactor));
+            yield return StartCoroutine(PerformDashPhase(additionalDashFactor, dashDirection)); // 방향을 추가 인자로 전달
         }
         else
         {
@@ -332,18 +335,33 @@ public class Player : MonoBehaviour
                 Fly();  // Fly 모드로 전환
             }
         }
+
+        // 추가 대쉬 로직
+        if (lastDashDirection == Vector2.left && Input.GetKey(KeyCode.D))
+        {
+            yield return StartCoroutine(PerformDashPhase(dashHoldTime >= longDashThreshold ? 0.25f : 0.2f, Vector2.right)); // 오른쪽으로 대쉬
+        }
+        else if (lastDashDirection == Vector2.right && Input.GetKey(KeyCode.A))
+        {
+            yield return StartCoroutine(PerformDashPhase(dashHoldTime >= longDashThreshold ? 0.25f : 0.2f, Vector2.left)); // 왼쪽으로 대쉬
+        }
     }
 
-    private IEnumerator PerformDashPhase(float dashFactor)
+
+    private IEnumerator PerformDashPhase(float dashFactor, Vector2? direction = null) // 방향을 선택적 인자로 추가
     {
-        if (gauge.value >= dashGauge * dashFactor)
+        if ((gauge.value >= dashGauge * dashFactor) || (dashFactor <= 0.3f))
         {
             // 게이지 소모 및 이동 거리 계산
             float dashGaugeFactor = dashFactor;
-            targetGauge = gauge.value;
-            targetGauge -= dashGauge * dashGaugeFactor;
-            DOTween.To(() => gauge.value, x => gauge.value = x, targetGauge, 0.15f)
-                .SetEase(Ease.OutQuint);
+
+            if(dashFactor > 0.3f)
+            {
+                targetGauge = gauge.value;
+                targetGauge -= dashGauge * dashGaugeFactor;
+                DOTween.To(() => gauge.value, x => gauge.value = x, targetGauge, 0.15f)
+                    .SetEase(Ease.OutQuint);
+            }
 
             StartCoroutine(DelaySliderValue());
 
@@ -351,8 +369,12 @@ public class Player : MonoBehaviour
             lastDashTime = Time.time;  // 대시 시작 시간 기록
             StartCoroutine(DashInvincibilityCoroutine());
 
-            // 대시 방향 및 파티클 효과 결정
-            dashDirection = spriteRenderer.flipX ? Vector2.right : Vector2.left;
+            // 방향이 주어지지 않으면 기본 방향 사용
+            if (direction == null) 
+                dashDirection = spriteRenderer.flipX ? Vector2.right : Vector2.left;
+            else
+                dashDirection = direction.Value;
+
             Quaternion dashParticleDir = spriteRenderer.flipX ? Quaternion.Euler(0, 90, 0) : Quaternion.Euler(0, -90, 0);
 
             // 대시 파티클 인스턴스 생성
@@ -373,8 +395,19 @@ public class Player : MonoBehaviour
 
             // 목표 위치로 이동
             float dashDuration = dashTime * dashFactor;
+            Ease curEase;
+
+            if(dashFactor <= 0.3f)
+            {
+                curEase = Ease.InQuad;
+                //dashDuration *= 0.6f;
+                Debug.Log($"AddDash, {dashFactor}");
+            }
+            else
+                curEase = Ease.Linear;
+
             transform.DOMoveX(clampedX, dashDuration)
-                .SetEase(Ease.Linear)
+                .SetEase(curEase)
                 .OnComplete(() => isDashing = false);  // 완료 후 대시 상태 리셋
 
             // 대시 지속 시간만큼 대기

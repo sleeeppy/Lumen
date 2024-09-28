@@ -401,7 +401,7 @@ public class Player : MonoBehaviour
             {
                 curEase = Ease.InQuad;
                 //dashDuration *= 0.6f;
-                Debug.Log($"AddDash, {dashFactor}");
+                //Debug.Log($"AddDash, {dashFactor}");
             }
             else
                 curEase = Ease.Linear;

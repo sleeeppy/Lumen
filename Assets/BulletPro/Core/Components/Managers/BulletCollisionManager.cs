@@ -335,7 +335,7 @@ namespace BulletPro
 		
 		public static void AddReceiver(BulletReceiver br)
 		{
-			if (instance == null) { Debug.LogWarning("No CollisionManager found in scene!"); return; }
+			if (instance == null) return;
 			instance.AddReceiverLocal(br);
 		}
 

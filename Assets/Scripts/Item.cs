@@ -4,51 +4,61 @@ public class ItemLogic
 {
     public void Ring1()
     {
-        Debug.Log("Item1 Logic");
+        // Ring1의 효과 구현
+        Debug.Log("Ring1 효과 발동: 방어력 강화");
     }
 
     public void Ring2()
     {
-        Debug.Log("Item2 Logic");
+        // Ring2의 효과 구현
+        Debug.Log("Ring2 효과 발동: 체력 증가");
     }
 
     public void Ring3()
     {
-        Debug.Log("None Item Logic");
+        // Ring3의 효과 구현
+        Debug.Log("Ring3 효과 발동: 공격력 증가");
     }
 
     public void Ring4()
     {
-        // 구현 내용
+        // Ring4의 효과 구현
+        Debug.Log("Ring4 효과 발동: 공격력 증가");
     }
 
     public void Ring5()
     {
-        // 구현 내용
+        // Ring5의 효과 구현
+        Debug.Log("Ring5 효과 발동: 공격력 증가");
     }
 
     public void Bracelet1()
     {
-        // 구현 내용
+        // Bracelet1의 효과 구현
+        Debug.Log("Bracelet1 효과 발동: 속도 증가");
     }
 
     public void Bracelet2()
     {
-        // 구현 내용
+        // Bracelet2의 효과 구현
+        Debug.Log("Bracelet2 효과 발동: 속도 증가");
     }
 
-    public void Baracelet3()
+    public void Bracelet3()
     {
-        // 구현 내용
+        // Bracelet3의 효과 구현
+        Debug.Log("Bracelet3 효과 발동: 속도 증가");
     }
 
     public void Nail1()
     {
-        // 구현 내용
+        // Nail1의 효과 구현
+        Debug.Log("Nail1 효과 발동: 추가 마나 제공");
     }
 
     public void Nail2()
     {
-        // 구현 내용
+        // Nail2의 효과 구현
+        Debug.Log("Nail2 효과 발동: 체력 회복");
     }
 }

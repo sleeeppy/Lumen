@@ -121,7 +121,6 @@ namespace BulletPro
 				collisionManager = BulletCollisionManager.instance;
 				if (collisionManager == null)
 				{
-					Debug.LogError("BulletPro Error: no Collision Manager found in scene. Try redoing the Scene Setup, or check if your Manager was disabled during this object's Awake.");
 					return;
 				}
 			}
@@ -138,7 +137,6 @@ namespace BulletPro
 				collisionManager = BulletCollisionManager.instance;
 				if (collisionManager == null)
 				{
-					Debug.LogError("BulletPro Error: no Collision Manager found in scene. Try redoing the Scene Setup, or check if your Manager was disabled during this object's Awake.");
 					return;
 				}
 			}

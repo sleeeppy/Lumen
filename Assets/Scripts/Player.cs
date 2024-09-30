@@ -96,7 +96,7 @@ public class Player : MonoBehaviour
     [SerializeField] private Collider2D rightBorderCollider;
 
     private float leftBorder, rightBorder;
-    [SerializeField] private CanvasGroup myCG;
+    [SerializeField] private CanvasGroup cg;
     private bool flash = true;
 
     private void Awake()
@@ -573,7 +573,7 @@ public class Player : MonoBehaviour
         while (elapsedTime < hitInvincibilityTime)
         {
             Color color = spriteRenderer.color;
-            color.a = color.a == 1f ? 0.2f : 1f;
+            color.a = color.a == 1f ? 0.25f : 1f;
             spriteRenderer.color = color;
             yield return new WaitForSeconds(waitTime);
             elapsedTime += waitTime;
@@ -600,7 +600,7 @@ public class Player : MonoBehaviour
             StartCoroutine(HitInvincibility());
 
             flash = true;
-            myCG.alpha = 0.3f;
+            cg.alpha = 0.3f;
         }
     }
 
@@ -608,15 +608,14 @@ public class Player : MonoBehaviour
     {
         if (flash)
         {
-            myCG.alpha = myCG.alpha - Time.deltaTime * 1.3f;
-            if (myCG.alpha <= 0)
+            cg.alpha = cg.alpha - Time.deltaTime * 1.3f;
+            if (cg.alpha <= 0)
             {
-                myCG.alpha = 0;
+                cg.alpha = 0;
                 flash = false;
             }
         }
     }
-
 
     IEnumerator DelaySliderValue()
     {

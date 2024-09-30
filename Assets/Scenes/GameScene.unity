@@ -12592,7 +12592,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 15
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &264889339 stripped
 Transform:
@@ -27869,7 +27869,7 @@ GameObject:
   - component: {fileID: 551128979}
   - component: {fileID: 551128978}
   m_Layer: 5
-  m_Name: Image
+  m_Name: White Flash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -33573,7 +33573,7 @@ Transform:
   m_Children:
   - {fileID: 76047202}
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &679928311
 MonoBehaviour:
@@ -68720,7 +68720,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1402583690
 PrefabInstance:
@@ -69437,7 +69437,7 @@ RectTransform:
   - {fileID: 1019454021}
   - {fileID: 2065202655}
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -73098,7 +73098,7 @@ RectTransform:
   m_Children:
   - {fileID: 551128977}
   m_Father: {fileID: 0}
-  m_RootOrder: 16
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -92115,7 +92115,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1950142354}
   m_Layer: 0
-  m_Name: Bottom
+  m_Name: Ground
   m_TagString: Border
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -101158,7 +101158,7 @@ MonoBehaviour:
   dashCooldown: 0
   leftBorderCollider: {fileID: 270762385}
   rightBorderCollider: {fileID: 76763392}
-  myCG: {fileID: 1495380913}
+  cg: {fileID: 1495380913}
 --- !u!50 &2121168802
 Rigidbody2D:
   serializedVersion: 4
@@ -101247,7 +101247,7 @@ Transform:
   - {fileID: 698233649}
   - {fileID: 1573269997}
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &2121168806
 Animator:

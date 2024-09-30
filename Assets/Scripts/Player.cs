@@ -6,6 +6,7 @@ using DG.Tweening;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine.SceneManagement;
+using DG.Tweening.Core.Easing;
 
 public class Player : MonoBehaviour
 {
@@ -95,6 +96,8 @@ public class Player : MonoBehaviour
     [SerializeField] private Collider2D rightBorderCollider;
 
     private float leftBorder, rightBorder;
+    [SerializeField] private CanvasGroup myCG;
+    private bool flash = true;
 
     private void Awake()
     {
@@ -120,6 +123,7 @@ public class Player : MonoBehaviour
         UpdateMove();
         UpdateJump();
         HandleState();
+        Flash();
 
         // 게이지 회복 로직
         if (!isFlying && !isDashing && isGrounded)
@@ -563,9 +567,26 @@ public class Player : MonoBehaviour
 
     private IEnumerator HitInvincibility()
     {
-        material.SetFloat("_HologramFade", 0.25f);
-        yield return new WaitForSeconds(hitInvincibilityTime);
-        material.SetFloat("_HologramFade", 0f);
+        float elapsedTime = 0f;
+        float waitTime = 0.17f;
+        float minWaitTime = 0.05f; // 최소 대기 시간 설정
+        while (elapsedTime < hitInvincibilityTime)
+        {
+            Color color = spriteRenderer.color;
+            color.a = color.a == 1f ? 0.2f : 1f;
+            spriteRenderer.color = color;
+            yield return new WaitForSeconds(waitTime);
+            elapsedTime += waitTime;
+            waitTime = Mathf.Max(waitTime * 0.9f, minWaitTime); // 점점 더 빨라지게, 최소 대기 시간 이하로는 줄어들지 않게
+
+            if (elapsedTime >= hitInvincibilityTime)
+            {
+                break;
+            }
+        }
+        Color finalColor = spriteRenderer.color;
+        finalColor.a = 1f;
+        spriteRenderer.color = finalColor;
     }
 
     public void OnHitByBullet()
@@ -577,8 +598,25 @@ public class Player : MonoBehaviour
             UpdateLifeIcon(life);
             StartCoroutine(InvincibilityCoroutine());
             StartCoroutine(HitInvincibility());
+
+            flash = true;
+            myCG.alpha = 0.3f;
         }
     }
+
+    public void Flash()
+    {
+        if (flash)
+        {
+            myCG.alpha = myCG.alpha - Time.deltaTime * 1.3f;
+            if (myCG.alpha <= 0)
+            {
+                myCG.alpha = 0;
+                flash = false;
+            }
+        }
+    }
+
 
     IEnumerator DelaySliderValue()
     {

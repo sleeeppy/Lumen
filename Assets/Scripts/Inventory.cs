@@ -26,6 +26,10 @@ public class Inventory : MonoBehaviour
 
         // 인벤토리 UI 초기화
         InitializeInventoryUI();
+        foreach (var item in itemButtons)
+        {
+            UpdateItemSprite(item, false);
+        }
     }
 
     private void Update()

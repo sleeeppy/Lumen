@@ -43,7 +43,7 @@ public class Boss : MonoBehaviour
         PhaseChange(phase);
     }
 
-    void Update()
+    protected virtual void Update()
     {
         slider.value = HP;
         phaseText.text = "x" + phase;
@@ -68,6 +68,7 @@ public class Boss : MonoBehaviour
         bulletSpawnPos.transform.position = transform.position;
     }
 
+    // RetroProjectileScript에서 호출되는 함수 (Line 62)
     public void HandleCollision(GameObject bulletObject)
     {
         Bullet bulletScript = bulletObject.GetComponent<Bullet>();
@@ -88,7 +89,7 @@ public class Boss : MonoBehaviour
         }
     }
 
-    public void PhaseChange(int bossPhase)
+    protected virtual void PhaseChange(int bossPhase)
     {
         int curPhase = Mathf.Abs(bossPhase - 5);
         
@@ -103,7 +104,7 @@ public class Boss : MonoBehaviour
         }
     }
     
-    IEnumerator NextPattern(float time, int profileNum)
+    protected IEnumerator NextPattern(float time, int profileNum)
     {
         bulletEmitter.Pause();
         yield return new WaitForSeconds(time);
@@ -111,14 +112,14 @@ public class Boss : MonoBehaviour
         bulletEmitter.Play();
     }
 
-    void Die()
+    protected virtual void Die()
     {
         phaseText.text = "x" + phase;
         bulletEmitter.Kill();
         gameObject.SetActive(false);
     }
 
-    IEnumerator DelaySliderValue()
+    protected IEnumerator DelaySliderValue()
     {
         yield return new WaitForSeconds(0.3f);
         DOTween.To(() => delaySlider.value, x => delaySlider.value = x, slider.value, 0.15f);

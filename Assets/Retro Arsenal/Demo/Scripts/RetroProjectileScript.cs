@@ -58,15 +58,17 @@ namespace RetroArsenal
             }
 
             RaycastHit hit;
+
             if (Physics.SphereCast(myTransform.position, rad, dir, out hit, dist)
                 && !hit.collider.CompareTag("Border"))
             {
-                // 총알ㅇ보스를 피격했을 경우
+                // 총알이 보스를 피격했을 경우
                 if (hit.collider.CompareTag("Boss3DCollider"))
                 {
                     Boss boss = hit.collider.gameObject.GetComponentInParent<Boss>();
                     if (boss != null)
                     {
+                        // HandleCollision에 Bullet gameObject를 넘김
                         boss.HandleCollision(gameObject);
                     }
                 }

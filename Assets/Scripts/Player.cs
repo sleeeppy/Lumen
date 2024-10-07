@@ -139,6 +139,7 @@ public class Player : MonoBehaviour
 
         if (!isDashing)
             delaySlider.value = gauge.value;
+
     }
 
     private void HandleState()
@@ -195,10 +196,14 @@ public class Player : MonoBehaviour
 
         //spriteRenderer.flipX = (x == 1);
 
-        if (x == 1)
-            spriteRenderer.flipX = true;
-        else if (x == -1)
-            spriteRenderer.flipX = false;
+        if(!isDashing)
+        {
+            if (x == 1)
+                spriteRenderer.flipX = true;
+            else if (x == -1)
+                spriteRenderer.flipX = false;
+        }
+
 
         if ((isTouchRight && x == 1) || (isTouchLeft && x == -1))
             x = 0;
@@ -308,58 +313,58 @@ public class Player : MonoBehaviour
 
     private IEnumerator DashCoroutine()
     {
-        // 대시의 65% 시작
+
         float initialDashFactor = 0.65f;
         float additionalDashFactor = 0.35f;
         float dashPhaseTime = dashTime * initialDashFactor;
 
-        // 대시 단계 수행
+        anim.speed = 2f;
         yield return StartCoroutine(PerformDashPhase(initialDashFactor));
 
-        // 대쉬 방향 저장
-        Vector2 lastDashDirection = dashDirection; // 마지막 대쉬 방향 저장
+        Vector2 lastDashDirection = dashDirection;
 
-        // 첫 번째 대시가 끝난 후 W 키가 눌려 있는지 체크
         if (Input.GetKey(KeyCode.W) && !isGrounded)
         {
-            dashEndedAndCanFly = true;  // 대시 후 Fly 가능 여부 설정
+            dashEndedAndCanFly = true;
         }
 
-        // 대시 버튼이 충분히 길게 눌렸는지 계속 체크
         if (dashHoldTime >= longDashThreshold)
         {
-            // 키가 충분히 길게 눌렸다면 추가 대시 단계 수행
-            yield return StartCoroutine(PerformDashPhase(additionalDashFactor, dashDirection)); // 방향을 추가 인자로 전달
+            anim.speed = 0.7f;
+            yield return StartCoroutine(PerformDashPhase(additionalDashFactor, dashDirection));
         }
         else
         {
-            // 첫 번째 대시만 끝난 상태에서 Fly 모드 전환 체크
             if (dashEndedAndCanFly)
             {
-                Fly();  // Fly 모드로 전환
+                Fly();
             }
         }
 
-        // 추가 대쉬 로직
         if (lastDashDirection == Vector2.left && Input.GetKey(KeyCode.D))
         {
-            yield return StartCoroutine(PerformDashPhase(dashHoldTime >= longDashThreshold ? 0.25f : 0.2f, Vector2.right)); // 오른쪽으로 대쉬
+            yield return StartCoroutine(PerformDashPhase(dashHoldTime >= longDashThreshold ? 0.25f : 0.2f, Vector2.right));
         }
         else if (lastDashDirection == Vector2.right && Input.GetKey(KeyCode.A))
         {
-            yield return StartCoroutine(PerformDashPhase(dashHoldTime >= longDashThreshold ? 0.25f : 0.2f, Vector2.left)); // 왼쪽으로 대쉬
+            yield return StartCoroutine(PerformDashPhase(dashHoldTime >= longDashThreshold ? 0.25f : 0.2f, Vector2.left));
         }
+
     }
 
-
-    private IEnumerator PerformDashPhase(float dashFactor, Vector2? direction = null) // 방향을 선택적 인자로 추가
+    private IEnumerator PerformDashPhase(float dashFactor, Vector2? direction = null)
     {
         if ((gauge.value >= dashGauge * dashFactor) || (dashFactor <= 0.3f))
         {
+            if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Dash")) // 애니메이션이 이미 실행 중인지 확인
+            {
+                anim.SetBool("isDash", true);
+            }
+
             // 게이지 소모 및 이동 거리 계산
             float dashGaugeFactor = dashFactor;
 
-            if(dashFactor > 0.3f)
+            if (dashFactor > 0.3f)
             {
                 targetGauge = gauge.value;
                 targetGauge -= dashGauge * dashGaugeFactor;
@@ -379,14 +384,27 @@ public class Player : MonoBehaviour
             else
                 dashDirection = direction.Value;
 
-            Quaternion dashParticleDir = spriteRenderer.flipX ? Quaternion.Euler(0, 90, 0) : Quaternion.Euler(0, -90, 0);
-
             // 대시 파티클 인스턴스 생성
             if (dashFactor != 0.35f)
             {
                 Vector2 particlePosition = new Vector2(transform.position.x, transform.position.y);
                 GameObject particles = Instantiate(dashParticle, particlePosition, Quaternion.identity);
+
+                // 파티클 방향 설정
+                Quaternion dashParticleDir;
+                if (dashDirection == Vector2.right)
+                {
+                    dashParticleDir = Quaternion.Euler(0, 90, 0);
+                }
+                else
+                {
+                    dashParticleDir = Quaternion.Euler(0, -90, 0);
+                }
                 particles.transform.rotation = dashParticleDir;
+
+                // 파티클 위치를 캐릭터의 현재 위치로 설정
+                particles.transform.position = transform.position;
+
                 Destroy(particles, 2f);
             }
 
@@ -399,16 +417,7 @@ public class Player : MonoBehaviour
 
             // 목표 위치로 이동
             float dashDuration = dashTime * dashFactor;
-            Ease curEase;
-
-            if(dashFactor <= 0.3f)
-            {
-                curEase = Ease.InQuad;
-                //dashDuration *= 0.6f;
-                //Debug.Log($"AddDash, {dashFactor}");
-            }
-            else
-                curEase = Ease.Linear;
+            Ease curEase = dashFactor <= 0.3f ? Ease.InQuad : Ease.Linear;
 
             transform.DOMoveX(clampedX, dashDuration)
                 .SetEase(curEase)
@@ -416,6 +425,9 @@ public class Player : MonoBehaviour
 
             // 대시 지속 시간만큼 대기
             yield return new WaitForSeconds(dashDuration);
+
+            anim.SetBool("isDash", false);
+            anim.speed = 1f;
         }
     }
 

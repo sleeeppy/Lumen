@@ -28,6 +28,13 @@ public class Boss : MonoBehaviour
 
     [SerializeField] private Sprite[] bossProfile;
     [SerializeField] private Image curProfile;
+
+    [SerializeField] private Collider2D leftBorderCollider;
+    [SerializeField] private Collider2D rightBorderCollider;
+    [SerializeField] private Collider2D bottomBorderCollider;
+    [SerializeField] private Collider2D topBorderCollider;
+
+    protected float leftBorder, rightBorder, bottomBorder, topBorder;
     
     private bool isHit = false;
     private float hitTimer = 0f;
@@ -35,6 +42,18 @@ public class Boss : MonoBehaviour
     protected virtual void Awake()
     {
         Init();
+
+        if (leftBorderCollider != null)
+            leftBorder = leftBorderCollider.bounds.max.x;
+
+        if (rightBorderCollider != null)
+            rightBorder = rightBorderCollider.bounds.min.x;
+
+        if (bottomBorderCollider != null)
+            bottomBorder = bottomBorderCollider.bounds.max.y;
+
+        if (topBorderCollider != null)
+            topBorder = topBorderCollider.bounds.min.y;
     }
 
     public void Init()

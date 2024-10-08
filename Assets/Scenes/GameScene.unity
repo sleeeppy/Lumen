@@ -102265,7 +102265,7 @@ MonoBehaviour:
   maxLife: 5
   HPImage: {fileID: 224805588}
   lifeText: {fileID: 1875055871}
-  hitInvincibilityTime: 2
+  hitInvincibilityTime: 1.5
   isInvincibility: 0
   isDashInvincibility: 0
   isHit: 0

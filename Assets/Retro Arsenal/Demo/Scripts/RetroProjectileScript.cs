@@ -37,7 +37,7 @@ namespace RetroArsenal
                 Destroy(muzzleParticle, 1.5f); // Lifetime of muzzle effect.
             }
         }
-		
+
         void FixedUpdate()
         {
             if (destroyed)
@@ -71,20 +71,27 @@ namespace RetroArsenal
                         // HandleCollision에 Bullet gameObject를 넘김
                         boss.HandleCollision(gameObject);
                     }
+                    //테스트용입니다. 테스트후 성공하면 삭제하지말아주세요ㅠㅠ
+                    Re_Boss re_boss = hit.collider.gameObject.GetComponentInParent<Re_Boss>();
+                    if (re_boss != null)
+                    {
+                        // HandleCollision에 Bullet gameObject를 넘김
+                        re_boss.HandleCollision(gameObject);
+                    }
                 }
-                
+
                 myTransform.position = hit.point + (hit.normal * collideOffset);
 
                 GameObject impactP = Instantiate(impactParticle, myTransform.position, Quaternion.FromToRotation(Vector3.up, hit.normal)) as GameObject;
 
                 if (hit.transform.tag == "Target") // Projectile will affect objects tagged as Target
                 {
-					RetroTarget retroTarget = hit.transform.GetComponent<RetroTarget>();
-					if (retroTarget != null)
-					{
-						retroTarget.OnHit();
-					}
-				}
+                    RetroTarget retroTarget = hit.transform.GetComponent<RetroTarget>();
+                    if (retroTarget != null)
+                    {
+                        retroTarget.OnHit();
+                    }
+                }
 
 
                 foreach (GameObject trail in trailParticles)

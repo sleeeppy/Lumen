@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using BulletPro;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,7 +9,7 @@ using DG.Tweening;
 // Be sure to set maxHP and HP to the same value in the Inspector.
 // If not, phase starts decremented by 1.
 
-public class Boss : MonoBehaviour
+public class Re_Boss : MonoBehaviour
 {
     [SerializeField] public float maxHP = 100f;
     [SerializeField] public float HP;
@@ -22,11 +21,6 @@ public class Boss : MonoBehaviour
     [SerializeField] public Slider slider;
     [SerializeField] private Slider delaySlider;
 
-    [SerializeField] public GameObject bulletSpawnPos;
-    [SerializeField] public BulletEmitter bulletEmitter;
-    [SerializeField] public EmitterProfile[] bossPattern;
-
-    [SerializeField] private Sprite[] bossProfile;
     [SerializeField] private Image curProfile;
 
     [SerializeField] private Collider2D leftBorderCollider;
@@ -38,6 +32,8 @@ public class Boss : MonoBehaviour
 
     private bool isHit = false;
     private float hitTimer = 0f;
+    [SerializeField]
+    private GameObject Birds;
 
     protected virtual void Awake()
     {
@@ -78,13 +74,17 @@ public class Boss : MonoBehaviour
             }
 
             int curPhase = Mathf.Abs(phase - 5);
-
-            curProfile.sprite = bossProfile[curPhase];
             PhaseChange(phase);
             HP = maxHP;
+            StartCoroutine(Birds_Attack());
         }
+    }
+    IEnumerator Birds_Attack()
+    {
+        Birds.SetActive(true);
+        yield return new WaitForSeconds(2.6f);
+        Birds.SetActive(false);
 
-        bulletSpawnPos.transform.position = transform.position;
     }
 
     // RetroProjectileScript에서 호출되는 함수 (Line 62)
@@ -111,30 +111,16 @@ public class Boss : MonoBehaviour
     protected virtual void PhaseChange(int bossPhase)
     {
         int curPhase = Mathf.Abs(bossPhase - 5);
-
-        if (bulletEmitter.emitterProfile == null)
-        {
-            bulletEmitter.emitterProfile = bossPattern[0];
-            bulletEmitter.Play();
-        }
-        else if (bulletEmitter.emitterProfile != bossPattern[curPhase])
-        {
-            StartCoroutine(NextPattern(2f, curPhase));
-        }
     }
 
     protected IEnumerator NextPattern(float time, int profileNum)
     {
-        bulletEmitter.Pause();
         yield return new WaitForSeconds(time);
-        bulletEmitter.emitterProfile = bossPattern[profileNum];
-        bulletEmitter.Play();
     }
 
     protected virtual void Die()
     {
         phaseText.text = "x" + phase;
-        bulletEmitter.Kill();
         gameObject.SetActive(false);
     }
 

@@ -5,6 +5,7 @@ using BulletPro;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using Random = UnityEngine.Random;
 
 public class Boss1 : Boss
 {
@@ -15,7 +16,6 @@ public class Boss1 : Boss
     {
         base.Awake();
         player = GameObject.FindWithTag("Player");
-        //Debug.Log($"{topBorder}, {bottomBorder}");
     }
 
     protected override void Update()
@@ -26,9 +26,9 @@ public class Boss1 : Boss
 
         if(HP == 60 || HP == 30)
         {
-            float randomX = UnityEngine.Random.Range(leftBorder + 7, rightBorder - 7);
-            float randomY = UnityEngine.Random.Range(bottomBorder + 6, topBorder - 5);
-            transform.DOMove(new Vector3(randomX, randomY, transform.position.z), 1.5f).SetEase(Ease.InOutBack);
+            float randomX = Random.Range(leftBorder + 8, rightBorder - 8);
+            float randomY = Random.Range(bottomBorder + 3, topBorder - 3);
+            transform.DOMove(new Vector3(randomX, randomY, transform.position.z), 3f).SetEase(Ease.InOutBack);
         }
     }
 
@@ -37,7 +37,12 @@ public class Boss1 : Boss
         base.PhaseChange(bossPhase);
         
         // 탄막 패턴 설정
-        float randomY = UnityEngine.Random.Range(bottomBorder + 7, topBorder - 3);
-        transform.DOMove(new Vector3(playerPos.x, randomY, transform.position.z), 1.5f).SetEase(Ease.InOutBack);
+
+        // 1 ~ 4
+        // -2.14 ~ 6.9
+        
+
+        float randomY = Random.Range(bottomBorder + 3, topBorder - 3);
+        transform.DOMove(new Vector3(playerPos.x, randomY, transform.position.z), 3f).SetEase(Ease.InOutBack);
     }
 }

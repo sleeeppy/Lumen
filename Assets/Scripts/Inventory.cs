@@ -4,11 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
+using DG.Tweening;
+using Unity.VisualScripting;
 
 public class Inventory : MonoBehaviour
 {
     public GameObject inventoryUI; // 인벤토리 UI 패널
-    public GameObject itemDescriptionUI; // 아이템 설명창 UI
+    public GameObject DescriptionUI; // 아이템 설명창 UI
     public TextMeshProUGUI itemDescriptionText; // 설명창 텍스트
     public TextMeshProUGUI itemNameText; // 아이템 이름 텍스트
     public Button[] itemButtons; // 아이템 버튼 배열
@@ -18,6 +20,10 @@ public class Inventory : MonoBehaviour
     private Button lastHoveredButton = null;
 
     private Inven inven;
+
+    [SerializeField] private GameObject canvas;
+
+    private Vector2 originPos;
 
     private void Start()
     {
@@ -30,6 +36,9 @@ public class Inventory : MonoBehaviour
         {
             UpdateItemSprite(item, false);
         }
+        
+        originPos = DescriptionUI.GetComponent<RectTransform>().anchoredPosition;
+
     }
 
     private void Update()
@@ -301,17 +310,21 @@ public class Inventory : MonoBehaviour
         }
 
         inventoryUI.SetActive(false);
-        itemDescriptionUI.SetActive(false);
+        DescriptionUI.SetActive(false);
     }
 
     public void ShowInventory()
     {
         inventoryUI.SetActive(true);
+        canvas.SetActive(false);
+        //Time.timeScale = 0;
     }
 
     public void HideInventory()
     {
         inventoryUI.SetActive(false);
+        canvas.SetActive(true);
+        //Time.timeScale = 1;
     }
 
     public void OnItemButtonClick(int index)
@@ -332,51 +345,33 @@ public class Inventory : MonoBehaviour
         if (index >= 0 && index < itemButtons.Length)
         {
             Inven.Item item = (Inven.Item)index;
-            string name = GetItemName(item);
             string description = GetItemDescription(item);
             itemDescriptionText.text = description;
-            itemNameText.text = name;
-            itemDescriptionUI.SetActive(true);
+            itemNameText.text = btn.name;
+            DescriptionUI.SetActive(true);
         }
         else
         {
             Debug.LogError("아이템 인덱스가 범위를 벗어났습니다.");
         }
+
+        DOTween.To(() => originPos.x, x => DescriptionUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(x, originPos.y), 0f, 1.2f)
+        .SetEase(Ease.OutExpo)
+        .OnComplete(() => 
+        {
+            
+        });
     }
 
     private void OnItemButtonExit(Button btn)
     {
         Debug.Log($"버튼 호버 종료: {btn.name}");
-        itemDescriptionUI.SetActive(false);
-    }
-
-    private string GetItemName(Inven.Item item)
-    {
-        switch (item)
+        DOTween.To(() => DescriptionUI.GetComponent<RectTransform>().anchoredPosition.x, x => DescriptionUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(x, originPos.y), originPos.x, 0.8f)
+        .SetEase(Ease.InQuint)
+        .OnComplete(() => 
         {
-            case Inven.Item.Ring1:
-                return "Ring1";
-            case Inven.Item.Ring2:
-                return "Ring2";
-            case Inven.Item.Ring3:
-                return "Ring3";
-            case Inven.Item.Ring4:
-                return "Ring4";
-            case Inven.Item.Ring5:
-                return "Ring5";
-            case Inven.Item.Bracelet1:
-                return "Bracelet1";
-            case Inven.Item.Bracelet2:
-                return "Bracelet2";
-            case Inven.Item.Bracelet3:
-                return "Bracelet3";
-            case Inven.Item.Nail1:
-                return "Nail1";
-            case Inven.Item.Nail2:
-                return "Nail2";
-            default:
-                return "";
-        }
+            
+        });
     }
 
     private string GetItemDescription(Inven.Item item)

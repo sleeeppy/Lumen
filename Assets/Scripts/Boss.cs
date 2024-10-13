@@ -41,8 +41,6 @@ public class Boss : MonoBehaviour
 
     protected virtual void Awake()
     {
-        Init();
-
         if (leftBorderCollider != null)
             leftBorder = leftBorderCollider.bounds.max.x;
 
@@ -54,6 +52,10 @@ public class Boss : MonoBehaviour
 
         if (topBorderCollider != null)
             topBorder = topBorderCollider.bounds.min.y;
+            
+        Init();
+
+        //Debug.Log($"{leftBorder}, {rightBorder}, {bottomBorder}, {topBorder}");
     }
 
     public void Init()

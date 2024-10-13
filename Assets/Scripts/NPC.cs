@@ -196,7 +196,7 @@ public class NPC : MonoBehaviour
 
     void LoadNextScene()
     {
-        SceneManager.LoadScene(1);
+        SceneLoader.instance.LoadGameScene();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

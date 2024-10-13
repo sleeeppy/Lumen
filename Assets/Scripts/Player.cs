@@ -531,9 +531,11 @@ public class Player : MonoBehaviour
         // for (int i = 0; i < life; i++)
         //     lifeImage[i].color = new Color(1, 1, 1, 1);
 
+
         lifeText.text = life.ToString();
         DOTween.To(() => HPImage.fillAmount, x => HPImage.fillAmount = x, (float)life / maxLife, 0.2f)
             .SetEase(Ease.OutBounce);
+
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -601,18 +603,26 @@ public class Player : MonoBehaviour
         spriteRenderer.color = finalColor;
     }
 
+    // BulletPro에서 실행됨
     public void OnHitByBullet()
     {
         if (!isInvincibility && !isDashInvincibility)
         {
-            isHit = true;
-            life--;
-            UpdateLifeIcon(life);
-            StartCoroutine(InvincibilityCoroutine());
-            StartCoroutine(HitInvincibility());
+            if(life != 0)
+            {
+                isHit = true;
+                life--;
+                UpdateLifeIcon(life);
+                StartCoroutine(InvincibilityCoroutine());
+                StartCoroutine(HitInvincibility());
 
-            flash = true;
-            cg.alpha = 0.3f;
+                flash = true;
+                cg.alpha = 0.3f;
+            }
+            else
+            {
+                Die();
+            }
         }
     }
 
@@ -627,6 +637,11 @@ public class Player : MonoBehaviour
                 flash = false;
             }
         }
+    }
+
+    public void Die()
+    {
+        SceneLoader.instance.LoadLobbyScene();
     }
 
     IEnumerator DelaySliderValue()

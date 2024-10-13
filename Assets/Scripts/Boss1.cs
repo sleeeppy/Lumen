@@ -15,6 +15,7 @@ public class Boss1 : Boss
     {
         base.Awake();
         player = GameObject.FindWithTag("Player");
+        //Debug.Log($"{topBorder}, {bottomBorder}");
     }
 
     protected override void Update()
@@ -26,7 +27,7 @@ public class Boss1 : Boss
         if(HP == 60 || HP == 30)
         {
             float randomX = UnityEngine.Random.Range(leftBorder + 7, rightBorder - 7);
-            float randomY = UnityEngine.Random.Range(bottomBorder + 5, topBorder - 2);
+            float randomY = UnityEngine.Random.Range(bottomBorder + 6, topBorder - 5);
             transform.DOMove(new Vector3(randomX, randomY, transform.position.z), 1.5f).SetEase(Ease.InOutBack);
         }
     }

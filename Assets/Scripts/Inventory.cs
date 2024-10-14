@@ -21,9 +21,12 @@ public class Inventory : MonoBehaviour
 
     private Inven inven;
 
-    [SerializeField] private GameObject canvas;
-
     private Vector2 originPos;
+    private Vector2[] originalPositions; // 원래 위치 배열
+
+    public GameObject[] itemGameObjects; // 게임 오브젝트 배열
+    [SerializeField] private GameObject canvas;
+    public Vector2[] equippedPositions; // 장착된 위치 배열
 
     private void Start()
     {
@@ -32,13 +35,32 @@ public class Inventory : MonoBehaviour
 
         // 인벤토리 UI 초기화
         InitializeInventoryUI();
-        foreach (var item in itemButtons)
-        {
-            UpdateItemSprite(item, false);
-        }
-        
+        // foreach (var item in itemButtons)
+        // {
+        //     UpdateItemSprite(item, false);
+        // }
+
         originPos = DescriptionUI.GetComponent<RectTransform>().anchoredPosition;
 
+        // 원래 위치 저장
+        originalPositions = new Vector2[itemButtons.Length];
+        for (int i = 0; i < itemButtons.Length; i++)
+        {
+            originalPositions[i] = itemButtons[i].GetComponent<RectTransform>().anchoredPosition;
+        }
+
+        // 장착된 위치 설정 (예시로 설정, 필요에 따라 조정)
+        equippedPositions = new Vector2[itemButtons.Length];
+        equippedPositions[0] = new Vector2(100, 100); // 첫 번째 버튼의 장착 위치
+        equippedPositions[5] = new Vector2(-256, -164); // 두 번째 버튼의 장착 위치
+        // ... 나머지 버튼의 위치 설정 ...
+
+        // 게임 오브젝트 초기화
+        for (int i = 0; i < itemGameObjects.Length; i++)
+        {
+            Image img = itemGameObjects[i].GetComponent<Image>();
+            img.sprite = unequippedSprites[i];
+        }
     }
 
     private void Update()
@@ -175,7 +197,7 @@ public class Inventory : MonoBehaviour
                     case Item.Nail2:
                         _itemDelegate += _itemLogic.Nail2;
                         break;
-                    // 다른 아이템도 추가
+                        // 다른 아이템도 추가
                 }
             }
         }
@@ -333,8 +355,29 @@ public class Inventory : MonoBehaviour
         Inven.Item item = (Inven.Item)index;
         inven.Equip(item);
 
-        // 스프라이트 업데이트
-        UpdateItemSprite(itemButtons[index], inven.Items.Contains(item));
+        // 게임 오브젝트의 이미지 변경
+        Image img = itemGameObjects[index].GetComponent<Image>(); // itemGameObjects의 이미지 가져오기
+        if (inven.Items.Contains(item))
+        {
+            img.sprite = equippedSprites[index];
+            itemGameObjects[index].transform.DOScale(1, 0.7f).From(1.3f).SetEase(Ease.InQuint);
+            itemGameObjects[index].GetComponent<Image>().DOFade(1, 0.7f).From(0).SetEase(Ease.InQuint);
+        }
+        else
+        {
+            img.sprite = unequippedSprites[index];
+            itemGameObjects[index].GetComponent<Image>().DOFade(1, 0.4f).From(0).SetEase(Ease.InQuint);
+        }
+        // 버튼 위치 이동
+        RectTransform btnTransform = itemButtons[index].GetComponent<RectTransform>();
+        if (inven.Items.Contains(item))
+        {
+            btnTransform.anchoredPosition = equippedPositions[index]; // 장착된 위치로 이동
+        }
+        else
+        {
+            btnTransform.anchoredPosition = originalPositions[index]; // 원래 위치로 이동
+        }
     }
 
     private void OnItemButtonHover(Button btn)
@@ -345,9 +388,9 @@ public class Inventory : MonoBehaviour
         if (index >= 0 && index < itemButtons.Length)
         {
             Inven.Item item = (Inven.Item)index;
-            string description = GetItemDescription(item);
+            (string itemName, string description) = GetItemDescription(item);
             itemDescriptionText.text = description;
-            itemNameText.text = btn.name;
+            itemNameText.text = itemName;
             DescriptionUI.SetActive(true);
         }
         else
@@ -355,72 +398,99 @@ public class Inventory : MonoBehaviour
             Debug.LogError("아이템 인덱스가 범위를 벗어났습니다.");
         }
 
-        DOTween.To(() => originPos.x, x => DescriptionUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(x, originPos.y), 0f, 1.2f)
+        DOTween.To(() => originPos.x,
+        x => DescriptionUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(x, originPos.y), 0f, 1.2f)
         .SetEase(Ease.OutExpo)
-        .OnComplete(() => 
+        .OnComplete(() =>
         {
-            
+
         });
     }
 
     private void OnItemButtonExit(Button btn)
     {
         Debug.Log($"버튼 호버 종료: {btn.name}");
-        DOTween.To(() => DescriptionUI.GetComponent<RectTransform>().anchoredPosition.x, x => DescriptionUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(x, originPos.y), originPos.x, 0.8f)
-        .SetEase(Ease.InQuint)
-        .OnComplete(() => 
+        DOTween.To(() => DescriptionUI.GetComponent<RectTransform>().anchoredPosition.x,
+        x => DescriptionUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(x, originPos.y), originPos.x, 0.8f)
+        .SetEase(Ease.OutExpo)
+        .OnComplete(() =>
         {
-            
+
         });
     }
 
-    private string GetItemDescription(Inven.Item item)
+    private (string itemName, string description) GetItemDescription(Inven.Item item)
     {
+        string description = "";
+        string itemName = "";
+
         switch (item)
         {
             case Inven.Item.Ring1:
-                return "wow.";
+                itemName = "하트 로켓";
+                description = "최대 체력이 1 증가합니다.";
+                break;
             case Inven.Item.Ring2:
-                return "wowow.";
+                itemName = "Ring2";
+                description = "wowow.";
+                break;
             case Inven.Item.Ring3:
-                return "공격력을 증가시킵니다.";
+                itemName = "Ring3";
+                description = "공격력을 증가시킵니다.";
+                break;
             case Inven.Item.Ring4:
-                return "공격력을 증가시킵니다.";
+                itemName = "Ring4";
+                description = "공격력을 증가시킵니다.";
+                break;
             case Inven.Item.Ring5:
-                return "공격력을 증가시킵니다.";
+                itemName = "Ring5";
+                description = "공격력을 증가시킵니다.";
+                break;
             case Inven.Item.Bracelet1:
-                return "속도 증가 효과가 있습니다.";
+                itemName = "에리스의 팔찌";
+                description = "기본 타입의 공격을 가집니다.";
+                break;
             case Inven.Item.Bracelet2:
-                return "속도 증가 효과가 있습니다.";
+                itemName = "Bracelet2";
+                description = "속도 증가 효과가 있습니다.";
+                break;
             case Inven.Item.Bracelet3:
-                return "속도 증가 효과가 있습니다.";
+                itemName = "Bracelet3";
+                description = "속도 증가 효과가 있습니다.";
+                break;
             case Inven.Item.Nail1:
-                return "추가 마나를 제공합니다.";
+                itemName = "Nail1";
+                description = "추가 마나를 제공합니다.";
+                break;
             case Inven.Item.Nail2:
-                return "체력을 회복시킵니다.";
+                itemName = "Nail2";
+                description = "체력을 회복시킵니다.";
+                break;
             default:
-                return "";
+                return ("", "");
         }
+
+        return (itemName, description);
     }
 
-    private void UpdateItemSprite(Button btn, bool isEquipped)
-    {
-        Image img = btn.GetComponent<Image>();
-        int index = Array.IndexOf(itemButtons, btn);
+    // private void UpdateItemSprite(Button btn, bool isEquipped)
+    // {
+    //     Image img = btn.GetComponent<Image>();
+    //     int index = Array.IndexOf(itemButtons, btn);
 
-        if (index < 0 || index >= equippedSprites.Length || index >= unequippedSprites.Length)
-        {
-            Debug.LogError("아이템 버튼의 인덱스가 스프라이트 배열 범위를 벗어났습니다.");
-            return;
-        }
+    //     if (index < 0 || index >= equippedSprites.Length || index >= unequippedSprites.Length)
+    //     {
+    //         Debug.LogError("아이템 버튼의 인덱스가 스프라이트 배열 범위를 벗어났습니다.");
+    //         return;
+    //     }
 
-        if (isEquipped)
-        {
-            img.sprite = equippedSprites[index];
-        }
-        else
-        {
-            img.sprite = unequippedSprites[index];
-        }
-    }
+    //     if (isEquipped)
+    //     {
+    //         img.sprite = equippedSprites[index];
+    //     }
+    //     else
+    //     {
+    //         img.sprite = unequippedSprites[index];
+    //     }
+    // }
 }

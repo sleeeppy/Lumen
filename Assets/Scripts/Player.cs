@@ -608,10 +608,10 @@ public class Player : MonoBehaviour
     {
         if (!isInvincibility && !isDashInvincibility)
         {
+            life--;
             if(life != 0)
             {
                 isHit = true;
-                life--;
                 UpdateLifeIcon(life);
                 StartCoroutine(InvincibilityCoroutine());
                 StartCoroutine(HitInvincibility());

@@ -51,8 +51,11 @@ public class Inventory : MonoBehaviour
 
         // 장착된 위치 설정 (예시로 설정, 필요에 따라 조정)
         equippedPositions = new Vector2[itemButtons.Length];
-        equippedPositions[0] = new Vector2(100, 100); // 첫 번째 버튼의 장착 위치
-        equippedPositions[5] = new Vector2(-256, -164); // 두 번째 버튼의 장착 위치
+        equippedPositions[0] = new Vector2(-185, 234);
+        equippedPositions[1] = new Vector2(-190, 146);
+        equippedPositions[5] = new Vector2(-256, -164);
+        equippedPositions[8] = new Vector2(-446, 275);
+        
         // ... 나머지 버튼의 위치 설정 ...
 
         // 게임 오브젝트 초기화
@@ -216,8 +219,10 @@ public class Inventory : MonoBehaviour
             if (_items.Contains(item))
             {
                 // 장착 해제 로직
+                // 아이템 효과 해제
+                UnEquip(item); // 기존 아이템 효과 해제
                 _items.Remove(item);
-                UpdateItemDelegate();
+                UpdateItemDelegate(); // 아이템 제거 후 delegate 업데이트
             }
             else
             {
@@ -233,6 +238,8 @@ public class Inventory : MonoBehaviour
                 {
                     _items.Add(item);
                     UpdateItemDelegate();
+                    // 아이템 효과 적용
+                    //_itemDelegate?.Invoke(); // 현재 장착된 아이템의 효과 적용
                 }
                 else
                 {
@@ -286,6 +293,29 @@ public class Inventory : MonoBehaviour
         {
             _itemDelegate?.Invoke();
             Debug.Log($"현재 장착된 아이템 수: {_items.Count}");
+        }
+
+        // 새로운 메서드 추가: 아이템 효과 해제
+        private void UnEquip(Item item)
+        {
+            switch (item)
+            {
+                case Item.Ring1:
+                    _itemLogic.UnEquipRing1();
+                    break;
+                case Item.Ring2:
+                    _itemLogic.UnEquipRing2();
+                    break;
+                case Item.Ring3:
+                    _itemLogic.UnEquipRing3();
+                    break;
+                
+                // Add More
+
+                case Item.Bracelet1:
+                    _itemLogic.UnEquipBracelet1();
+                    break;
+            }
         }
     }
 
@@ -373,11 +403,18 @@ public class Inventory : MonoBehaviour
         if (inven.Items.Contains(item))
         {
             btnTransform.anchoredPosition = equippedPositions[index]; // 장착된 위치로 이동
+            Debug.Log($"{equippedPositions[8]}");
+            if (index == 8)
+                itemButtons[index].transform.rotation = Quaternion.Euler(0, 0, -81);
         }
         else
         {
             btnTransform.anchoredPosition = originalPositions[index]; // 원래 위치로 이동
+            if(index == 8)
+                itemButtons[index].transform.rotation = Quaternion.Euler(0, 0, 0);
         }
+
+        OnItemButtonExit(itemButtons[index]);
     }
 
     private void OnItemButtonHover(Button btn)
@@ -428,11 +465,11 @@ public class Inventory : MonoBehaviour
         {
             case Inven.Item.Ring1:
                 itemName = "하트 로켓";
-                description = "최대 체력이 1 증가합니다.";
+                description = "최대 체력이 2 증가합니다.";
                 break;
             case Inven.Item.Ring2:
-                itemName = "Ring2";
-                description = "wowow.";
+                itemName = "별의 반지";
+                description = "최대 에너지가 소폭 증가합니다.";
                 break;
             case Inven.Item.Ring3:
                 itemName = "Ring3";
@@ -459,8 +496,8 @@ public class Inventory : MonoBehaviour
                 description = "속도 증가 효과가 있습니다.";
                 break;
             case Inven.Item.Nail1:
-                itemName = "Nail1";
-                description = "추가 마나를 제공합니다.";
+                itemName = "별의 메아리";
+                description = "플레이어 주변 탄막을 제거합니다.\n (개발중입니다.)";
                 break;
             case Inven.Item.Nail2:
                 itemName = "Nail2";

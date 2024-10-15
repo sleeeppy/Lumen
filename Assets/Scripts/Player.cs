@@ -72,8 +72,8 @@ public class Player : MonoBehaviour
     private bool canFlyAgainAfterLanding = true;
 
     [Header("체력")]
-    [SerializeField] private int life;
-    [SerializeField] private int maxLife;
+    [SerializeField] public int life;
+    [SerializeField] public int maxLife;
     //[SerializeField] private Image[] lifeImage;
     [SerializeField] private Image HPImage;
     [SerializeField] private TextMeshProUGUI lifeText;

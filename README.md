@@ -2,7 +2,7 @@
 
 <br><br>
 
-#  🥵TEAM. ChoCollect
+#  TEAM. ChoCollect
 **[김한결(PM/기획/개발)](https://github.com/sleeeppy) / [최현서(기획/디자인)](https://github.com) / [김강민(Qa)](https://github.com) / [김태우(버그 수정/서브서브서브 개발)](https://github.com/taeng0720)**
 
 Rumornaries에 관한 내용
@@ -10,7 +10,7 @@ Rumornaries에 관한 내용
 
 <br><br>
 
-# 👧🏻Lumen
+# 👧Lumen
 
 **이것에 대한 콜아웃에 사용할만한 한줄**
 

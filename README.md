@@ -2,15 +2,15 @@
 
 <br><br>
 
-#  🥵TEAM. 한결게이
-**[김한결(팀장/기획/개발)](https://github.com/sleeeppy) / [김태우(버그 수정/서브서브서브 개발)](https://github.com/taeng0720) / [최현서(도트싸게/개?발)](https://github.com) / [차지홍(게이)](https://github.com)**
+#  🥵TEAM. ChoCollect
+**[김한결(PM/기획/개발)](https://github.com/sleeeppy) / [최현서(기획/디자인)](https://github.com) / [김강민(Qa)](https://github.com) / [김태우(버그 수정/서브서브서브 개발)](https://github.com/taeng0720)**
 
 Rumornaries에 관한 내용
 
 
 <br><br>
 
-# 👧🏻Rumornaries
+# 👧🏻Lumen
 
 **이것에 대한 콜아웃에 사용할만한 한줄**
 
@@ -24,13 +24,13 @@ Rumornaries에 관한 내용
 >
 >**개요 : 어떤 게임인지 작성하기**
 >
-> **개발 기간 : 시작 기간 ~ 종료 기간**
+> **개발 기간 : 2024.09.05 ~ 종료 기간**
 > 
-> **사용 기술 : `Unity` `C#` `Universal RP 3D`**
+> **사용 기술 : `Unity` `C#` `Universal RP`**
 >
-> **장르 : 3D 미소녀 🔞**
+> **장르 : 로그라이크 슈팅게임 **
 >
-> **플랫폼 : PC...Mac도....**
+> **플랫폼 : PC**
 >
 > **스토리**
 > - 스토리 작성
@@ -58,7 +58,7 @@ Rumornaries에 관한 내용
 
 ### 플레이어 이동 및 대쉬
 
-- 이동과 관련된 gif 집어넣어
+- 이동과 관련된 gif 
 
 <br>
 

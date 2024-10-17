@@ -9786,7 +9786,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.6862745}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -66922,7 +66922,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 19abd471e13ccfd48bc4f73f38771abb, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 86bf96b5a2f143441b6443f2850b54c9, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -87142,7 +87142,7 @@ MonoBehaviour:
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -93231,7 +93231,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -574, y: 250}
+  m_AnchoredPosition: {x: -569.5, y: 250}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1937273838
@@ -100468,8 +100468,8 @@ MonoBehaviour:
   - {fileID: 643680415}
   - {fileID: 1653031543}
   equippedSprites:
-  - {fileID: 21300000, guid: e282f8b346ec5bd4dba8e1a70e50adef, type: 3}
-  - {fileID: 21300000, guid: f9783c75d53dbf04097822c660a56458, type: 3}
+  - {fileID: 21300000, guid: b338aec6e8921d74aae8b181d73b5db8, type: 3}
+  - {fileID: 21300000, guid: d642340a366d25e40acfcad3aae7d0b0, type: 3}
   - {fileID: 21300000, guid: 8e2eda427ca8a2a4c83b3ecbc418f6a0, type: 3}
   - {fileID: 21300000, guid: 8e2eda427ca8a2a4c83b3ecbc418f6a0, type: 3}
   - {fileID: 21300000, guid: 8e2eda427ca8a2a4c83b3ecbc418f6a0, type: 3}
@@ -100478,8 +100478,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 8e2eda427ca8a2a4c83b3ecbc418f6a0, type: 3}
   - {fileID: 21300000, guid: 7b1ad50fc34a80c44bf75010f5d36fa5, type: 3}
   unequippedSprites:
-  - {fileID: 21300000, guid: 01a156eacde67f64b9c1974d8e178422, type: 3}
-  - {fileID: 21300000, guid: 19abd471e13ccfd48bc4f73f38771abb, type: 3}
+  - {fileID: 21300000, guid: 4c5f9a04e3102504f85cf6ecf7593d40, type: 3}
+  - {fileID: 21300000, guid: 86bf96b5a2f143441b6443f2850b54c9, type: 3}
   - {fileID: 21300000, guid: ec30605e78be7114898df893a375dc6e, type: 3}
   - {fileID: 21300000, guid: ec30605e78be7114898df893a375dc6e, type: 3}
   - {fileID: 21300000, guid: ec30605e78be7114898df893a375dc6e, type: 3}
@@ -103349,7 +103349,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2124363723
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -103938,7 +103938,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 01a156eacde67f64b9c1974d8e178422, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4c5f9a04e3102504f85cf6ecf7593d40, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

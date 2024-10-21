@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
 using DG.Tweening;
-using Unity.VisualScripting;
+using Sirenix.OdinInspector;
 
 public class Inventory : MonoBehaviour
 {
@@ -13,20 +13,19 @@ public class Inventory : MonoBehaviour
     public GameObject DescriptionUI; // 아이템 설명창 UI
     public TextMeshProUGUI itemDescriptionText; // 설명창 텍스트
     public TextMeshProUGUI itemNameText; // 아이템 이름 텍스트
-    public Button[] itemButtons; // 아이템 버튼 배열
-    public Sprite[] equippedSprites; // 장착된 상태의 스프라이트
-    public Sprite[] unequippedSprites; // 비장착 상태의 스프라이트
-
+    [SerializeField] private GameObject canvas;
+    
+    [FoldoutGroup("Buttons")] public Button[] itemButtons; // 아이템 버튼 배열
+    [FoldoutGroup("Buttons")] public Sprite[] equippedSprites; // 장착된 상태의 스프라이트
+    [FoldoutGroup("Buttons")] public Sprite[] unequippedSprites; // 비장착 상태의 스프라이트
+    [FoldoutGroup("Buttons")] public GameObject[] itemGameObjects; // 게임 오브젝트 배열
+    [FoldoutGroup("Buttons")] public Vector2[] equippedPositions; // 장착된 위치 배열
+    
     private Button lastHoveredButton = null;
-
     private Inven inven;
 
     private Vector2 originPos;
     private Vector2[] originalPositions; // 원래 위치 배열
-
-    public GameObject[] itemGameObjects; // 게임 오브젝트 배열
-    [SerializeField] private GameObject canvas;
-    public Vector2[] equippedPositions; // 장착된 위치 배열
 
     private void Start()
     {

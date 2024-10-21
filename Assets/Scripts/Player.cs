@@ -7,6 +7,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine.SceneManagement;
 using DG.Tweening.Core.Easing;
+using Sirenix.OdinInspector;
 
 public class Player : MonoBehaviour
 {
@@ -15,18 +16,65 @@ public class Player : MonoBehaviour
     private bool isTouchLeft;
     private bool isTouchRight;
 
-    [Header("수평 이동")]
+    
     [SerializeField] public float moveSpeed = 8;
 
-    [Header("수직 이동 (점프)")]
-    [SerializeField] private float jumpForce = 7;
-    [SerializeField] private float lowGravity = 2f;
-    [SerializeField] private float highGravity = 4f;
-    [SerializeField] public int maxJumpCount = 1;
+    [TabGroup("Tab","Jump", SdfIconType.Shift, TextColor = "green")]
+    [TabGroup("Tab","Jump")] [SerializeField] private float jumpForce = 7;
+    [TabGroup("Tab","Jump")] [SerializeField] private float lowGravity = 2f;
+    [TabGroup("Tab","Jump")] [SerializeField] private float highGravity = 4f;
+    [TabGroup("Tab","Jump")] [SerializeField] public int maxJumpCount = 1;
+    [TabGroup("Tab","Jump")] [SerializeField] private LayerMask groundLayer;
+    [TabGroup("Tab","Jump")] [SerializeField] private KeyCode jumpKey = KeyCode.Space;
     private int currentJumpCount;
 
-    [SerializeField] private LayerMask groundLayer;
-    [SerializeField] private KeyCode jumpKey = KeyCode.Space;
+    [TabGroup("Tab","Gauge", SdfIconType.Toggle2On, TextColor = "Red")]
+    [TabGroup("Tab","Gauge")] [SerializeField] public Slider gauge;
+    [TabGroup("Tab","Gauge")] [SerializeField] private Slider delaySlider;
+    [TabGroup("Tab","Gauge")] [SerializeField] private float recoverySpeed = 0.5f;
+    private float targetGauge;
+
+    [TabGroup("Tab","Dash", SdfIconType.Wind, TextColor = "Blue")]
+    [TabGroup("Tab","Dash")] [SerializeField] private float dashGauge = 0.37f;
+    [TabGroup("Tab","Dash")] [SerializeField] private float dashSpeed = 7f;
+    [TabGroup("Tab","Dash")] [SerializeField] private float dashTime = 0.4f;
+    [TabGroup("Tab","Dash")] [SerializeField] private GameObject dashParticle;
+    [TabGroup("Tab","Dash")] [SerializeField] private float longDashThreshold = 0.2f; // 긴 대시 판단 기준 시간
+    [TabGroup("Tab","Life")] [SerializeField] private float dashCooldown;
+
+    private float dashHoldTime = 0f; // 대시 버튼을 누르고 있는 시간
+    private bool isDashing;
+    private Vector2 dashDirection;
+
+    [TabGroup("Tab","Fly", SdfIconType.Send, TextColor = "White")]
+    [TabGroup("Tab","Fly")] [SerializeField] private Sprite flySprite;
+    [TabGroup("Tab","Fly")] [SerializeField] private float flyGauge = 0.5f;
+    [TabGroup("Tab","Fly")] [SerializeField] private float flyCoolTime = 0.3f;
+    [TabGroup("Tab","Fly")] [SerializeField] private float slowFall = 0.15f;
+    [TabGroup("Tab","Fly")] [SerializeField] private float rotateSpeed = 1f;
+    [TabGroup("Tab","Fly")] [SerializeField] private GameObject flyParticle;
+    private GameObject flyingParticle;
+    private bool canFlyAgainAfterLanding = true;
+
+    [TabGroup("Tab","Life", SdfIconType.SuitHeart, TextColor = "Magenta")]
+    [TabGroup("Tab","Life")] [SerializeField] public int life;
+    [TabGroup("Tab","Life")] [SerializeField] public int maxLife;
+    //[SerializeField] private Image[] lifeImage;
+    [TabGroup("Tab","Life")] [SerializeField] private Image HPImage;
+    [TabGroup("Tab","Life")] [SerializeField] private TextMeshProUGUI lifeText;
+
+    [TabGroup("Tab","Life")] [SerializeField] private float hitInvincibilityTime = 0.8f;
+    
+    [HideInInspector] public bool isInvincibility;
+    [HideInInspector] public bool isDashInvincibility;
+    [HideInInspector] public bool isHit;
+
+    [SerializeField] private Collider2D leftBorderCollider;
+    [SerializeField] private Collider2D rightBorderCollider;
+    private float leftBorder, rightBorder;
+
+    [SerializeField] private CanvasGroup cg;
+    private bool flash = true;
 
     private bool isGrounded;
     private bool isJumpEndArea;
@@ -43,61 +91,14 @@ public class Player : MonoBehaviour
 
     [HideInInspector] public bool isFlying;
 
-    [Header("게이지")]
-    [SerializeField] public Slider gauge;
-    [SerializeField] private Slider delaySlider;
-    [SerializeField] private float recoverySpeed = 0.5f;
-
-    private float targetGauge;
-
-    [Header("대시")]
-    [SerializeField] private float dashGauge = 0.37f;
-    [SerializeField] private float dashSpeed = 7f;
-    [SerializeField] private float dashTime = 0.4f;
-    [SerializeField] private GameObject dashParticle;
-    [SerializeField] private float longDashThreshold = 0.2f; // 긴 대시 판단 기준 시간
-    private float dashHoldTime = 0f; // 대시 버튼을 누르고 있는 시간
-
-    private bool isDashing;
-    private Vector2 dashDirection;
-
-    [Header("비행")]
-    [SerializeField] private Sprite flySprite;
-    [SerializeField] private float flyGauge = 0.5f;
-    [SerializeField] private float flyCoolTime = 0.3f;
-    [SerializeField] private float slowFall = 0.15f;
-    [SerializeField] private float rotateSpeed = 1f;
-    [SerializeField] private GameObject flyParticle;
-    private GameObject flyingParticle;
-    private bool canFlyAgainAfterLanding = true;
-
-    [Header("체력")]
-    [SerializeField] public int life;
-    [SerializeField] public int maxLife;
-    //[SerializeField] private Image[] lifeImage;
-    [SerializeField] private Image HPImage;
-    [SerializeField] private TextMeshProUGUI lifeText;
-
-    [SerializeField] private float hitInvincibilityTime = 0.8f;
     
-    [HideInInspector] public bool isInvincibility;
-    [HideInInspector] public bool isDashInvincibility;
-    [HideInInspector] public bool isHit;
     private float curTime;
     Material material;
 
-    [SerializeField] private float dashCooldown;
     private float lastDashTime;
     private float airBorneTime;
 
     private bool dashEndedAndCanFly = false;
-
-    [SerializeField] private Collider2D leftBorderCollider;
-    [SerializeField] private Collider2D rightBorderCollider;
-
-    private float leftBorder, rightBorder;
-    [SerializeField] private CanvasGroup cg;
-    private bool flash = true;
 
     private void Awake()
     {

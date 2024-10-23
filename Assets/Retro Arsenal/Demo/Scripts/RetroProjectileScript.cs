@@ -93,7 +93,6 @@ namespace RetroArsenal
                     }
                 }
 
-
                 foreach (GameObject trail in trailParticles)
                 {
                     GameObject curTrail = myTransform.Find(projectileParticle.name + "/" + trail.name).gameObject;
@@ -116,7 +115,19 @@ namespace RetroArsenal
                 }
             }
 
+            // 카메라 뷰포트 체크
+            if (!IsInCameraView())
+            {
+                DestroyMissile(); // 카메라 뷰포트를 벗어나면 총알 삭제
+            }
+
             RotateTowardsDirection();
+        }
+
+        private bool IsInCameraView()
+        {
+            Vector3 screenPoint = Camera.main.WorldToViewportPoint(myTransform.position);
+            return screenPoint.x >= 0 && screenPoint.x <= 1 && screenPoint.y >= 0 && screenPoint.y <= 1 && screenPoint.z > 0;
         }
 
         private void DestroyMissile()

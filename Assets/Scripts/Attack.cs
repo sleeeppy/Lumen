@@ -83,6 +83,10 @@ public class Attack : MonoBehaviour
 
         rb.AddForce(direction * bulletForce, ForceMode.Impulse);
         
+        // 총알에 사거리 제한 추가 코드 제거
+        // Bullet bulletScript = bullet.GetComponent<Bullet>(); // Bullet 스크립트가 있다고 가정
+        // bulletScript.SetDistanceLimit(10f); // 10f는 사거리 제한 값입니다.
+
         curTime = 0;
     }
     

@@ -11,6 +11,7 @@ public class Boss1 : Boss
 {
     private GameObject player;
     private Vector3 playerPos;
+    private float randomY;
 
     protected override void Awake()
     {
@@ -26,8 +27,12 @@ public class Boss1 : Boss
 
         if(HP == 60 || HP == 30)
         {
-            float randomX = Random.Range(leftBorder + 8, rightBorder - 8);
-            float randomY = Random.Range(bottomBorder + 3, topBorder - 3);
+            float randomX = Random.Range(leftBorder + 11, rightBorder - 11);
+
+            if (phase != 4)
+                randomY = Random.Range(bottomBorder + 3, topBorder - 3);
+            else
+                randomY = Random.Range(bottomBorder + 4, topBorder - 3);
             transform.DOMove(new Vector3(randomX, randomY, transform.position.z), 3f).SetEase(Ease.InOutBack);
         }
     }
@@ -41,8 +46,11 @@ public class Boss1 : Boss
         // 1 ~ 4
         // -2.14 ~ 6.9
         
+        if (phase != 4)
+            randomY = Random.Range(bottomBorder + 3, topBorder - 3);
+        else 
+            randomY = Random.Range(bottomBorder + 4, topBorder - 3);
 
-        float randomY = Random.Range(bottomBorder + 3, topBorder - 3);
         transform.DOMove(new Vector3(playerPos.x, randomY, transform.position.z), 3f).SetEase(Ease.InOutBack);
     }
 }

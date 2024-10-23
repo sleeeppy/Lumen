@@ -34150,8 +34150,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc1c2947439d2ae40a35a11d1764594a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHP: 100
-  HP: 100
+  maxHP: 90
+  HP: 90
   phase: 5
   phaseText: {fileID: 1570978565}
   slider: {fileID: 1043203708}

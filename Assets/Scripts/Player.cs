@@ -4,11 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine.SceneManagement;
-using DG.Tweening.Core.Easing;
 using Sirenix.OdinInspector;
-using Unity.VisualScripting.Dependencies.Sqlite;
 using System;
 using System.ComponentModel.Design;
 
@@ -108,12 +105,14 @@ public class Player : MonoBehaviour
     [TabGroup("Tab","Skill")] [SerializeField] public float skillGaugeIncreaseRate = 0.25f; // 스킬 게이지 증가 속도
     [TabGroup("Tab","Skill")] [SerializeField] private TextMeshProUGUI skillGaugeText;
     [TabGroup("Tab","Skill")] [SerializeField] private Image skillGaugeImage;
-    [TabGroup("Tab", "Skill")][SerializeField] private Image skillImage;
+    [TabGroup("Tab","Skill")] [SerializeField] private Image skillImage;
+    [TabGroup("Tab","Skill")] [SerializeField] private Image skillCostImage;
     [TabGroup("Tab","Skill")] [SerializeField] private Image skillFades;
     [TabGroup("Tab","Skill")] [SerializeField] private GameObject glowObject; // Glow GameObject 배열
     [TabGroup("Tab","Skill")] [SerializeField] private float[] skillCooldowns = { 16f, 64f }; // Nail 쿨타임 배열
     [TabGroup("Tab","Skill")] [SerializeField] private float[] skillCosts = { 5f, 20f }; // Nail 소모량 배열
     [TabGroup("Tab","Skill")] [SerializeField] private Sprite[] skillSprites; // 스킬 이미지 배열
+    [TabGroup("Tab","Skill")][SerializeField] private Sprite[] skillCostSprites;
     [HideInInspector] public bool[] isEquippedSkill = { false, false };
     [HideInInspector] public bool[] canUse = { false, false };
     private float[] skillLastUsedTimes = new float[2]; // Nail 사용 시간 배열
@@ -152,12 +151,13 @@ public class Player : MonoBehaviour
         {
             if (isEquippedSkill[i])
             {
-                skillImage.sprite = skillSprites[i]; // 해당 index의 skillSprite로 교체
+                skillImage.sprite = skillSprites[i];
+                skillCostImage.sprite = skillCostSprites[i];
                 break; // 첫 번째 장착된 스킬만 적용
             }
         }
 
-        // 게이지 회복 로직
+        // 게이지 회복 로직 
         if (!isFlying && !isDashing && isGrounded)
             gauge.value += recoverySpeed * Time.deltaTime;
 
@@ -172,17 +172,8 @@ public class Player : MonoBehaviour
         if (!isDashing)
             delaySlider.value = gauge.value;
 
-        // 스킬 게이지 증가
-        // UpdateSkillGauge();
-
         // Nail1과 Nail2의 사용 가능 여부 체크
         CheckNailAvailability();
-
-        if(Input.GetKeyDown(KeyCode.G) && isEquippedSkill[0])
-            UseNail1();
-
-        if(Input.GetKeyDown(KeyCode.H) && isEquippedSkill[1])
-            UseNail2();
 
         if(Input.GetKeyDown(KeyCode.Q))
         {

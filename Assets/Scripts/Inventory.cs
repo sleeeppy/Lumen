@@ -69,7 +69,7 @@ public class Inventory : MonoBehaviour
     {
         CheckButtonHover();
 
-        if (Input.GetKeyDown(KeyCode.I))
+        if (Input.GetKeyDown(KeyCode.I) || (Input.GetKeyDown(KeyCode.Escape) && inventoryUI.activeSelf))
         {
             if (inventoryUI.activeSelf)
             {

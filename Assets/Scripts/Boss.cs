@@ -61,6 +61,7 @@ public class Boss : MonoBehaviour
     public void Init()
     {
         slider.maxValue = maxHP;
+        delaySlider.maxValue = maxHP;
         PhaseChange(phase);
     }
 
@@ -93,9 +94,14 @@ public class Boss : MonoBehaviour
     public void HandleCollision(GameObject bulletObject)
     {
         Bullet bulletScript = bulletObject.GetComponent<Bullet>();
+        Player playerScript = FindObjectOfType<Player>();
         if (bulletScript != null)
         {
             HP -= bulletScript.Damage;
+            
+            playerScript.UpdateSkillGauge();
+            playerScript.skillGauge = Mathf.Min(playerScript.skillGauge 
+            + (float)(bulletScript.Damage * playerScript.skillGaugeIncreaseRate), playerScript.maxSkillGauge);
 
             // 슬라이더 애니메이션
             float targetHP = HP;
@@ -146,5 +152,6 @@ public class Boss : MonoBehaviour
         DOTween.To(() => delaySlider.value, x => delaySlider.value = x, slider.value, 0.15f);
     }
 }
+
 
 

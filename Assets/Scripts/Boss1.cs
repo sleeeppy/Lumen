@@ -17,6 +17,7 @@ public class Boss1 : Boss
     {
         base.Awake();
         player = GameObject.FindWithTag("Player");
+        //Debug.Log($"{bottomBorder + 4.5}, {topBorder - 3}");
     }
 
     protected override void Update()
@@ -27,12 +28,11 @@ public class Boss1 : Boss
 
         if(HP == 60 || HP == 30)
         {
-            float randomX = Random.Range(leftBorder + 11, rightBorder - 11);
-
+            float randomX = Mathf.Clamp(Random.Range(transform.position.x - 10, transform.position.x + 10), leftBorder + 10, rightBorder - 10);
             if (phase != 4)
-                randomY = Random.Range(bottomBorder + 3, topBorder - 3);
+                randomY = Mathf.Clamp(Random.Range(bottomBorder + 4.5f, topBorder - 3), bottomBorder + 4.5f, topBorder - 3);
             else
-                randomY = Random.Range(bottomBorder + 4, topBorder - 3);
+                randomY = Mathf.Clamp(Random.Range(bottomBorder + 4.5f, topBorder - 3), bottomBorder + 4.5f, topBorder - 3);
             transform.DOMove(new Vector3(randomX, randomY, transform.position.z), 3f).SetEase(Ease.InOutBack);
         }
     }
@@ -45,11 +45,8 @@ public class Boss1 : Boss
 
         // 1 ~ 4
         // -2.14 ~ 6.9
-        
-        if (phase != 4)
-            randomY = Random.Range(bottomBorder + 3, topBorder - 3);
-        else 
-            randomY = Random.Range(bottomBorder + 4, topBorder - 3);
+
+        randomY = Mathf.Clamp(Random.Range(bottomBorder + 4.5f, topBorder - 3), bottomBorder + 4.5f, topBorder - 3); // 범위 제한
 
         transform.DOMove(new Vector3(playerPos.x, randomY, transform.position.z), 3f).SetEase(Ease.InOutBack);
     }

@@ -314,6 +314,12 @@ public class Inventory : MonoBehaviour
                 case Item.Bracelet1:
                     _itemLogic.UnEquipBracelet1();
                     break;
+                case Item.Nail1:
+                    _itemLogic.UnEquipNail1();
+                    break;
+                case Item.Nail2:
+                    _itemLogic.UnEquipNail2();
+                    break;
             }
         }
     }
@@ -484,23 +490,23 @@ public class Inventory : MonoBehaviour
                 break;
             case Inven.Item.Bracelet1:
                 itemName = "에리스의 팔찌";
-                description = "기본 타입의 공격을 가집니다.";
+                description = "공격 타입이 기본 공격으로 변경 됩니다.";
                 break;
             case Inven.Item.Bracelet2:
-                itemName = "Bracelet2";
-                description = "속도 증가 효과가 있습니다.";
+                itemName = "루나의 팔찌";
+                description = "공격 타입이 레이저 공격으로 변경됩니다.";
                 break;
             case Inven.Item.Bracelet3:
-                itemName = "Bracelet3";
-                description = "속도 증가 효과가 있습니다.";
+                itemName = "자석 수갑";
+                description = "공격 타입이 유도 공격으로 변경됩니다.";
                 break;
             case Inven.Item.Nail1:
                 itemName = "별의 메아리";
                 description = "플레이어 주변 탄막을 제거합니다.\n (개발중입니다.)";
                 break;
             case Inven.Item.Nail2:
-                itemName = "Nail2";
-                description = "체력을 회복시킵니다.";
+                itemName = "레인보우 스파크";
+                description = "지속시간동안 무적상태가 되며 공격속도가 대폭 증가합니다.\n (개발중입니다.)";
                 break;
             default:
                 return ("", "");
@@ -508,25 +514,4 @@ public class Inventory : MonoBehaviour
 
         return (itemName, description);
     }
-
-    // private void UpdateItemSprite(Button btn, bool isEquipped)
-    // {
-    //     Image img = btn.GetComponent<Image>();
-    //     int index = Array.IndexOf(itemButtons, btn);
-
-    //     if (index < 0 || index >= equippedSprites.Length || index >= unequippedSprites.Length)
-    //     {
-    //         Debug.LogError("아이템 버튼의 인덱스가 스프라이트 배열 범위를 벗어났습니다.");
-    //         return;
-    //     }
-
-    //     if (isEquipped)
-    //     {
-    //         img.sprite = equippedSprites[index];
-    //     }
-    //     else
-    //     {
-    //         img.sprite = unequippedSprites[index];
-    //     }
-    // }
 }

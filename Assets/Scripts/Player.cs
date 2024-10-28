@@ -8,6 +8,9 @@ using Unity.VisualScripting;
 using UnityEngine.SceneManagement;
 using DG.Tweening.Core.Easing;
 using Sirenix.OdinInspector;
+using Unity.VisualScripting.Dependencies.Sqlite;
+using System;
+using System.ComponentModel.Design;
 
 public class Player : MonoBehaviour
 {
@@ -59,11 +62,10 @@ public class Player : MonoBehaviour
     [TabGroup("Tab","Life", SdfIconType.SuitHeart, TextColor = "Magenta")]
     [TabGroup("Tab","Life")] [SerializeField] public int life;
     [TabGroup("Tab","Life")] [SerializeField] public int maxLife;
-    //[SerializeField] private Image[] lifeImage;
-    [TabGroup("Tab","Life")] [SerializeField] private Image HPImage;
-    [TabGroup("Tab","Life")] [SerializeField] private TextMeshProUGUI lifeText;
-
+    // [TabGroup("Tab","Life")] [SerializeField] private TextMeshProUGUI lifeText;
     [TabGroup("Tab","Life")] [SerializeField] private float hitInvincibilityTime = 0.8f;
+    [TabGroup("Tab","Life")] [SerializeField] private Image[] lifeImage;
+
     
     [HideInInspector] public bool isInvincibility;
     [HideInInspector] public bool isDashInvincibility;
@@ -100,6 +102,23 @@ public class Player : MonoBehaviour
 
     private bool dashEndedAndCanFly = false;
 
+    [TabGroup("Tab","Skill", SdfIconType.Lightning, TextColor = "Black")]
+    [TabGroup("Tab","Skill")] [SerializeField] public float skillGauge = 0f; // 스킬 게이지
+    [TabGroup("Tab","Skill")] [SerializeField] public float maxSkillGauge = 20f; // 최대 스킬 게이지
+    [TabGroup("Tab","Skill")] [SerializeField] public float skillGaugeIncreaseRate = 0.25f; // 스킬 게이지 증가 속도
+    [TabGroup("Tab","Skill")] [SerializeField] private TextMeshProUGUI skillGaugeText;
+    [TabGroup("Tab","Skill")] [SerializeField] private Image skillGaugeImage;
+    [TabGroup("Tab", "Skill")][SerializeField] private Image skillImage;
+    [TabGroup("Tab","Skill")] [SerializeField] private Image skillFades;
+    [TabGroup("Tab","Skill")] [SerializeField] private GameObject glowObject; // Glow GameObject 배열
+    [TabGroup("Tab","Skill")] [SerializeField] private float[] skillCooldowns = { 16f, 64f }; // Nail 쿨타임 배열
+    [TabGroup("Tab","Skill")] [SerializeField] private float[] skillCosts = { 5f, 20f }; // Nail 소모량 배열
+    [TabGroup("Tab","Skill")] [SerializeField] private Sprite[] skillSprites; // 스킬 이미지 배열
+    [HideInInspector] public bool[] isEquippedSkill = { false, false };
+    [HideInInspector] public bool[] canUse = { false, false };
+    private float[] skillLastUsedTimes = new float[2]; // Nail 사용 시간 배열
+
+
     private void Awake()
     {
         rigid2D = GetComponent<Rigidbody2D>();
@@ -116,6 +135,8 @@ public class Player : MonoBehaviour
 
         if (rightBorderCollider != null)
             rightBorder = rightBorderCollider.bounds.min.x;
+
+        skillGaugeImage.fillAmount = 0f;
     }
 
     private void Update()
@@ -125,6 +146,16 @@ public class Player : MonoBehaviour
         UpdateJump();
         HandleState();
         Flash();
+
+        // 아이템 장착 여부에 따라 skillSprite 교체
+        for (int i = 0; i < isEquippedSkill.Length; i++)
+        {
+            if (isEquippedSkill[i])
+            {
+                skillImage.sprite = skillSprites[i]; // 해당 index의 skillSprite로 교체
+                break; // 첫 번째 장착된 스킬만 적용
+            }
+        }
 
         // 게이지 회복 로직
         if (!isFlying && !isDashing && isGrounded)
@@ -141,6 +172,32 @@ public class Player : MonoBehaviour
         if (!isDashing)
             delaySlider.value = gauge.value;
 
+        // 스킬 게이지 증가
+        // UpdateSkillGauge();
+
+        // Nail1과 Nail2의 사용 가능 여부 체크
+        CheckNailAvailability();
+
+        if(Input.GetKeyDown(KeyCode.G) && isEquippedSkill[0])
+            UseNail1();
+
+        if(Input.GetKeyDown(KeyCode.H) && isEquippedSkill[1])
+            UseNail2();
+
+        if(Input.GetKeyDown(KeyCode.Q))
+        {
+            if (isEquippedSkill[0])
+            {
+                UseNail1();
+            }
+            else if (isEquippedSkill[1])
+            {
+                UseNail2();
+            }
+        }
+
+        // 스킬 쿨타임에 따른 fillAmount 업데이트
+        UpdateSkillFades();
     }
 
     private void HandleState()
@@ -244,7 +301,7 @@ public class Player : MonoBehaviour
         if (isGrounded && rigid2D.velocity.y <= 0)
         {
             currentJumpCount = maxJumpCount;
-            airBorneTime = 0;  // 땅에 닿으면 airborneTime 초기화
+            airBorneTime = 0;  // 땅에 으면 airborneTime 초기화
             canFlyAgainAfterLanding = true;
 
             // Fly 모드가 활성화 되어 있다면 Fly 종료
@@ -255,7 +312,7 @@ public class Player : MonoBehaviour
         }
 
         // Space를 누르고 있고, Y축 속도가 양수일 때 lowGravity 적용
-        if (IsLongJump && rigid2D.velocity.y > 0 && !isFlying)
+        if ((Input.GetKey(KeyCode.W) || IsLongJump) && rigid2D.velocity.y > 0 && !isFlying)
         {
             rigid2D.gravityScale = lowGravity;
         }
@@ -270,11 +327,11 @@ public class Player : MonoBehaviour
         // 공중에 있고 Space를 누르고 있으며, 3초 이하일 때 slowFall 적용
         // Add Input.GetKey(KeyCode.W)? 
         if (!isGrounded && !isFlying && rigid2D.velocity.y < 0 && airBorneTime <= 3
-            && Input.GetKey(KeyCode.Space))
+            && (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.Space)))
         {
             rigid2D.gravityScale = slowFall;
         }
-        // 공중에 있는 시간이 3초 이상이면 gravityScale을 1로 설정
+        // 공중에 있는 시간이 3초 이상이면 gravityScale을 lowGravity(2)로 설정
         else if (airBorneTime > 3)
         {
             rigid2D.gravityScale = lowGravity;
@@ -525,34 +582,20 @@ public class Player : MonoBehaviour
 
     public void UpdateLifeIcon(int life)
     {
-        // // 라이프 아이콘 설정
-        // for (int i = 0; i < maxLife; i++)
-        //     lifeImage[i].color = new Color(1, 1, 1, 0);
-        //
-        // for (int i = 0; i < life; i++)
-        //     lifeImage[i].color = new Color(1, 1, 1, 1);
+        // 라이프 아이콘 설정
+        for (int i = 0; i < lifeImage.Length; i++)
+            lifeImage[i].color = new Color(1, 1, 1, 0);
+        
+        for (int i = 0; i < life; i++)
+            lifeImage[i].color = new Color(1, 1, 1, 1);
 
-
-        lifeText.text = life.ToString();
-        DOTween.To(() => HPImage.fillAmount, x => HPImage.fillAmount = x, (float)life / maxLife, 0.2f)
-            .SetEase(Ease.OutBounce);
-
+        // lifeText.text = life.ToString();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Border"))
             BorderCheck(collision, true);
-        // else if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("EnemyBullet"))
-        // {
-        //     if (!isInvincibility)
-        //     {
-        //         life--;
-        //         UpdateLifeIcon(life);
-        //         StartCoroutine(InvincibilityCoroutine());
-        //         StartCoroutine(HitInvincibility());
-        //     }
-        // }
     }
 
     void OnTriggerExit2D(Collider2D collision)
@@ -610,21 +653,57 @@ public class Player : MonoBehaviour
         if (!isInvincibility && !isDashInvincibility)
         {
             life--;
-            if(life != 0)
+
+            if (life != 0)
             {
                 isHit = true;
                 UpdateLifeIcon(life);
                 StartCoroutine(InvincibilityCoroutine());
                 StartCoroutine(HitInvincibility());
 
+                // 스킬 게이지 감소
+                skillGauge = Mathf.Max(skillGauge - 5f, 0f);
+                Debug.Log("스킬 게이지가 5 감소했습니다.");
+                
                 flash = true;
                 cg.alpha = 0.3f;
+
+                UpdateSkillGauge();
             }
             else
             {
                 Die();
             }
         }
+    }
+
+    public void UseNail1()
+    {
+        if (canUse[0]) // 소모량 배열 사용
+        {
+            skillLastUsedTimes[0] = Time.time; // 배열에 사용 시간 저장
+            skillGauge -= skillCosts[0]; // 소모량 배열 사용
+            UpdateSkillGauge();
+            Debug.Log("Nail1 사용!");
+            // Nail1의 효과를 여기에 추가
+        }
+        else
+            Debug.Log("Nail1을 사용할 수 없습니다.");
+
+    }
+
+    public void UseNail2()
+    {
+        if (canUse[1]) // 소모량 배열 사용
+        {
+            skillLastUsedTimes[1] = Time.time; // 배열에 사용 시간 저장
+            skillGauge -= skillCosts[1]; // 소모량 배열 사용
+            UpdateSkillGauge();
+            Debug.Log("Nail2 사용!");
+            // Nail2의 효과를 여기에 추가
+        }
+        else
+            Debug.Log("Nail2을 사용할 수 없습니다.");
     }
 
     public void Flash()
@@ -650,4 +729,52 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(0.15f);
         DOTween.To(() => delaySlider.value, x => delaySlider.value = x, gauge.value, 0.15f);
     }
+
+    private void UpdateSkillFades()
+    {
+        for (int i = 0; i < isEquippedSkill.Length; i++) // isEquippedSkill의 길이만큼 반복
+        {
+            if (isEquippedSkill[i]) // 현재 장착된 스킬만 체크
+            {
+                float remainingCooldown = skillLastUsedTimes[i] + skillCooldowns[i] - Time.time;
+                if (remainingCooldown > 0)
+                {
+                    skillFades.fillAmount = Mathf.Clamp01(remainingCooldown / skillCooldowns[i]);
+                }
+            }
+        }
+    }
+
+    public void UpdateSkillGauge()
+    {
+        skillGaugeText.text = Mathf.Floor(skillGauge).ToString();
+
+        DOTween.To(() => skillGaugeImage.fillAmount, x => skillGaugeImage.fillAmount = x, skillGauge / maxSkillGauge, 0.2f)
+            .SetEase(Ease.OutBounce);
+    }
+
+    // 추가된 메서드: Nail 사용 가능 여부 체크
+    private void CheckNailAvailability()
+    {
+        for (int i = 0; i < isEquippedSkill.Length; i++)
+        {
+            if (i < skillLastUsedTimes.Length && i < skillCooldowns.Length && i < skillCosts.Length) // 배열의 길이 체크
+            {
+                if(isEquippedSkill[i])
+                {
+                    if (Time.time >= skillLastUsedTimes[i] + skillCooldowns[i] && skillGauge >= skillCosts[i])
+                    {
+                        glowObject.SetActive(true); // 사용 가능 시 Glow 활성화
+                        canUse[i] = true;
+                    }
+                    else
+                    {
+                        glowObject.SetActive(false); // 사용 불가능 시 Glow 비활성화
+                        canUse[i] = false;
+                    }
+                }
+            }
+        }
+    }
 }
+

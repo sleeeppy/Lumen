@@ -16,7 +16,7 @@ public class Bullet : MonoBehaviour
 
     void Update()
     {
-        // 사거리 제한 체크 코드 제거
+        // 사거리 제한 체크
         // if (Vector3.Distance(startPosition, transform.position) >= distanceLimit)
         // {
         //     Destroy(gameObject); // 사거리를 초과하면 총알 파괴

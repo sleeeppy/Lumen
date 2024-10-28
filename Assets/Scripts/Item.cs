@@ -113,13 +113,37 @@ public class ItemLogic : MonoBehaviour
 
     public void Nail1()
     {
-        // Nail1의 효과 구현
-        Debug.Log("Nail1 효과 발동: 추가 마나 제공");
+        Player player = FindObjectOfType<Player>();
+        if (player != null)
+        {
+            player.isEquippedSkill[0] = true;
+        }
+    }
+
+    public void UnEquipNail1()
+    {
+        Player player = FindObjectOfType<Player>();
+        if (player != null)
+        {
+            player.isEquippedSkill[0] = false;
+        }
     }
 
     public void Nail2()
     {
-        // Nail2의 효과 구현
-        Debug.Log("Nail2 효과 발동: 체력 회복");
+        Player player = FindObjectOfType<Player>();
+        if (player != null)
+        {
+            player.isEquippedSkill[1] = true;
+        }
+    }
+
+    public void UnEquipNail2()
+    {
+        Player player = FindObjectOfType<Player>();
+        if (player != null)
+        {
+            player.isEquippedSkill[1] = false;
+        }
     }
 }

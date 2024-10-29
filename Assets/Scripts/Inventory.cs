@@ -470,7 +470,7 @@ public class Inventory : MonoBehaviour
         {
             case Inven.Item.Ring1:
                 itemName = "하트 로켓";
-                description = "최대 체력이 2 증가합니다.";
+                description = "최대 체력이 1 증가합니다.";
                 break;
             case Inven.Item.Ring2:
                 itemName = "별의 반지";

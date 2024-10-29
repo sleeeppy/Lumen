@@ -13,10 +13,10 @@ public class ItemLogic : MonoBehaviour
             if (originalMaxLife == 0) // 처음 적용할 때만 저장
             {
                 originalMaxLife = player.maxLife; // 원래 최대 체력 저장
-                player.maxLife += 2; // 최대 체력 증가
-                player.life += 2;
+                player.maxLife += 1; // 최대 체력 증가
+                player.life += 1;
                 player.UpdateLifeIcon(player.life);
-                Debug.Log("최대 체력 2 증가");
+                Debug.Log("최대 체력 1 증가");
             }
         }
     }
@@ -30,7 +30,7 @@ public class ItemLogic : MonoBehaviour
             {
                 player.maxLife = originalMaxLife; // 원래 최대 체력으로 되돌리기
                 originalMaxLife = 0; // 원래 값 초기화
-                player.life -= 2;
+                player.life -= 1;
                 player.UpdateLifeIcon(player.life);
                 Debug.Log("최대 체력 원래대로 복원");
             }

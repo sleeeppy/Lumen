@@ -6,6 +6,9 @@ using UnityEngine.EventSystems;
 using TMPro;
 using DG.Tweening;
 using Sirenix.OdinInspector;
+using System.IO;
+using Newtonsoft.Json; // JSON 처리를 위한 라이브러리 추가
+using UnityEngine.SceneManagement;
 
 public class Inventory : MonoBehaviour
 {
@@ -13,7 +16,7 @@ public class Inventory : MonoBehaviour
     public GameObject DescriptionUI; // 아이템 설명창 UI
     public TextMeshProUGUI itemDescriptionText; // 설명창 텍스트
     public TextMeshProUGUI itemNameText; // 아이템 이름 텍스트
-    [SerializeField] private GameObject canvas;
+    //[SerializeField] private GameObject canvas;
     
     [FoldoutGroup("Buttons")] public Button[] itemButtons; // 아이템 버튼 배열
     [FoldoutGroup("Buttons")] public Sprite[] equippedSprites; // 장착된 상태의 스프라이트
@@ -26,6 +29,32 @@ public class Inventory : MonoBehaviour
 
     private Vector2 originPos;
     private Vector2[] originalPositions; // 원래 위치 배열
+
+    private void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
+
+    void OnEnable()
+    {
+    	  // 씬 매니저의 sceneLoaded에 체인을 건다.
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    // 체인을 걸어서 이 함수는 매 씬마다 호출된다.
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Debug.Log("OnSceneLoaded: " + scene.name);
+        if(scene.name == "Game")
+        {
+            inven.LoadEquippedItemsFromJson(); // 장착된 아이템을 JSON에서 로드
+        }
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
 
     private void Start()
     {
@@ -69,14 +98,15 @@ public class Inventory : MonoBehaviour
     {
         CheckButtonHover();
 
-        if (Input.GetKeyDown(KeyCode.I) || (Input.GetKeyDown(KeyCode.Escape) && inventoryUI.activeSelf))
+        if ((Input.GetKeyDown(KeyCode.Escape) && inventoryUI.activeSelf)
+            ||Input.GetKeyDown(KeyCode.I) && SceneManager.GetActiveScene().name == "Lobby")
         {
             if (inventoryUI.activeSelf)
             {
                 HideInventory();
             }
             else
-            {
+            {   
                 ShowInventory();
             }
         }
@@ -202,15 +232,9 @@ public class Inventory : MonoBehaviour
                         // 다른 아이템도 추가
                 }
             }
-        }
 
-        public void GetItem(Item item)
-        {
-            if (!_items.Contains(item))
-            {
-                _items.Add(item);
-                UpdateItemDelegate();
-            }
+            // _itemDelegate의 상태를 로그로 출력
+            Debug.Log("현재 _itemDelegate 상태: " + (_itemDelegate != null ? _itemDelegate.GetInvocationList().Length.ToString() : "null"));
         }
 
         public void Equip(Item item)
@@ -218,10 +242,10 @@ public class Inventory : MonoBehaviour
             if (_items.Contains(item))
             {
                 // 장착 해제 로직
-                // 아이템 효과 해제
-                UnEquip(item); // 기존 아이템 효과 해제
+                // UnEquip(item); // 기존 아이템 효과 해제
                 _items.Remove(item);
-                UpdateItemDelegate(); // 아이템 제거 후 delegate 업데이트
+                UpdateItemDelegate();
+                SaveEquippedItemsToJson();
             }
             else
             {
@@ -237,8 +261,7 @@ public class Inventory : MonoBehaviour
                 {
                     _items.Add(item);
                     UpdateItemDelegate();
-                    // 아이템 효과 적용
-                    //_itemDelegate?.Invoke(); // 현재 장착된 아이템의 효과 적용
+                    SaveEquippedItemsToJson(); // 장착 정보를 JSON 파일에 저장
                 }
                 else
                 {
@@ -247,7 +270,7 @@ public class Inventory : MonoBehaviour
                 }
             }
 
-            EquipItems();
+            // EquipItems(); // 아이템 효과 적용은 GameScene에서 처리
         }
 
         private string GetItemType(Item item)
@@ -322,13 +345,36 @@ public class Inventory : MonoBehaviour
                     break;
             }
         }
+
+        private void SaveEquippedItemsToJson()
+        {
+            string json = JsonConvert.SerializeObject(_items);
+            File.WriteAllText(Application.persistentDataPath + "/equippedItems.json", json);
+            Debug.Log("장착된 아이템을 JSON 파일에 저장했습니다: " + json); // JSON 저장 시 로그 출력
+        }
+
+        public void LoadEquippedItemsFromJson()
+        {
+            string path = Application.persistentDataPath + "/equippedItems.json";
+            if (File.Exists(path))
+            {
+                string json = File.ReadAllText(path);
+                _items = JsonConvert.DeserializeObject<List<Item>>(json);
+                Debug.Log("장착된 아이템을 JSON 파일에서 불러왔습니다: " + json); // JSON 불러올 때 로그 출력
+                EquipItems(); // 아이템 효과 적용
+            }
+            else
+            {
+                Debug.LogWarning("JSON 파일이 존재하지 않습니다: " + path); // 파일이 없을 경우 경고 로그 출력
+            }
+        }
     }
 
     private void InitializeInventoryUI()
     {
         for (int i = 0; i < itemButtons.Length; i++)
         {
-            Button currentBtn = itemButtons[i]; // 로컬 변수로 버튼 캡처
+            Button currentBtn = itemButtons[i]; // 로컬 변로 버튼 캡처
             int index = i; // 버튼 인덱스 캡처
 
             // 기존 OnClick 이벤트 리스너 제거
@@ -357,7 +403,7 @@ public class Inventory : MonoBehaviour
             entryEnter.callback.AddListener((data) => { OnItemButtonHover(currentBtn); });
             trigger.triggers.Add(entryEnter);
 
-            // Pointer Exit 이벤트 추가
+            // Pointer Exit 벤트 추가
             EventTrigger.Entry entryExit = new EventTrigger.Entry
             {
                 eventID = EventTriggerType.PointerExit
@@ -373,20 +419,20 @@ public class Inventory : MonoBehaviour
     public void ShowInventory()
     {
         inventoryUI.SetActive(true);
-        canvas.SetActive(false);
+        //canvas.SetActive(false);
         //Time.timeScale = 0;
     }
 
     public void HideInventory()
     {
         inventoryUI.SetActive(false);
-        canvas.SetActive(true);
+        //canvas.SetActive(true);
         //Time.timeScale = 1;
     }
 
     public void OnItemButtonClick(int index)
     {
-        Debug.Log($"버튼 클릭: {itemButtons[index].name}");
+        // Debug.Log($"버튼 클릭: {itemButtons[index].name}");
         Inven.Item item = (Inven.Item)index;
         inven.Equip(item);
 
@@ -408,7 +454,7 @@ public class Inventory : MonoBehaviour
         if (inven.Items.Contains(item))
         {
             btnTransform.anchoredPosition = equippedPositions[index]; // 장착된 위치로 이동
-            Debug.Log($"{equippedPositions[8]}");
+            //Debug.Log($"{equippedPositions[8]}");
             if (index == 8)
                 itemButtons[index].transform.rotation = Quaternion.Euler(0, 0, -81);
         }
@@ -424,7 +470,7 @@ public class Inventory : MonoBehaviour
 
     private void OnItemButtonHover(Button btn)
     {
-        Debug.Log($"버튼 호버 중: {btn.name}");
+        // Debug.Log($"버튼 호버 중: {btn.name}");
         // 아이템 정보 업데이트
         int index = Array.IndexOf(itemButtons, btn);
         if (index >= 0 && index < itemButtons.Length)
@@ -451,7 +497,7 @@ public class Inventory : MonoBehaviour
 
     private void OnItemButtonExit(Button btn)
     {
-        Debug.Log($"버튼 호버 종료: {btn.name}");
+        // Debug.Log($"버튼 호버 종료: {btn.name}");
         DOTween.To(() => DescriptionUI.GetComponent<RectTransform>().anchoredPosition.x,
         x => DescriptionUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(x, originPos.y), originPos.x, 0.8f)
         .SetEase(Ease.OutExpo)

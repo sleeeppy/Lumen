@@ -6,8 +6,6 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine.SceneManagement;
 using Sirenix.OdinInspector;
-using System;
-using System.ComponentModel.Design;
 
 public class Player : MonoBehaviour
 {
@@ -126,16 +124,20 @@ public class Player : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         material = spriteRenderer.material;
 
-        if (SceneManager.GetActiveScene().name == "GameScene")
+        if (SceneManager.GetActiveScene().name == "Game")
+        {
             UpdateLifeIcon(life);
+            skillFades.fillAmount = 0;
+        }
 
-        if (leftBorderCollider != null)
+        if (leftBorderCollider)
             leftBorder = leftBorderCollider.bounds.max.x;
 
-        if (rightBorderCollider != null)
+        if (rightBorderCollider)
             rightBorder = rightBorderCollider.bounds.min.x;
 
-        skillGaugeImage.fillAmount = 0f;
+        if(skillGaugeImage)
+            skillGaugeImage.fillAmount = 0f;
     }
 
     private void Update()
@@ -315,8 +317,7 @@ public class Player : MonoBehaviour
             }
         }
 
-        // 공중에 있고 Space를 누르고 있으며, 3초 이하일 때 slowFall 적용
-        // Add Input.GetKey(KeyCode.W)? 
+        // 공중에 있고 Space 혹은 W를 누르고 있으며, 3초 이하일 때 slowFall 적용
         if (!isGrounded && !isFlying && rigid2D.velocity.y < 0 && airBorneTime <= 3
             && (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.Space)))
         {

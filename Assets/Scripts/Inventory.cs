@@ -560,4 +560,20 @@ public class Inventory : MonoBehaviour
 
         return (itemName, description);
     }
+
+    private void OnApplicationQuit()
+    {
+        DeleteEquippedItemsJson(); // JSON 파일 삭제 메서드 호출
+    }
+
+    // JSON 파일 삭제 메서드 추가
+    private void DeleteEquippedItemsJson()
+    {
+        string path = Application.persistentDataPath + "/equippedItems.json";
+        if (File.Exists(path))
+        {
+            File.Delete(path);
+            Debug.Log("JSON 파일이 삭제되었습니다: " + path); // 삭제 시 로그 출력
+        }
+    }
 }

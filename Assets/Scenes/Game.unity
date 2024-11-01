@@ -103973,7 +103973,7 @@ MonoBehaviour:
   isFlying: 0
   skillGauge: 0
   maxSkillGauge: 10
-  skillGaugeIncreaseRate: 0.3
+  skillGaugeIncreaseRate: 0.05
   skillGaugeText: {fileID: 1875055871}
   skillGaugeImage: {fileID: 224805588}
   skillImage: {fileID: 1702620130}

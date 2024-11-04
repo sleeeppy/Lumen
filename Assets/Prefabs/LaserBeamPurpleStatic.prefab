@@ -10,9 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 1533391612490250598}
   - component: {fileID: 1533391612490250599}
+  - component: {fileID: -1199774219588518368}
   m_Layer: 0
   m_Name: LaserBeamPurpleStatic
-  m_TagString: Untagged
+  m_TagString: PlayerBullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -44,9 +45,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb9855b25e492c347b6309d1cbce6e7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  beamLineRendererPrefab: {fileID: 1007036860295384550, guid: cfc3bb6dc1420e74a9e0cbe19abbb63b, type: 3}
-  beamStartPrefab: {fileID: 5775956980904680419, guid: e628c9a8166d4cf4dbf150283d58014e, type: 3}
-  beamEndPrefab: {fileID: 8964530004266389168, guid: fb6559ef5baf2bd48ad42ab313dfd1a0, type: 3}
+  beamLineRendererPrefab: {fileID: 1007036860295384550, guid: cfc3bb6dc1420e74a9e0cbe19abbb63b,
+    type: 3}
+  beamStartPrefab: {fileID: 5775956980904680419, guid: e628c9a8166d4cf4dbf150283d58014e,
+    type: 3}
+  beamEndPrefab: {fileID: 8964530004266389168, guid: fb6559ef5baf2bd48ad42ab313dfd1a0,
+    type: 3}
   beamCollides: 1
   beamLength: 25
   beamEndOffset: 0
@@ -54,3 +58,17 @@ MonoBehaviour:
   textureLengthScale: 1
   widthMultiplier: 1.5
   pulseSpeed: 10
+--- !u!114 &-1199774219588518368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1533391612490250596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb2d96b2d7870a54787d8dcc67328010, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Damage: 0.2
+  deletetime: 2

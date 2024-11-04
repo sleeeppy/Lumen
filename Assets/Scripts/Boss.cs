@@ -93,6 +93,12 @@ public class Boss : MonoBehaviour
     // RetroProjectileScript에서 호출되는 함수 (Line 62)
     public void HandleCollision(GameObject bulletObject)
     {
+        // 카메라 뷰포트 체크
+        if (!IsInCameraView())
+        {
+            return; // 카메라 뷰포트를 벗어나면 데미지를 받지 않음
+        }
+
         Bullet bulletScript = bulletObject.GetComponent<Bullet>();
         Player playerScript = FindObjectOfType<Player>();
         if (bulletScript != null)
@@ -112,8 +118,19 @@ public class Boss : MonoBehaviour
             hitTimer = 0f;
             StartCoroutine(DelaySliderValue());
 
-            Destroy(bulletObject);
+            Attack attack = FindObjectOfType<Attack>();
+            if (attack != null)
+            {
+                if (attack.whatAttack != "Baracelet2")
+                    Destroy(bulletObject);
+            }
         }
+    }
+
+    private bool IsInCameraView()
+    {
+        Vector3 screenPoint = Camera.main.WorldToViewportPoint(transform.position);
+        return screenPoint.x >= 0f && screenPoint.x <= 1f && screenPoint.y >= 0f && screenPoint.y <= 1f && screenPoint.z > 0;
     }
 
     protected virtual void PhaseChange(int bossPhase)

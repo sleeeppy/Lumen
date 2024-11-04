@@ -54,6 +54,16 @@ public class RetroBeamStatic : MonoBehaviour
 				end = Vector3.Distance(transform.position, end) > beamLength 
 					? transform.position + (transform.forward * beamLength) 
 					: end;
+					
+				if (hit.collider.CompareTag("Boss3DCollider"))
+				{
+					Boss boss = hit.collider.GetComponentInParent<Boss>();
+					if (boss != null)
+					{
+						Debug.Log($"{hit.collider.name}");
+						boss.HandleCollision(gameObject);
+					}
+				}
 			}
 			else
 			{
@@ -62,6 +72,7 @@ public class RetroBeamStatic : MonoBehaviour
 				
 			line.SetPosition(1, end);
 			beamStart.transform.position = transform.position;
+			
 			beamStart.transform.LookAt(end);
 			beamEnd.transform.position = end;
 			beamEnd.transform.LookAt(beamStart.transform.position);

@@ -84055,7 +84055,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -202, y: 58}
+  m_AnchoredPosition: {x: -183, y: 15}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1702620128
@@ -103973,7 +103973,7 @@ MonoBehaviour:
   isFlying: 0
   skillGauge: 0
   maxSkillGauge: 10
-  skillGaugeIncreaseRate: 0.05
+  skillGaugeIncreaseRate: 0.08
   skillGaugeText: {fileID: 1875055871}
   skillGaugeImage: {fileID: 224805588}
   skillImage: {fileID: 1702620130}
@@ -104146,9 +104146,12 @@ MonoBehaviour:
   firePos: {fileID: 698233647}
   bulletPrefab: {fileID: 7148810250495089234, guid: 72f1f417e8776bd4fa84d5844205ff46,
     type: 3}
+  laserPrefab: {fileID: 1533391612490250596, guid: 37a358c5b8c8d1042b8e69018d27f579,
+    type: 3}
   distance: 1.5
   bulletCoolTime: 0.15
   bulletForce: 20
+  whatAttack: 
 --- !u!82 &2121168809
 AudioSource:
   m_ObjectHideFlags: 0

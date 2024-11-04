@@ -25,13 +25,27 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.tag == "Border")
+        if (other.gameObject.CompareTag("Border") && gameObject.name == "LaserMissileRedOBJ")
             Destroy(gameObject);
     }
 
-    // SetDistanceLimit 메서드 제거
+    // private void OnTriggerStay(Collider other)
+    // {
+    //     Debug.Log($"{other.gameObject.name}");
+    //     if (gameObject.name == "LaserBeamPurpleStatic" 
+    //         && other.gameObject.CompareTag("Boss3DCollider"))
+    //     {
+    //         Boss boss = other.GetComponentInParent<Boss>();
+    //         if (boss != null)
+    //         {
+    //             boss.HandleCollision(gameObject); // 충돌 처리 호출
+    //         }
+    //     }
+    // }
+
     // public void SetDistanceLimit(float limit)
     // {
     //     distanceLimit = limit;
     // }
+
 }

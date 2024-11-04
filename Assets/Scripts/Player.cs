@@ -13,7 +13,6 @@ public class Player : MonoBehaviour
     private bool isTouchBottom;
     private bool isTouchLeft;
     private bool isTouchRight;
-
     
     [SerializeField] public float moveSpeed = 8;
 
@@ -100,7 +99,7 @@ public class Player : MonoBehaviour
     [TabGroup("Tab","Skill", SdfIconType.Lightning, TextColor = "Black")]
     [TabGroup("Tab","Skill")] [SerializeField] public float skillGauge = 0f; // 스킬 게이지
     [TabGroup("Tab","Skill")] [SerializeField] public float maxSkillGauge = 20f; // 최대 스킬 게이지
-    [TabGroup("Tab","Skill")] [SerializeField] public float skillGaugeIncreaseRate = 0.25f; // 스킬 게이지 증가 속도
+    [TabGroup("Tab","Skill")] [SerializeField] public float skillGaugeIncreaseRate = 0.35f; // 스킬 게이지 증가 속도
     [TabGroup("Tab","Skill")] [SerializeField] private TextMeshProUGUI skillGaugeText;
     [TabGroup("Tab","Skill")] [SerializeField] private Image skillGaugeImage;
     [TabGroup("Tab","Skill")] [SerializeField] private Image skillImage;
@@ -114,7 +113,6 @@ public class Player : MonoBehaviour
     [HideInInspector] public bool[] isEquippedSkill = { false, false };
     [HideInInspector] public bool[] canUse = { false, false };
     private float[] skillLastUsedTimes = new float[2]; // Nail 사용 시간 배열
-
 
     private void Awake()
     {

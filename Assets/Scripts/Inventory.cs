@@ -82,6 +82,7 @@ public class Inventory : MonoBehaviour
         equippedPositions[0] = new Vector2(-185, 234);
         equippedPositions[1] = new Vector2(-190, 146);
         equippedPositions[5] = new Vector2(-256, -164);
+        equippedPositions[6] = new Vector2(-265, -153);
         equippedPositions[8] = new Vector2(-446, 275);
         
         // ... 나머지 버튼의 위치 설정 ...
@@ -99,7 +100,7 @@ public class Inventory : MonoBehaviour
         CheckButtonHover();
 
         if ((Input.GetKeyDown(KeyCode.Escape) && inventoryUI.activeSelf)
-            ||Input.GetKeyDown(KeyCode.I) && SceneManager.GetActiveScene().name == "Lobby")
+            ||Input.GetKeyDown(KeyCode.Tab) && SceneManager.GetActiveScene().name == "Lobby")
         {
             if (inventoryUI.activeSelf)
             {
@@ -318,33 +319,36 @@ public class Inventory : MonoBehaviour
         }
 
         // 새로운 메서드 추가: 아이템 효과 해제
-        private void UnEquip(Item item)
-        {
-            switch (item)
-            {
-                case Item.Ring1:
-                    _itemLogic.UnEquipRing1();
-                    break;
-                case Item.Ring2:
-                    _itemLogic.UnEquipRing2();
-                    break;
-                case Item.Ring3:
-                    _itemLogic.UnEquipRing3();
-                    break;
+        // private void UnEquip(Item item)
+        // {
+        //     switch (item)
+        //     {
+        //         case Item.Ring1:
+        //             _itemLogic.UnEquipRing1();
+        //             break;
+        //         case Item.Ring2:
+        //             _itemLogic.UnEquipRing2();
+        //             break;
+        //         case Item.Ring3:
+        //             _itemLogic.UnEquipRing3();
+        //             break;
                 
-                // Add More
+        //         // Add More
 
-                case Item.Bracelet1:
-                    _itemLogic.UnEquipBracelet1();
-                    break;
-                case Item.Nail1:
-                    _itemLogic.UnEquipNail1();
-                    break;
-                case Item.Nail2:
-                    _itemLogic.UnEquipNail2();
-                    break;
-            }
-        }
+        //         case Item.Bracelet1:
+        //             _itemLogic.UnEquipBracelet1();
+        //             break;
+        //         case Item.Bracelet2:
+        //             _itemLogic.UnEquipBracelet2();
+        //             break;
+        //         case Item.Nail1:
+        //             _itemLogic.UnEquipNail1();
+        //             break;
+        //         case Item.Nail2:
+        //             _itemLogic.UnEquipNail2();
+        //             break;
+        //     }
+        // }
 
         private void SaveEquippedItemsToJson()
         {

@@ -90,19 +90,23 @@ public class ItemLogic : MonoBehaviour
 
     public void Bracelet1()
     {
+        Attack attack = FindObjectOfType<Attack>();
+        if (attack != null)
+        {
+            attack.whatAttack = "Baracelet1";
+        }
         // Bracelet1의 효과 구현
-        Debug.Log("Bracelet1 효과 발동: 속도 증가");
-    }
-
-    public void UnEquipBracelet1()
-    {
-
+        Debug.Log("Bracelet1 효과 발동: 기본 공격으로 변경");
     }
 
     public void Bracelet2()
     {
-        // Bracelet2의 효과 구현
-        Debug.Log("Bracelet2 효과 발동: 속도 증가");
+        Attack attack = FindObjectOfType<Attack>();
+        if (attack != null)
+        {
+            attack.whatAttack = "Baracelet2";
+        }
+        Debug.Log("Bracelet2 효과 발동: 레이저 공격으로 변경");
     }
 
     public void Bracelet3()

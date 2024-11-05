@@ -9,9 +9,11 @@ using Sirenix.OdinInspector;
 using System.IO;
 using Newtonsoft.Json; // JSON 처리를 위한 라이브러리 추가
 using UnityEngine.SceneManagement;
+using Unity.VisualScripting;
 
 public class Inventory : MonoBehaviour
 {
+    public static Inventory instance;
     public GameObject inventoryUI; // 인벤토리 UI 패널
     public GameObject DescriptionUI; // 아이템 설명창 UI
     public TextMeshProUGUI itemDescriptionText; // 설명창 텍스트
@@ -32,7 +34,12 @@ public class Inventory : MonoBehaviour
 
     private void Awake()
     {
-        DontDestroyOnLoad(gameObject);
+        if (instance == null)
+            instance = this;
+        else
+            Destroy(gameObject);
+
+            DontDestroyOnLoad(gameObject);
     }
 
     void OnEnable()

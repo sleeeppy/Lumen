@@ -6,6 +6,7 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine.SceneManagement;
 using Sirenix.OdinInspector;
+using Unity.Mathematics;
 
 public class Player : MonoBehaviour
 {
@@ -50,7 +51,9 @@ public class Player : MonoBehaviour
     [TabGroup("Tab","Fly")] [SerializeField] private float slowFall = 0.15f;
     [TabGroup("Tab","Fly")] [SerializeField] private float rotateSpeed = 1f;
     [TabGroup("Tab","Fly")] [SerializeField] private GameObject flyParticle;
-    private GameObject flyingParticle;
+    [TabGroup("Tab", "Fly")][SerializeField] private GameObject flyTrails;
+    // private GameObject flyingParticle;
+    private GameObject curTrails;
     private bool canFlyAgainAfterLanding = true;
 
     [TabGroup("Tab","Life", SdfIconType.SuitHeart, TextColor = "Magenta")]
@@ -448,6 +451,14 @@ public class Player : MonoBehaviour
                 {
                     dashParticleDir = Quaternion.Euler(0, -90, 0);
                 }
+                // if (dashDirection == Vector2.right)
+                // {
+                //     dashParticleDir = Quaternion.Euler(0, 0, 90);
+                // }
+                // else
+                // {
+                //     dashParticleDir = Quaternion.Euler(0, 0, -90);
+                // }
                 particles.transform.rotation = dashParticleDir;
 
                 // 파티클 위치를 캐릭터의 현재 위치로 설정
@@ -490,16 +501,19 @@ public class Player : MonoBehaviour
             {
                 gauge.value -= 0.2f;
                 isFlying = true;
+
+                // 기존 curTrails가 존재하더라도 새로운 curTrails 생성
+                if (curTrails != null)
+                {
+                    Destroy(curTrails, 3f); // 기존 curTrails 삭제
+                }
+                curTrails = Instantiate(flyTrails, transform.position, Quaternion.identity);
             }
+            
+            curTrails.transform.position = transform.position;
 
             isInvincibility = true;
             gauge.value -= flyGauge * Time.deltaTime;
-
-            flyingParticle = Instantiate(flyParticle, transform.position, Quaternion.Euler(0, 90, -90));
-            Vector3 dir = transform.position - flyingParticle.transform.position;
-            flyingParticle.transform.LookAt(dir);
-            flyingParticle.transform.position = transform.position;
-            Destroy(flyingParticle, 0.4f);
 
             if (gauge.value <= 0 && !isTouchBottom)
             {

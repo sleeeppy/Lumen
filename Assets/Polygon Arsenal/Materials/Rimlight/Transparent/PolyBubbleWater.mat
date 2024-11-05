@@ -42,7 +42,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - FresnelSize: 4.46
+    - FresnelSize: 3.83
     - Vector1_CA637FD8: 9
     - _InvFade: 3
     - _QueueControl: 0
@@ -55,7 +55,7 @@ Material:
     - Albedo: {r: 0, g: 0.05977885, b: 0.12156863, a: 0}
     - Color_1A0BCCE7: {r: 0, g: 2.8862746, b: 7.184314, a: 0}
     - Color_8EE4FC62: {r: 0, g: 0.062223904, b: 0.16037738, a: 0}
-    - FresnelColor: {r: 0.5334526, g: 2.291922, b: 4.5594244, a: 0}
+    - FresnelColor: {r: 4.1422763, g: 2.0581117, b: 3.8602092, a: 0}
     - _InnerColor: {r: 0.035142735, g: 0.085386604, b: 0.18382353, a: 1}
     - _RimColor: {r: 0.2794118, g: 0.6720082, b: 1, a: 1}
     - _SpecColor: {r: 1, g: 1, b: 1, a: 1}

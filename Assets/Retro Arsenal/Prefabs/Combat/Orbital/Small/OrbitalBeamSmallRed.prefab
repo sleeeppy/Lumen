@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &187115417260545707
 Transform:
   m_ObjectHideFlags: 0
@@ -4914,7 +4914,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &187115417881523484
 Transform:
   m_ObjectHideFlags: 0
@@ -9850,7 +9850,7 @@ ParticleSystem:
   startDelay:
     serializedVersion: 2
     minMaxState: 0
-    scalar: 1
+    scalar: 0
     minScalar: 0
     maxCurve:
       serializedVersion: 2
@@ -9910,7 +9910,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.35
+      scalar: 0.05
       minScalar: 0.15
       maxCurve:
         serializedVersion: 2
@@ -10079,7 +10079,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 2.5
+      scalar: 4
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -10132,7 +10132,7 @@ ParticleSystem:
     startSizeY:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 2.5
+      scalar: 2
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -10825,7 +10825,7 @@ ParticleSystem:
       repeatInterval: 0.05
       probability: 1
   SizeModule:
-    enabled: 1
+    enabled: 0
     curve:
       serializedVersion: 2
       minMaxState: 1
@@ -11149,7 +11149,7 @@ ParticleSystem:
         m_RotationOrder: 4
     separateAxes: 0
   ColorModule:
-    enabled: 1
+    enabled: 0
     gradient:
       serializedVersion: 2
       minMaxState: 1
@@ -14690,9 +14690,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6922611425693921659}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: 0.52002925, w: 0.8541485}
   m_LocalPosition: {x: -6.1, y: 0, z: -0.113073826}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 5.1375, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 187115417881523484}
@@ -14703,7 +14703,7 @@ Transform:
   - {fileID: 187115417260545707}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 62.668}
 --- !u!198 &6922611425693921638
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -14712,7 +14712,7 @@ ParticleSystem:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6922611425693921659}
   serializedVersion: 8
-  lengthInSec: 6.5
+  lengthInSec: 0.2
   simulationSpeed: 1
   stopAction: 0
   cullingMode: 0
@@ -14727,7 +14727,7 @@ ParticleSystem:
   startDelay:
     serializedVersion: 2
     minMaxState: 0
-    scalar: 0
+    scalar: 0.05
     minScalar: 0
     maxCurve:
       serializedVersion: 2
@@ -14787,7 +14787,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1
+      scalar: 0.2
       minScalar: 0.15
       maxCurve:
         serializedVersion: 2
@@ -14894,7 +14894,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 1, b: 1, a: 1}
+      maxColor: {r: 0.745283, g: 0.2437403, b: 0.2437403, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -14956,7 +14956,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 2
+      scalar: 4
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -15538,7 +15538,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0
+      scalar: 2.28
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -15591,7 +15591,7 @@ ParticleSystem:
     rateOverDistance:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0
+      scalar: 2.64
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -15699,7 +15699,7 @@ ParticleSystem:
           m_PostInfinity: 2
           m_RotationOrder: 4
       cycleCount: 1
-      repeatInterval: 0.05
+      repeatInterval: 4.6
       probability: 1
   SizeModule:
     enabled: 1
@@ -19654,7 +19654,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6922611427112143724
 Transform:
   m_ObjectHideFlags: 0
@@ -24551,7 +24551,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6922611427562835584
 Transform:
   m_ObjectHideFlags: 0
@@ -29421,7 +29421,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1611312401513200993
 Transform:
   m_ObjectHideFlags: 0

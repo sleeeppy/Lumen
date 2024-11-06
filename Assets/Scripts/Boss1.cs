@@ -40,11 +40,6 @@ public class Boss1 : Boss
     protected override void PhaseChange(int bossPhase)
     {
         base.PhaseChange(bossPhase);
-        
-        // 탄막 패턴 설정
-
-        // 1 ~ 4
-        // -2.14 ~ 6.9
 
         randomY = Mathf.Clamp(Random.Range(bottomBorder + 4.5f, topBorder - 3), bottomBorder + 4.5f, topBorder - 3); // 범위 제한
 

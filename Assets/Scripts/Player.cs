@@ -6,7 +6,9 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine.SceneManagement;
 using Sirenix.OdinInspector;
-using Unity.Mathematics;
+//using Unity.Mathematics;
+using Cinemachine;
+using System.Threading;
 
 public class Player : MonoBehaviour
 {
@@ -113,6 +115,7 @@ public class Player : MonoBehaviour
     [TabGroup("Tab","Skill")] [SerializeField] private float[] skillCosts = { 5f, 20f }; // Nail 소모량 배열
     [TabGroup("Tab","Skill")] [SerializeField] private Sprite[] skillSprites; // 스킬 이미지 배열
     [TabGroup("Tab","Skill")][SerializeField] private Sprite[] skillCostSprites;
+
     [HideInInspector] public bool[] isEquippedSkill = { false, false };
     [HideInInspector] public bool[] canUse = { false, false };
     private float[] skillLastUsedTimes = new float[2]; // Nail 사용 시간 배열
@@ -536,11 +539,11 @@ public class Player : MonoBehaviour
 
             rigid2D.velocity = moveDirection * moveSpeed * 1.5f;
 
-            if (flyX != 0)
-            {
-                float rotationAmount = rotateSpeed * Time.deltaTime;
-                transform.Rotate(0, 0, flyX < 0 ? rotationAmount : -rotationAmount);
-            }
+            // if (flyX != 0)
+            // {
+            //     float rotationAmount = rotateSpeed * Time.deltaTime;
+            //     transform.Rotate(0, 0, flyX < 0 ? rotationAmount : -rotationAmount);
+            // }
         }
     }
 
@@ -665,14 +668,15 @@ public class Player : MonoBehaviour
                 StartCoroutine(InvincibilityCoroutine());
                 StartCoroutine(HitInvincibility());
 
-                // 스킬 게이지 감소
-                skillGauge = Mathf.Max(skillGauge - 5f, 0f);
-                Debug.Log("스킬 게이지가 5 감소했습니다.");
-                
                 flash = true;
                 cg.alpha = 0.3f;
 
-                UpdateSkillGauge();
+                CameraShake.instance.ShakeCamera();
+    
+                // // 스킬 게이지 감소
+                // skillGauge = Mathf.Max(skillGauge - 3f, 0f);
+                // Debug.Log("스킬 게이지가 5 감소했습니다.");
+                // UpdateSkillGauge();
             }
             else
             {

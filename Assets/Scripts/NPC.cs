@@ -7,6 +7,9 @@ using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using TMPro;
 using DG.Tweening;
+using Cinemachine;
+using System.IO;
+using UnityEditor.Build;
 
 public class NPC : MonoBehaviour
 {
@@ -34,28 +37,51 @@ public class NPC : MonoBehaviour
     private bool justOnce;
     private string currentFullText; // 현재 대화의 전체 텍스트
 
+    [SerializeField] private CinemachineVirtualCamera vCam;
+
+    private float originSpeed;
+    private int originMaxJumpCount;
+    private Player playerScript;
+    private Animator anim;
+
     void Start()
     {
+        // DOTween 초기화 확인
+        DOTween.Init();
+
         StartCoroutine(ObtainSheetData());
+        playerScript = GameObject.FindWithTag("Player").GetComponent<Player>();
+        anim = playerScript.GetComponent<Animator>();
+
+
+        originSpeed = playerScript.moveSpeed;
+        originMaxJumpCount = playerScript.maxJumpCount;
+
+        //vCam = vCam.GetComponent<CinemachineVirtualCamera>();
+
+        // vCam이 null인지 확인
+        if (vCam == null)
+        {
+            Debug.LogError("vCam이 null입니다. 확인하세요.");
+        }
     }
 
     void Update()
     {
-        if (Input.GetKey(KeyCode.E) && playerInside && !isTyping && !justOnce) 
+        if (Input.GetKeyDown(KeyCode.F) && playerInside && !isTyping && !justOnce) 
         {
-            //GameObject.Find("Virtual Camera").SetActive(false);
-            Player playerScript = GameObject.FindWithTag("Player").GetComponent<Player>();
-            Animator anim = playerScript.GetComponent<Animator>();
-            
-            anim.SetBool("isRun", false);
+            anim.enabled = false;
             playerScript.moveSpeed = 0;
             playerScript.maxJumpCount = 0;
-            
+        
             textBox.SetActive(true);
             buttonE.SetActive(false);
             
             StartDialogue();
             justOnce = true;
+
+            // DOTween을 Lerp로 변경
+            StartCoroutine(LerpFieldOfView(vCam.m_Lens.FieldOfView, 30f, 0.4f));
         }
         
         // 텍스트 출력 중에 anyKeyDown을 눌렀을 때 즉시 출력 완료
@@ -71,6 +97,18 @@ public class NPC : MonoBehaviour
                 // 텍스트 출력이 완료되면 다음 대화로 넘어감
                 ShowNextDialogue();
             }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape) && Inventory.instance.inventoryUI.activeSelf)
+        {
+            Inventory.instance.HideInventory();
+            // DOTween을 Lerp로 변경
+            StartCoroutine(LerpFieldOfView(vCam.m_Lens.FieldOfView, 35f, 0.4f));
+
+            playerScript.moveSpeed = originSpeed;
+            playerScript.maxJumpCount = originMaxJumpCount;
+            anim.enabled = true;
+            justOnce = false;
         }
     }
 
@@ -159,7 +197,15 @@ public class NPC : MonoBehaviour
         }
         else
         {
-            LoadNextScene();
+            // 대화가 끝난 후 로그 출력
+            if (Id == "3") // 2번 인덱스 NPC의 ID가 "2"라고 가정
+            {
+                textBox.SetActive(false);
+                Inventory.instance.ShowInventory();
+                Debug.Log("2번 NPC와의 대화가 모두 끝났습니다!"); // 추가된 로그
+            }
+            else
+                LoadNextScene();
         }
     }
 
@@ -215,5 +261,17 @@ public class NPC : MonoBehaviour
             buttonE.SetActive(false);
             playerInside = false;
         }
+    }
+
+    private IEnumerator LerpFieldOfView(float startValue, float endValue, float duration)
+    {
+        float elapsedTime = 0f;
+        while (elapsedTime < duration)
+        {
+            vCam.m_Lens.FieldOfView = Mathf.Lerp(startValue, endValue, (elapsedTime / duration));
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        vCam.m_Lens.FieldOfView = endValue; // 최종 값 설정
     }
 }

@@ -68,12 +68,12 @@ public class Inventory : MonoBehaviour
         inven = new Inven();
         inven.Items = new List<Inven.Item>();
 
+        // 기본 아이템 장착
+        // inven.Equip(Inven.Item.Bracelet1); // Bracelet1 장착
+        // inven.Equip(Inven.Item.Nail1); // Nail1 장착
+
         // 인벤토리 UI 초기화
         InitializeInventoryUI();
-        // foreach (var item in itemButtons)
-        // {
-        //     UpdateItemSprite(item, false);
-        // }
 
         originPos = DescriptionUI.GetComponent<RectTransform>().anchoredPosition;
 
@@ -100,24 +100,28 @@ public class Inventory : MonoBehaviour
             Image img = itemGameObjects[i].GetComponent<Image>();
             img.sprite = unequippedSprites[i];
         }
+
+        // 기본 아이템의 UI 업데이트
+        OnItemButtonClick(5); // Bracelet1의 인덱스
+        OnItemButtonClick(8); // Nail1의 인덱스
     }
 
     private void Update()
     {
         CheckButtonHover();
 
-        if ((Input.GetKeyDown(KeyCode.Escape) && inventoryUI.activeSelf)
-            ||Input.GetKeyDown(KeyCode.Tab) && SceneManager.GetActiveScene().name == "Lobby")
-        {
-            if (inventoryUI.activeSelf)
-            {
-                HideInventory();
-            }
-            else
-            {   
-                ShowInventory();
-            }
-        }
+        // if ((Input.GetKeyDown(KeyCode.Escape) && inventoryUI.activeSelf)
+        //     ||Input.GetKeyDown(KeyCode.Tab) && SceneManager.GetActiveScene().name == "Lobby")
+        // {
+        //     if (inventoryUI.activeSelf)
+        //     {
+        //         HideInventory();
+        //     }
+        //     else
+        //     {   
+        //         ShowInventory();
+        //     }
+        // }
     }
 
     private void CheckButtonHover()

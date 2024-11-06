@@ -185,7 +185,6 @@ public class Boss : MonoBehaviour
     {
         spriteRenderer.color = new Color(255f / 255f, 158f / 255f, 158f / 255f); // 색상 변경        spriteRenderer.color = new Color(FF9E9E)
         //spriteRenderer.color = Color.red;ㄴ
-        Debug.Log("d");
         yield return new WaitForSeconds(0.1f); // 0.1초 대기
         spriteRenderer.color = Color.white; // 원래 색상으로 복원
         colorChangeCoroutine = null;

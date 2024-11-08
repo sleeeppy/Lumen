@@ -237,6 +237,11 @@ PrefabInstance:
       propertyPath: ColorModule.gradient.maxGradient.m_NumColorKeys
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 198128012753920874, guid: 0b5feaa66c6e8c749a7ab24cec81dde7,
+        type: 3}
+      propertyPath: EmissionModule.m_Bursts.Array.data[0].probability
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 198150897936832758, guid: 0b5feaa66c6e8c749a7ab24cec81dde7,
         type: 3}
       propertyPath: ColorModule.gradient.maxGradient.ctime0
@@ -416,6 +421,11 @@ PrefabInstance:
         type: 3}
       propertyPath: ColorModule.gradient.maxGradient.key5.r
       value: 0.9716981
+      objectReference: {fileID: 0}
+    - target: {fileID: 198238376536223888, guid: 0b5feaa66c6e8c749a7ab24cec81dde7,
+        type: 3}
+      propertyPath: EmissionModule.m_Bursts.Array.data[0].probability
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 199266671775175374, guid: 0b5feaa66c6e8c749a7ab24cec81dde7,
         type: 3}

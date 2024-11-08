@@ -9,7 +9,6 @@ using TMPro;
 using DG.Tweening;
 using Cinemachine;
 using System.IO;
-using UnityEditor.Build;
 
 public class NPC : MonoBehaviour
 {
@@ -68,7 +67,8 @@ public class NPC : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F) && playerInside && !isTyping && !justOnce) 
+        if (Input.GetKeyDown(KeyCode.F) && playerInside && !isTyping 
+            && !Inventory.instance.inventoryUI.activeSelf && !textBox.activeSelf) 
         {
             anim.enabled = false;
             playerScript.moveSpeed = 0;
@@ -80,13 +80,18 @@ public class NPC : MonoBehaviour
             StartDialogue();
             justOnce = true;
 
-            // DOTween을 Lerp로 변경
-            StartCoroutine(LerpFieldOfView(vCam.m_Lens.FieldOfView, 30f, 0.4f));
+            StartCoroutine(LerpFieldOfView(vCam.m_Lens.FieldOfView, 30f, 0.35f));
         }
         
         // 텍스트 출력 중에 anyKeyDown을 눌렀을 때 즉시 출력 완료
         if (textBox.activeSelf && Input.anyKeyDown)
         {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                EndDialogue();                
+                return;
+            }
+
             if (isTyping) 
             {
                 // 현재 텍스트가 출력 중이면 즉시 출력 완료
@@ -99,17 +104,22 @@ public class NPC : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Escape) && Inventory.instance.inventoryUI.activeSelf)
+        if(Inventory.instance.inventoryUI.activeSelf && Input.GetKeyDown(KeyCode.Escape))
         {
             Inventory.instance.HideInventory();
-            // DOTween을 Lerp로 변경
-            StartCoroutine(LerpFieldOfView(vCam.m_Lens.FieldOfView, 35f, 0.4f));
-
-            playerScript.moveSpeed = originSpeed;
-            playerScript.maxJumpCount = originMaxJumpCount;
-            anim.enabled = true;
-            justOnce = false;
+            EndDialogue();
         }
+    }
+
+    void EndDialogue()
+    {
+        StartCoroutine(LerpFieldOfView(vCam.m_Lens.FieldOfView, 35f, 0.35f));
+
+        playerScript.moveSpeed = originSpeed;
+        playerScript.maxJumpCount = originMaxJumpCount;
+        anim.enabled = true;
+        justOnce = false;
+        textBox.SetActive(false);
     }
 
     IEnumerator ObtainSheetData()
@@ -178,8 +188,9 @@ public class NPC : MonoBehaviour
         {
             currentDialogue = dialoguesByNameAndId[key];
             dialogueIndex = 0;
-            chatText.text = ""; 
+            chatText.text = "";
             ShowNextDialogue();
+            //Debug.Log($"ddd {currentDialogue[dialogueIndex-1]}, {dialogueIndex}");
         }
         else
         {
@@ -192,17 +203,17 @@ public class NPC : MonoBehaviour
         if (dialogueIndex < currentDialogue.Count)
         {
             string dialogue = currentDialogue[dialogueIndex];
-            dialogueIndex++;
             StartCoroutine(AnimateText(dialogue));
+            dialogueIndex++;
         }
         else
         {
-            // 대화가 끝난 후 로그 출력
-            if (Id == "3") // 2번 인덱스 NPC의 ID가 "2"라고 가정
+            if (Id == "3")
             {
                 textBox.SetActive(false);
                 Inventory.instance.ShowInventory();
-                Debug.Log("2번 NPC와의 대화가 모두 끝났습니다!"); // 추가된 로그
+                StartCoroutine(LerpFieldOfView(vCam.m_Lens.FieldOfView, 23.5f, 0.4f));
+                Debug.Log("상점 NPC와의 대화가 모두 끝났습니다!");
             }
             else
                 LoadNextScene();
@@ -221,6 +232,7 @@ public class NPC : MonoBehaviour
         // DOTween을 사용하여 텍스트를 한 글자씩 타이핑 효과로 출력
         dialoguePointer.SetActive(false); // 화살표 비활성화
         DOTween.To(() => myString, x => myString = x, text, text.Length / textSpeed)
+            .SetEase(Ease.OutCubic)
             .OnUpdate(() => chatText.text = myString)
             .OnComplete(() => 
             {

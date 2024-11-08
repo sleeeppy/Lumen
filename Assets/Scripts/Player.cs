@@ -525,7 +525,8 @@ public class Player : MonoBehaviour
             }
 
             rigid2D.gravityScale = 0;
-            spriteRenderer.sprite = flySprite;
+            //spriteRenderer.sprite = flySprite;
+            spriteRenderer.enabled = false;
             anim.enabled = false;
 
             float flyX = Input.GetAxis("Horizontal");
@@ -562,6 +563,8 @@ public class Player : MonoBehaviour
         transform.rotation = Quaternion.Euler(0, 0, 0);
         curTime = 0;
         currentJumpCount = 0;
+
+        spriteRenderer.enabled = true;
 
         canFlyAgainAfterLanding = false;
     }

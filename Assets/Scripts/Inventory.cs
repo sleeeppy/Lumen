@@ -7,9 +7,10 @@ using TMPro;
 using DG.Tweening;
 using Sirenix.OdinInspector;
 using System.IO;
-using Newtonsoft.Json; // JSON 처리를 위한 라이브러리 추가
+using Newtonsoft.Json;
 using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
+using System.Collections;
 
 public class Inventory : MonoBehaviour
 {
@@ -31,15 +32,18 @@ public class Inventory : MonoBehaviour
 
     private Vector2 originPos;
     private Vector2[] originalPositions; // 원래 위치 배열
+    [SerializeField] private GameObject warningText;
 
     private void Awake()
     {
-        if (instance == null)
+        if (!instance)
             instance = this;
         else
             Destroy(gameObject);
 
-            DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(gameObject);
+
+        warningText.SetActive(false);
     }
 
     void OnEnable()
@@ -140,7 +144,7 @@ public class Inventory : MonoBehaviour
         foreach (RaycastResult result in raycastResults)
         {
             Button btn = result.gameObject.GetComponent<Button>();
-            if (btn != null)
+            if (btn != null && result.gameObject.CompareTag("Item"))
             {
                 currentHoverButton = btn;
                 break;
@@ -163,6 +167,19 @@ public class Inventory : MonoBehaviour
 
             lastHoveredButton = currentHoverButton;
         }
+    }
+
+    public void CantEquip()
+    {
+        StartCoroutine(WarningTextCoroutine());
+    }
+
+    IEnumerator WarningTextCoroutine()
+    {
+        CameraShake.instance.ShakeCamera();
+        warningText.SetActive(true);
+        yield return new WaitForSeconds(1.5f);
+        warningText.SetActive(false);
     }
 
     class Inven
@@ -253,8 +270,7 @@ public class Inventory : MonoBehaviour
         {
             if (_items.Contains(item))
             {
-                // 장착 해제 로직
-                // UnEquip(item); // 기존 아이템 효과 해제
+                // 장착 해제
                 _items.Remove(item);
                 UpdateItemDelegate();
                 SaveEquippedItemsToJson();
@@ -277,12 +293,11 @@ public class Inventory : MonoBehaviour
                 }
                 else
                 {
+                    instance.CantEquip(); // 인스턴스를 통해 메서드 호출
                     Debug.Log("해당 유형의 아이템은 더 이상 장착할 수 없습니다.");
                     return;
                 }
             }
-
-            // EquipItems(); // 아이템 효과 적용은 GameScene에서 처리
         }
 
         private string GetItemType(Item item)
@@ -498,7 +513,7 @@ public class Inventory : MonoBehaviour
         }
         else
         {
-            Debug.LogError("아이템 인덱스가 범위를 벗어났습니다.");
+            // Debug.LogError("아이템 인덱스가 범위를 벗어났습니다.");
         }
 
         DOTween.To(() => originPos.x,
@@ -567,7 +582,7 @@ public class Inventory : MonoBehaviour
                 break;
             case Inven.Item.Nail2:
                 itemName = "레인보우 스파크";
-                description = "지속시간동안 무적상태가 되며 공격속도가 대폭 증가합니다.\n (개발중입니다.)";
+                description = "지속시간동안 무적 상태가 되며 공격속도가 대폭 증가합니다.\n (개발중입니다.)";
                 break;
             default:
                 return ("", "");

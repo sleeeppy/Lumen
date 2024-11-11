@@ -35,7 +35,7 @@ public class Boss : MonoBehaviour
     [SerializeField] private Collider2D bottomBorderCollider;
     [SerializeField] private Collider2D topBorderCollider;
 
-    [SerializeField] private AnimationCurve easeCurve;
+    // [SerializeField] private AnimationCurve easeCurve;
 
     protected float leftBorder, rightBorder, bottomBorder, topBorder;
 
@@ -122,8 +122,8 @@ public class Boss : MonoBehaviour
 
             // 슬라이더 애니메이션
             float targetHP = HP;
-            DOTween.To(() => slider.value, x => slider.value = x, targetHP, 0.1f) 
-            .SetEase(easeCurve);
+            DOTween.To(() => slider.value, x => slider.value = x, targetHP, 0.1f);
+            // .SetEase(easeCurve);
 
             // 피격 상태 설정 및 타이머 리셋
             isHit = true;

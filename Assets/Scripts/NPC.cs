@@ -13,7 +13,7 @@ using System.IO;
 public class NPC : MonoBehaviour
 {
     [SerializeField] private GameObject buttonE;
-    [SerializeField] private GameObject textBox;
+    [SerializeField] public GameObject textBox;
     [SerializeField] private GameObject dialoguePointer;
 
     [SerializeField] private TextMeshProUGUI nameText;
@@ -114,12 +114,18 @@ public class NPC : MonoBehaviour
     void EndDialogue()
     {
         StartCoroutine(LerpFieldOfView(vCam.m_Lens.FieldOfView, 35f, 0.35f));
-
+        WaitOneFrame();
+        
         playerScript.moveSpeed = originSpeed;
         playerScript.maxJumpCount = originMaxJumpCount;
         anim.enabled = true;
         justOnce = false;
         textBox.SetActive(false);
+    }
+
+    IEnumerator WaitOneFrame()
+    {
+        yield return null;
     }
 
     IEnumerator ObtainSheetData()

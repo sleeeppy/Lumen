@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
+using DG.Tweening;
 
 public class GameManager : MonoBehaviour
 {
@@ -86,17 +87,17 @@ public class GameManager : MonoBehaviour
     void OnHoverEnter(Button button)
     {
         if(button.name == "Start Button")
-            startText.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
+            startText.transform.DOScale(new Vector3(0.7f, 0.7f, 0.7f), 0.2f);
         else
-            exitText.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
+            exitText.transform.DOScale(new Vector3(0.7f, 0.7f, 0.7f), 0.2f);
     }
 
     void OnHoverExit(Button button)
     {
         if(button.name == "Start Button")
-            startText.transform.localScale = new Vector3(0.6f, 0.6f, 0.6f);
+            startText.transform.DOScale(new Vector3(0.6f, 0.6f, 0.6f), 0.2f);
         else
-            exitText.transform.localScale = new Vector3(0.6f, 0.6f, 0.6f);
+            exitText.transform.DOScale(new Vector3(0.6f, 0.6f, 0.6f), 0.2f);
     }
 
     void Update()

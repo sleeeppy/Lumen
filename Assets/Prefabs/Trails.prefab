@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 906360464400374842}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Trails
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -40,9 +40,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 906360464400374842}
     m_Modifications:
+    - target: {fileID: 1214334294174062, guid: 0b5feaa66c6e8c749a7ab24cec81dde7, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 1546471759916860, guid: 0b5feaa66c6e8c749a7ab24cec81dde7, type: 3}
       propertyPath: m_Name
       value: FireTrail
+      objectReference: {fileID: 0}
+    - target: {fileID: 1546471759916860, guid: 0b5feaa66c6e8c749a7ab24cec81dde7, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1753863138616600, guid: 0b5feaa66c6e8c749a7ab24cec81dde7, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 4020095067331654, guid: 0b5feaa66c6e8c749a7ab24cec81dde7, type: 3}
       propertyPath: m_LocalScale.x
@@ -532,6 +544,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.size
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2005030729744062282, guid: 387fa9ad50030d04dbc639dae48951d4,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 2749954379397048730, guid: 387fa9ad50030d04dbc639dae48951d4,
         type: 3}
       propertyPath: InitialModule.startColor.maxColor.b
@@ -664,6 +681,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6941639480262401133, guid: 387fa9ad50030d04dbc639dae48951d4,
         type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6941639480262401133, guid: 387fa9ad50030d04dbc639dae48951d4,
+        type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
@@ -696,6 +718,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.size
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8276882567972957952, guid: 387fa9ad50030d04dbc639dae48951d4,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 387fa9ad50030d04dbc639dae48951d4, type: 3}

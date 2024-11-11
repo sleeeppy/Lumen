@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: -7009623744716392033}
   - component: {fileID: 7432409341565523831}
   - component: {fileID: -8954705032055629644}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: LaserMissileRedOBJ
   m_TagString: PlayerBullet
   m_Icon: {fileID: 0}

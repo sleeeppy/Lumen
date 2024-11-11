@@ -171,6 +171,7 @@ public class Inventory : MonoBehaviour
 
     public void CantEquip()
     {
+        StopCoroutine(WarningTextCoroutine());
         StartCoroutine(WarningTextCoroutine());
     }
 

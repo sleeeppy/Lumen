@@ -42,6 +42,7 @@ public class NPC : MonoBehaviour
     private int originMaxJumpCount;
     private Player playerScript;
     private Animator anim;
+    private RectTransform buttonEImage;
 
     void Start()
     {
@@ -63,6 +64,8 @@ public class NPC : MonoBehaviour
         {
             Debug.LogError("vCam이 null입니다. 확인하세요.");
         }
+
+        buttonEImage = buttonE.GetComponentInChildren<RectTransform>();
     }
 
     void Update()
@@ -269,6 +272,7 @@ public class NPC : MonoBehaviour
         {
             buttonE.SetActive(true);
             playerInside = true;
+            buttonEImage.DOScale(new Vector3(0.3f, 0.3f, 0.3f), 0.2f);
         }
     }
 
@@ -278,6 +282,7 @@ public class NPC : MonoBehaviour
         {
             buttonE.SetActive(false);
             playerInside = false;
+            buttonEImage.DOScale(new Vector3(0.25f, 0.25f, 0.25f), 0.2f);
         }
     }
 

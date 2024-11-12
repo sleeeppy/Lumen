@@ -26,7 +26,7 @@ public class Boss1 : Boss
 
         playerPos = player.transform.position;
 
-        if(HP == 60 || HP == 30)
+        if(HP == 60f || HP == 30f)
         {
             float randomX = Mathf.Clamp(Random.Range(transform.position.x - 10, transform.position.x + 10), leftBorder + 10, rightBorder - 10);
             if (phase != 4)
@@ -43,6 +43,7 @@ public class Boss1 : Boss
 
         randomY = Mathf.Clamp(Random.Range(bottomBorder + 4.5f, topBorder - 3), bottomBorder + 4.5f, topBorder - 3); // 범위 제한
 
-        transform.DOMove(new Vector3(playerPos.x, randomY, transform.position.z), 3f).SetEase(Ease.InOutBack);
+        float clampedX = Mathf.Clamp(playerPos.x, leftBorder + 10, rightBorder - 10);
+        transform.DOMove(new Vector3(clampedX, randomY, transform.position.z), 3f).SetEase(Ease.InOutBack);
     }
 }

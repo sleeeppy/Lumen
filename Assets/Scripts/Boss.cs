@@ -76,7 +76,7 @@ public class Boss : MonoBehaviour
     protected virtual void Update()
     {
         slider.value = HP;
-        phaseText.text = "x" + phase;
+        phaseText.text = "phase " + phase;
 
         if (HP <= 0 && phase != 0)
         {

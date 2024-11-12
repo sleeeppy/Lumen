@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Name: Shot
   m_EditorClassIdentifier: 
   parameterType: 1
-  uniqueIndex: 12882303
+  uniqueIndex: 6392306
   profile: {fileID: 11400000}
   parent: {fileID: 114184213563873034}
   children:
@@ -2590,7 +2590,7 @@ MonoBehaviour:
   m_Name: Pattern
   m_EditorClassIdentifier: 
   parameterType: 2
-  uniqueIndex: 16029575
+  uniqueIndex: 5257090
   profile: {fileID: 11400000}
   parent: {fileID: 114334976902514986}
   children:
@@ -31861,7 +31861,7 @@ MonoBehaviour:
   m_Name: Root Emitter
   m_EditorClassIdentifier: 
   parameterType: 0
-  uniqueIndex: 9320352
+  uniqueIndex: 10785690
   profile: {fileID: 11400000}
   parent: {fileID: 0}
   children:
@@ -38973,7 +38973,7 @@ MonoBehaviour:
   m_Name: Bullet
   m_EditorClassIdentifier: 
   parameterType: 0
-  uniqueIndex: 4868182
+  uniqueIndex: 5862030
   profile: {fileID: 11400000}
   parent: {fileID: 114043142638459942}
   children: []
@@ -39090,7 +39090,8 @@ MonoBehaviour:
         parameterType: 0
         relativeTo: 0
         parameterName: 
-      defaultValue: {fileID: -398044736, guid: e51c5f23fb92a1145834b3d56ad4abec, type: 3}
+      defaultValue: {fileID: -1764784795, guid: e51c5f23fb92a1145834b3d56ad4abec,
+        type: 3}
     narrowType: 1
     requireComponent: 0
     typeName: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
@@ -39968,7 +39969,7 @@ MonoBehaviour:
         m_NumColorKeys: 2
         m_NumAlphaKeys: 2
     - settings:
-        valueType: 1
+        valueType: 0
         interpolationValue:
           interpolationFactor: 0
           repartitionCurve:
@@ -40038,7 +40039,7 @@ MonoBehaviour:
         parameterType: 0
         relativeTo: 0
         parameterName: 
-      defaultValue: {r: 0.8773585, g: 0.73959804, b: 0.5421413, a: 1}
+      defaultValue: {r: 1, g: 0.8322851, b: 0.49685526, a: 1}
       gradientValue:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}

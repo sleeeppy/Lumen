@@ -695,6 +695,7 @@ public class Player : MonoBehaviour
             skillLastUsedTimes[0] = Time.time; // 배열에 사용 시간 저장
             skillGauge -= skillCosts[0]; // 소모량 배열 사용
             UpdateSkillGauge();
+            StartCoroutine(Nail1Coroutine());
             Debug.Log("Nail1 사용!");
             // Nail1의 효과를 여기에 추가
         }
@@ -715,6 +716,14 @@ public class Player : MonoBehaviour
         }
         else
             Debug.Log("Nail2을 사용할 수 없습니다.");
+    }
+
+    IEnumerator Nail1Coroutine()
+    {
+        Boss boss = FindObjectOfType<Boss>();
+        boss.bulletEmitter.Kill();
+        yield return new WaitForSeconds(0.1f);
+        boss.bulletEmitter.Play();
     }
 
     public void Flash()

@@ -60,7 +60,7 @@ public class RetroBeamStatic : MonoBehaviour
 					Boss boss = hit.collider.GetComponentInParent<Boss>();
 					if (boss != null)
 					{
-						Debug.Log($"{hit.collider.name}");
+						// Debug.Log($"{hit.collider.name}");
 						boss.HandleCollision(gameObject);
 					}
 				}

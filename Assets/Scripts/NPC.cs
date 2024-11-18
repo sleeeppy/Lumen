@@ -9,6 +9,7 @@ using TMPro;
 using DG.Tweening;
 using Cinemachine;
 using System.IO;
+using Sirenix.OdinInspector;
 
 public class NPC : MonoBehaviour
 {
@@ -19,10 +20,11 @@ public class NPC : MonoBehaviour
     [SerializeField] private TextMeshProUGUI nameText;
     [SerializeField] private TextMeshProUGUI chatText;
     [SerializeField, Range(0, 30f)] private float textSpeed = 15f;
+    [SerializeField] private CinemachineVirtualCamera vCam;
+
     
-    [Header("Key")]
-    [SerializeField] private string Name;
-    [SerializeField] private string Id;
+    [BoxGroup("Key")] [SerializeField] private string Name;
+    [BoxGroup("Key")] [SerializeField] private string Id;
 
     // 현재 캐릭터의 대화 리스트
     private List<string> currentDialogue = new List<string>();
@@ -35,8 +37,6 @@ public class NPC : MonoBehaviour
     private bool playerInside;
     private bool justOnce;
     private string currentFullText; // 현재 대화의 전체 텍스트
-
-    [SerializeField] private CinemachineVirtualCamera vCam;
 
     private float originSpeed;
     private int originMaxJumpCount;

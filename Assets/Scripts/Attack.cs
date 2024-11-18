@@ -152,4 +152,10 @@ public class Attack : MonoBehaviour
         float angle = Mathf.Atan2(targetDirection.y, targetDirection.x) * Mathf.Rad2Deg; // 각도 계산
         currentLaser.transform.rotation = Quaternion.Euler(-angle, 90, 0); // 마우스 위치를 기준으로 레이저의 회전 설정
     }
+
+    private void OnApplicationPause(bool pauseStatus) 
+    {
+        if(pauseStatus)
+            Destroy(currentLaser);
+    }
 }

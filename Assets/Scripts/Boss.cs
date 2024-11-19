@@ -70,7 +70,7 @@ public class Boss : MonoBehaviour
     {
         slider.maxValue = maxHP;
         delaySlider.maxValue = maxHP;
-        PhaseChange(phase);
+        //PhaseChange(phase);
     }
 
     protected virtual void Update()
@@ -91,7 +91,7 @@ public class Boss : MonoBehaviour
             int curPhase = Mathf.Abs(phase - 5);
 
             curProfile.sprite = bossProfile[curPhase];
-            PhaseChange(phase);
+            //PhaseChange(phase);
             HP = maxHP;
         }
 
@@ -145,28 +145,28 @@ public class Boss : MonoBehaviour
         return screenPoint.x >= 0f && screenPoint.x <= 1f && screenPoint.y >= 0f && screenPoint.y <= 1f && screenPoint.z > 0;
     }
 
-    protected virtual void PhaseChange(int bossPhase)
-    {
-        int curPhase = Mathf.Abs(bossPhase - 5);
+    //protected virtual void PhaseChange(int bossPhase)
+    //{
+    //    int curPhase = Mathf.Abs(bossPhase - 5);
 
-        if (bulletEmitter.emitterProfile == null)
-        {
-            bulletEmitter.emitterProfile = bossPattern[0];
-            bulletEmitter.Play();
-        }
-        else if (bulletEmitter.emitterProfile != bossPattern[curPhase])
-        {
-            StartCoroutine(NextPattern(2f, curPhase));
-        }
-    }
+    //    if (bulletEmitter.emitterProfile == null)
+    //    {
+    //        bulletEmitter.emitterProfile = bossPattern[0];
+    //        bulletEmitter.Play();
+    //    }
+    //    else if (bulletEmitter.emitterProfile != bossPattern[curPhase])
+    //    {
+    //        StartCoroutine(NextPattern(2f, curPhase));
+    //    }
+    //}
 
-    protected IEnumerator NextPattern(float time, int profileNum)
-    {
-        bulletEmitter.Pause();
-        yield return new WaitForSeconds(time);
-        bulletEmitter.emitterProfile = bossPattern[profileNum];
-        bulletEmitter.Play();
-    }
+    //protected IEnumerator NextPattern(float time, int profileNum)
+    //{
+    //    bulletEmitter.Pause();
+    //    yield return new WaitForSeconds(time);
+    //    bulletEmitter.emitterProfile = bossPattern[profileNum];
+    //    bulletEmitter.Play();
+    //}
 
     protected virtual void Die()
     {

@@ -16,6 +16,7 @@ public class Boss1 : Boss
     protected override void Awake()
     {
         base.Awake();
+        PhaseChange(phase);
         player = GameObject.FindWithTag("Player");
         //Debug.Log($"{bottomBorder + 4.5}, {topBorder - 3}");
     }
@@ -23,7 +24,7 @@ public class Boss1 : Boss
     protected override void Update()
     {
         base.Update();
-
+        PhaseChange(phase);
         playerPos = player.transform.position;
 
         if(HP == 60f || HP == 30f)
@@ -36,11 +37,26 @@ public class Boss1 : Boss
             transform.DOMove(new Vector3(randomX, randomY, transform.position.z), 3f).SetEase(Ease.InOutBack);
         }
     }
-
-    protected override void PhaseChange(int bossPhase)
+    protected IEnumerator NextPattern(float time, int profileNum)
     {
-        base.PhaseChange(bossPhase);
+        bulletEmitter.Pause();
+        yield return new WaitForSeconds(time);
+        bulletEmitter.emitterProfile = bossPattern[profileNum];
+        bulletEmitter.Play();
+    }
+    protected void PhaseChange(int bossPhase)
+    {
+        int curPhase = Mathf.Abs(bossPhase - 5);
 
+        if (bulletEmitter.emitterProfile == null)
+        {
+            bulletEmitter.emitterProfile = bossPattern[0];
+            bulletEmitter.Play();
+        }
+        else if (bulletEmitter.emitterProfile != bossPattern[curPhase])
+        {
+            StartCoroutine(NextPattern(2f, curPhase));
+        }
         randomY = Mathf.Clamp(Random.Range(bottomBorder + 4.5f, topBorder - 3), bottomBorder + 4.5f, topBorder - 3); // 범위 제한
 
         float clampedX = Mathf.Clamp(playerPos.x, leftBorder + 10, rightBorder - 10);

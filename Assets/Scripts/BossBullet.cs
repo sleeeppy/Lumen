@@ -6,15 +6,24 @@ public class BossBullet : MonoBehaviour
 {
     [SerializeField] private float deletetime = 2f;
     private Vector3 startPosition;
+    private ParticleSystem ps;
+    private ParticleSystem.TriggerModule triggerModule;
+    private GameObject player;
+    void Awake()
+    {
+        ps = GetComponent<ParticleSystem>();
+        player = GameObject.FindWithTag("Player");
+        // 트리거 모듈 활성화
+        triggerModule = ps.trigger;
+        triggerModule.enabled = true;
+        triggerModule.SetCollider(0, GameObject.FindWithTag("Player3DCollider").GetComponent<Collider>());
+    }
     void Start()
     {
         startPosition = transform.position;
     }
-    private void OnTriggerEnter(Collider other)
+    private void OnParticleTrigger()
     {
-        if (other.gameObject.CompareTag("Border") && other.gameObject.CompareTag("Player"))
-            ParticlePool.Instance.ReturnParticle(0, gameObject);
-        else if (other.gameObject.CompareTag("Player"))
-            other.gameObject.GetComponent<Player>().OnHitByBullet();
+        player.GetComponent<Player>().OnHitByBullet();
     }
 }

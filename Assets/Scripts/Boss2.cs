@@ -15,15 +15,38 @@ public class Boss2 : Boss, IBoss
     protected override void Awake()
     {
         base.Awake();
-        PhaseChange(phase);
         player = GameObject.FindWithTag("Player");
+        
         //Debug.Log($"{bottomBorder + 4.5}, {topBorder - 3}");
+    }
+
+    void Start()
+    {
+        PhaseChange(phase);
     }
 
     protected override void Update()
     {
         base.Update();
-        PhaseChange(phase);
+        slider.value = HP;
+        phaseText.text = "phase " + phase;
+
+        if (HP <= 0 && phase != 0)
+        {
+            phase--;
+
+            if (phase == 0)
+            {
+                Die();
+                return;
+            }
+
+            int curPhase = Mathf.Abs(phase - 5);
+            curProfile.sprite = bossProfile[curPhase];
+            PhaseChange(phase);
+            HP = maxHP;
+        }
+        
 
         playerPos = player.transform.position;
 
@@ -40,7 +63,9 @@ public class Boss2 : Boss, IBoss
     
     public void Phase1()
     {
-        
+        Debug.Log("Phase1");
+        StartCoroutine(LaserPattern(5, 1f));
+        StartCoroutine(NextPattern(6f, 2));
     }
 
     public void Phase2()
@@ -67,7 +92,24 @@ public class Boss2 : Boss, IBoss
     {
         int curPhase = Mathf.Abs(bossPhase - 5);
 
-        
+        switch (curPhase)
+        {
+            case 0:
+                Phase1();
+                break;
+            case 1:
+                Phase2();
+                break;
+            case 2:
+                Phase3();
+                break;
+            case 3:
+                Phase4();
+                break;
+            case 4:
+                Phase5();
+                break;
+        }
         randomY = Mathf.Clamp(Random.Range(bottomBorder + 4.5f, topBorder - 3), bottomBorder + 4.5f, topBorder - 3); // 범위 제한
 
         float clampedX = Mathf.Clamp(playerPos.x, leftBorder + 10, rightBorder - 10);
@@ -76,5 +118,39 @@ public class Boss2 : Boss, IBoss
     public IEnumerator NextPattern(float time, int phaseNum)
     {
         yield return new WaitForSeconds(time);
+
+        PhaseChange(phaseNum);
     }
+
+    private IEnumerator LaserPattern(int count, float interval)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            // 플레이어 위치 기준으로 레이저 발사
+            FireLaser(player.transform.position, 1f);
+            yield return new WaitForSeconds(interval);
+        }
+    }
+    public void FireLaser(Vector3 targetPosition, float duration)
+    {
+        // 풀에서 레이저 가져오기
+        GameObject laser = ParticlePool.Instance.GetParticle(0); // 0: 레이저 풀 타입
+        if (laser != null)
+        {
+            Vector3 firePosition = player.transform.position + new Vector3(1.5f, 0, 0);
+            // 레이저 초기화
+            laser.transform.position = firePosition;
+            //laser.transform.LookAt(targetPosition); // 방향 설정
+
+            // 레이저 지속 시간 후 반환
+            StartCoroutine(ReturnLaserToPool(laser, duration));
+        }
+    }
+
+    private IEnumerator ReturnLaserToPool(GameObject laser, float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        ParticlePool.Instance.ReturnParticle(1, laser);
+    }
+
 }

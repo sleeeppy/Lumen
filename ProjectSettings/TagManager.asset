@@ -10,6 +10,7 @@ TagManager:
   - PlayerBullet
   - Boss3DCollider
   - Item
+  - Player3DCollider
   layers:
   - Default
   - TransparentFX

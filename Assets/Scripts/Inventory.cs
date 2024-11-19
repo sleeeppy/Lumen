@@ -579,7 +579,7 @@ public class Inventory : MonoBehaviour
                 break;
             case Inven.Item.Nail1:
                 itemName = "별의 메아리";
-                description = "플레이어 주변 탄막을 제거합니다.\n (개발중입니다.)";
+                description = "플레이어 주변 탄막을 제거합니다.";
                 break;
             case Inven.Item.Nail2:
                 itemName = "레인보우 스파크";

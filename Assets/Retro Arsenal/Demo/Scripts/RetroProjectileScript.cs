@@ -21,21 +21,26 @@ namespace RetroArsenal
         private float destroyTimer = 0f;
         private bool destroyed = false;
 
+        private Attack attackScript;
+
         void Start()
         {
             rb = GetComponent<Rigidbody>();
             myTransform = transform;
             sphereCollider = GetComponent<SphereCollider>();
 
+            attackScript = FindObjectOfType<Attack>();
+
             projectileParticle = Instantiate(projectileParticle, myTransform.position, myTransform.rotation) as GameObject;
             projectileParticle.transform.parent = myTransform;
 
             if (muzzleParticle)
             {
-                muzzleParticle = Instantiate(muzzleParticle, myTransform.position, myTransform.rotation) as GameObject;
-
+                muzzleParticle = Instantiate(muzzleParticle, myTransform.position, Quaternion.identity) as GameObject;
+                muzzleParticle.transform.rotation = Quaternion.Euler(-attackScript.firePos.transform.rotation.eulerAngles.z, 90, 0);
                 Destroy(muzzleParticle, 1.5f); // Lifetime of muzzle effect.
             }
+            
         }
 
         void FixedUpdate()

@@ -14666,7 +14666,7 @@ Transform:
   m_GameObject: {fileID: 1514803555582350716}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -14.24, y: 0, z: -0.113073826}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8615214425749868827}
@@ -18503,7 +18503,7 @@ ParticleSystem:
     enter: 2
     exit: 0
     colliderQueryMode: 0
-    radiusScale: 1
+    radiusScale: 0.004
     primitives: []
   SubModule:
     serializedVersion: 2

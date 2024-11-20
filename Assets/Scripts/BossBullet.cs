@@ -11,12 +11,16 @@ public class BossBullet : MonoBehaviour
     private GameObject player;
     void Awake()
     {
-        ps = GetComponent<ParticleSystem>();
+        TryGetComponent<ParticleSystem>(out ps);
         player = GameObject.FindWithTag("Player");
         // 트리거 모듈 활성화
-        triggerModule = ps.trigger;
-        triggerModule.enabled = true;
-        triggerModule.SetCollider(0, GameObject.FindWithTag("Player3DCollider").GetComponent<Collider>());
+        if (ps != null)
+        {
+            triggerModule = ps.trigger;
+            triggerModule.enabled = true;
+            Collider collider = player.GetComponentInChildren<CapsuleCollider>();
+            triggerModule.SetCollider(0, collider);
+        }
     }
     void Start()
     {
@@ -25,5 +29,11 @@ public class BossBullet : MonoBehaviour
     private void OnParticleTrigger()
     {
         player.GetComponent<Player>().OnHitByBullet();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+            player.GetComponent<Player>().OnHitByBullet();
     }
 }

@@ -124,10 +124,14 @@ public class Boss2 : Boss, IBoss
 
     private IEnumerator LaserPattern(int count, float interval)
     {
+        float gap = 1.5f;
         for (int i = 0; i < count; i++)
         {
             // 플레이어 위치 기준으로 레이저 발사
-            FireLaser(player.transform.position, 1f);
+            FireLaser(player.transform.position + new Vector3(gap, -0.6f, 0), 1.5f);
+            FireLaser(player.transform.position + new Vector3(-gap, -0.6f, 0), 1.5f);
+
+            gap += 1.5f;
             yield return new WaitForSeconds(interval);
         }
     }
@@ -137,10 +141,9 @@ public class Boss2 : Boss, IBoss
         GameObject laser = ParticlePool.Instance.GetParticle(0); // 0: 레이저 풀 타입
         if (laser != null)
         {
-            Vector3 firePosition = player.transform.position + new Vector3(1.5f, 0, 0);
+            Vector3 firePosition = targetPosition;
             // 레이저 초기화
             laser.transform.position = firePosition;
-            //laser.transform.LookAt(targetPosition); // 방향 설정
 
             // 레이저 지속 시간 후 반환
             StartCoroutine(ReturnLaserToPool(laser, duration));

@@ -11,6 +11,7 @@ public class Boss2 : Boss, IBoss
     private GameObject player;
     private Vector3 playerPos;
     private float randomY;
+    private bool isPatterning = false;
 
     protected override void Awake()
     {
@@ -27,7 +28,6 @@ public class Boss2 : Boss, IBoss
 
     protected override void Update()
     {
-        base.Update();
         slider.value = HP;
         phaseText.text = "phase " + phase;
 
@@ -46,7 +46,10 @@ public class Boss2 : Boss, IBoss
             PhaseChange(phase);
             HP = maxHP;
         }
-        
+        //if (HP > 0 && !isPatterning) // 패턴 다완성하고 주석풀기
+        //{
+        //    PhaseChange(phase);
+        //}
 
         playerPos = player.transform.position;
 
@@ -63,51 +66,45 @@ public class Boss2 : Boss, IBoss
     
     public void Phase1()
     {
-        Debug.Log("Phase1");
         StartCoroutine(LaserPattern(5, 1f));
-        StartCoroutine(NextPattern(6f, 2));
     }
-
     public void Phase2()
     {
-        
-    }
 
+    }
     public void Phase3()
     {
-        
-    }
 
+    }
     public void Phase4()
     {
-        
-    }
 
+    }
     public void Phase5()
     {
-        
+
     }
 
     public void PhaseChange(int bossPhase)
     {
         int curPhase = Mathf.Abs(bossPhase - 5);
-
+        Debug.Log("Phase: "+(curPhase+1));
         switch (curPhase)
         {
             case 0:
-                Phase1();
+                ExecutePattern(Phase1, 5f);
                 break;
             case 1:
-                Phase2();
+                ExecutePattern(Phase2, 5f);
                 break;
             case 2:
-                Phase3();
+                ExecutePattern(Phase3, 5f);
                 break;
             case 3:
-                Phase4();
+                ExecutePattern(Phase4, 5f);
                 break;
             case 4:
-                Phase5();
+                ExecutePattern(Phase5, 5f);
                 break;
         }
         randomY = Mathf.Clamp(Random.Range(bottomBorder + 4.5f, topBorder - 3), bottomBorder + 4.5f, topBorder - 3); // 범위 제한
@@ -115,13 +112,20 @@ public class Boss2 : Boss, IBoss
         float clampedX = Mathf.Clamp(playerPos.x, leftBorder + 10, rightBorder - 10);
         transform.DOMove(new Vector3(clampedX, randomY, transform.position.z), 3f).SetEase(Ease.InOutBack);
     }
-    public IEnumerator NextPattern(float time, int phaseNum)
+    private void ExecutePattern(Action phasePattern, float waitTime)
     {
-        yield return new WaitForSeconds(time);
-
-        PhaseChange(phaseNum);
+        if (!isPatterning)
+        {
+            StartCoroutine(RunPattern(phasePattern, waitTime));
+        }
     }
-
+    private IEnumerator RunPattern(Action phasePattern, float waitTime)
+    {
+        isPatterning = true;
+        phasePattern.Invoke();
+        yield return new WaitForSeconds(waitTime); // 지정된 시간만큼 대기
+        isPatterning = false; 
+    }
     private IEnumerator LaserPattern(int count, float interval)
     {
         float gap = 1.5f;
@@ -141,9 +145,8 @@ public class Boss2 : Boss, IBoss
         GameObject laser = ParticlePool.Instance.GetParticle(0); // 0: 레이저 풀 타입
         if (laser != null)
         {
-            Vector3 firePosition = targetPosition;
             // 레이저 초기화
-            laser.transform.position = firePosition;
+            laser.transform.position = targetPosition;
 
             // 레이저 지속 시간 후 반환
             StartCoroutine(ReturnLaserToPool(laser, duration));

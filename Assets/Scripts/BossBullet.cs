@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class BossBullet : MonoBehaviour
 {
-    [SerializeField] private float deletetime = 2f;
-    private Vector3 startPosition;
     private ParticleSystem ps;
     private ParticleSystem.TriggerModule triggerModule;
     private GameObject player;
@@ -21,10 +19,6 @@ public class BossBullet : MonoBehaviour
             Collider collider = player.GetComponentInChildren<CapsuleCollider>();
             triggerModule.SetCollider(0, collider);
         }
-    }
-    void Start()
-    {
-        startPosition = transform.position;
     }
     private void OnParticleTrigger()
     {

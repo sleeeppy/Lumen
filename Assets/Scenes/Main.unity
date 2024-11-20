@@ -3903,19 +3903,19 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 8e2eda427ca8a2a4c83b3ecbc418f6a0, type: 3}
   - {fileID: 21300000, guid: 8e2eda427ca8a2a4c83b3ecbc418f6a0, type: 3}
   - {fileID: 21300000, guid: 8e2eda427ca8a2a4c83b3ecbc418f6a0, type: 3}
-  - {fileID: 21300000, guid: ec30605e78be7114898df893a375dc6e, type: 3}
+  - {fileID: 21300000, guid: a27dae5192bb609498da7ce0889371dc, type: 3}
   - {fileID: 21300000, guid: d1aafc37827da094c99878757bcbb678, type: 3}
   - {fileID: 21300000, guid: 8e2eda427ca8a2a4c83b3ecbc418f6a0, type: 3}
   - {fileID: 21300000, guid: 7b1ad50fc34a80c44bf75010f5d36fa5, type: 3}
   unequippedSprites:
   - {fileID: 21300000, guid: 4c5f9a04e3102504f85cf6ecf7593d40, type: 3}
   - {fileID: 21300000, guid: 86bf96b5a2f143441b6443f2850b54c9, type: 3}
-  - {fileID: 21300000, guid: ec30605e78be7114898df893a375dc6e, type: 3}
-  - {fileID: 21300000, guid: ec30605e78be7114898df893a375dc6e, type: 3}
-  - {fileID: 21300000, guid: ec30605e78be7114898df893a375dc6e, type: 3}
-  - {fileID: 21300000, guid: 5fbf321e51490994993107bad9b012df, type: 3}
+  - {fileID: 21300000, guid: a27dae5192bb609498da7ce0889371dc, type: 3}
+  - {fileID: 21300000, guid: a27dae5192bb609498da7ce0889371dc, type: 3}
+  - {fileID: 21300000, guid: a27dae5192bb609498da7ce0889371dc, type: 3}
+  - {fileID: 21300000, guid: 4635ef038dc012346ba53125ee9324c0, type: 3}
   - {fileID: 21300000, guid: c7deb8354490b7b42886f5123b4fa072, type: 3}
-  - {fileID: 21300000, guid: 5fbf321e51490994993107bad9b012df, type: 3}
+  - {fileID: 21300000, guid: a27dae5192bb609498da7ce0889371dc, type: 3}
   - {fileID: 21300000, guid: 8d0ada9c81ffee646bb5cd1e28f11d01, type: 3}
   itemGameObjects:
   - {fileID: 507545339}

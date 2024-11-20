@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Attack : MonoBehaviour
 {
-    [SerializeField] private GameObject firePos;
+    [SerializeField] public GameObject firePos;
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private GameObject laserPrefab;
     [SerializeField, Range(0, 100)] private float distance;
@@ -94,7 +94,7 @@ public class Attack : MonoBehaviour
         direction.z = 0;
 
         rb.AddForce(direction * bulletForce, ForceMode.Impulse);
-        
+
         // 총알 사거리 제한 
         // Bullet bulletScript = bullet.GetComponent<Bullet>(); // Bullet 스크립트가 있다고 가정
         // bulletScript.SetDistanceLimit(10f); // 10f는 사거리 제한 값입니다.

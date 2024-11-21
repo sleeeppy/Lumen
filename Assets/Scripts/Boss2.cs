@@ -143,20 +143,24 @@ public class Boss2 : Boss, IBoss
     {
         // 풀에서 레이저 가져오기
         GameObject laser = ParticlePool.Instance.GetParticle(0); // 0: 레이저 풀 타입
-        if (laser != null)
+        GameObject indicator = ParticlePool.Instance.GetParticle(2); // 2: 인디케이터 풀 타입
+        if (laser != null && indicator != null)
         {
             // 레이저 초기화
             laser.transform.position = targetPosition;
 
+            indicator.transform.position = targetPosition;
+
             // 레이저 지속 시간 후 반환
-            StartCoroutine(ReturnLaserToPool(laser, duration));
+            StartCoroutine(ReturnToPool(laser, duration));
+            StartCoroutine(ReturnToPool(indicator, duration));
         }
     }
 
-    private IEnumerator ReturnLaserToPool(GameObject laser, float duration)
+    private IEnumerator ReturnToPool(GameObject particle, float duration)
     {
         yield return new WaitForSeconds(duration);
-        ParticlePool.Instance.ReturnParticle(1, laser);
+        ParticlePool.Instance.ReturnParticle(1, particle);
     }
 
 }

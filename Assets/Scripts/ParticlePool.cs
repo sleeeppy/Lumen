@@ -1,16 +1,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
+using UnityEngine.Pool;
 
 public class ParticlePool : MonoBehaviour
 {
     public static ParticlePool Instance { get; private set; }
     [AssetsOnly]
     [SerializeField] private GameObject[] particlePrefabs;
-    [SerializeField] private int poolSize = 10;
-    [SerializeField] private int expandSize = 1; // 풀 크기 확장량
+    [SerializeField] private int initialPoolSize = 10;
+    [SerializeField] private int maxPoolSize = 50;
 
-    private List<Queue<GameObject>> particlePools;
+    private List<IObjectPool<GameObject>> particlePools;
     //private const string PrefabPath = "Prefabs/Boss2/";
 
     void Awake()
@@ -25,65 +26,51 @@ public class ParticlePool : MonoBehaviour
             return;
         }
         //LoadParticlePrefabs();
-        particlePools = new List<Queue<GameObject>>();
-
-        for (int i = 0; i < particlePrefabs?.Length; i++)
-        {
-            InitializePool(i);
-        }
+        InitializePools();
     }
     //private void LoadParticlePrefabs()
     //{
     //    particlePrefabs = Resources.LoadAll<GameObject>(PrefabPath);
     //}
     //초기화
-    private void InitializePool(int typeIndex)
+    private void InitializePools()
     {
-        Queue<GameObject> pool = new Queue<GameObject>();
+        particlePools = new List<IObjectPool<GameObject>>();
 
-        for (int i = 0; i < poolSize; i++)
+        foreach (var prefab in particlePrefabs)
         {
-            GameObject particle = Instantiate(particlePrefabs[typeIndex]);
-            particle.SetActive(false);
-            pool.Enqueue(particle);
+            var pool = new ObjectPool<GameObject>(
+                createFunc: () => Instantiate(prefab),         // 생성 로직
+                actionOnGet: particle => particle.SetActive(true),  // Get 시
+                actionOnRelease: particle => particle.SetActive(false), // Release 시
+                actionOnDestroy: Destroy,                    // 풀 제거 시
+                defaultCapacity: initialPoolSize,
+                maxSize: maxPoolSize
+            );
+            particlePools.Add(pool);
         }
-
-        particlePools.Add(pool);
     }
     //사용
     public GameObject GetParticle(int typeIndex)
     {
-        if (particlePools[typeIndex].Count > 0)
+        if (typeIndex < 0 || typeIndex >= particlePools.Count)
         {
-            GameObject particle = particlePools[typeIndex].Dequeue();
-            particle.SetActive(true);
-            return particle;
-        }
-        else
-        {
-            ExpandPool(typeIndex);
-            return Instantiate(particlePrefabs[typeIndex]);
-        }
-    }
-    // 풀 확장
-    private void ExpandPool(int typeIndex)
-    {
-        Queue<GameObject> pool = particlePools[typeIndex];
-
-        // 풀을 확장하여 새 파티클 추가
-        for (int i = 0; i < expandSize; i++)
-        {
-            GameObject particle = Instantiate(particlePrefabs[typeIndex]);
-            particle.SetActive(false);
-            pool.Enqueue(particle);
+            Debug.LogError($"Invalid typeIndex: {typeIndex}");
+            return null;
         }
 
-        Debug.Log($"Expanded pool for particle type {typeIndex} by {expandSize}.");
+        return particlePools[typeIndex].Get();
     }
+    
     //반환
     public void ReturnParticle(int typeIndex, GameObject particle)
     {
-        particle.SetActive(false);
-        particlePools[typeIndex].Enqueue(particle);
+        if (typeIndex < 0 || typeIndex >= particlePools.Count)
+        {
+            Debug.LogError($"Invalid typeIndex: {typeIndex}");
+            return;
+        }
+
+        particlePools[typeIndex].Release(particle);
     }
 }

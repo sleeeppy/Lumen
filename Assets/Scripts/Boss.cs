@@ -27,8 +27,8 @@ public class Boss : MonoBehaviour
     [SerializeField] public BulletEmitter bulletEmitter;
     [SerializeField] public EmitterProfile[] bossPattern;
 
-    [SerializeField] private Sprite[] bossProfile;
-    [SerializeField] private Image curProfile;
+    [SerializeField] protected Sprite[] bossProfile;
+    [SerializeField] protected Image curProfile;
 
     [SerializeField] private Collider2D leftBorderCollider;
     [SerializeField] private Collider2D rightBorderCollider;

@@ -9,6 +9,4 @@ public interface IBoss
     public void Phase3();
     public void Phase4();
     public void Phase5();
-
-    IEnumerator NextPattern(float time, int phaseNum);
 }

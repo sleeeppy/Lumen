@@ -4,17 +4,30 @@ using UnityEngine;
 
 public class BossBullet : MonoBehaviour
 {
-    [SerializeField] private float deletetime = 2f;
-    private Vector3 startPosition;
-    void Start()
+    private ParticleSystem ps;
+    private ParticleSystem.TriggerModule triggerModule;
+    private GameObject player;
+    void Awake()
     {
-        startPosition = transform.position;
+        TryGetComponent<ParticleSystem>(out ps);
+        player = GameObject.FindWithTag("Player");
+        // 트리거 모듈 활성화
+        if (ps != null)
+        {
+            triggerModule = ps.trigger;
+            triggerModule.enabled = true;
+            Collider collider = player.GetComponentInChildren<CapsuleCollider>();
+            triggerModule.SetCollider(0, collider);
+        }
     }
+    private void OnParticleTrigger()
+    {
+        player.GetComponent<Player>().OnHitByBullet();
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Border") && other.gameObject.CompareTag("Player"))
-            ParticlePool.Instance.ReturnParticle(0, gameObject);
-        else if (other.gameObject.CompareTag("Player"))
-            other.gameObject.GetComponent<Player>().OnHitByBullet();
+        if (other.gameObject.CompareTag("Player"))
+            player.GetComponent<Player>().OnHitByBullet();
     }
 }

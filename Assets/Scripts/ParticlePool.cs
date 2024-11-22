@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using UnityEngine.Pool;
@@ -31,7 +31,7 @@ public class ParticlePool : MonoBehaviour
     //{
     //    particlePrefabs = Resources.LoadAll<GameObject>(PrefabPath);
     //}
-    //ÃÊ±âÈ­
+    //ì´ˆê¸°í™”
     private void InitializePools()
     {
         if (particlePrefabs.Length != initialPoolSizes.Length || particlePrefabs.Length != maxPoolSizes.Length)
@@ -40,7 +40,7 @@ public class ParticlePool : MonoBehaviour
             return;
         }
 
-        // °¢ ÇÁ¸®ÆÕº°·Î Ç® ÃÊ±âÈ­
+        // ê° í”„ë¦¬íŒ¹ë³„ë¡œ í’€ ì´ˆê¸°í™”
         particlePools = new ObjectPool<GameObject>[particlePrefabs.Length];
 
         for (int i = 0; i < particlePrefabs.Length; i++)
@@ -49,16 +49,16 @@ public class ParticlePool : MonoBehaviour
             int maxSize = maxPoolSizes[i];
 
             particlePools[i] = new ObjectPool<GameObject>(
-                createFunc: () => Instantiate(particlePrefabs[i]),  // °´Ã¼ »ı¼º
-                actionOnGet: particle => particle.SetActive(true),  // Get ½Ã È°¼ºÈ­
-                actionOnRelease: particle => particle.SetActive(false), // Release ½Ã ºñÈ°¼ºÈ­
-                actionOnDestroy: Destroy,                            // Clear ¶Ç´Â MaxSize ÃÊ°ú ½Ã »èÁ¦
-                defaultCapacity: initialSize,                        // ÃÊ±â Ç® Å©±â
-                maxSize: maxSize                                     // ÃÖ´ë Ç® Å©±â
+                createFunc: () => Instantiate(particlePrefabs[i]),  // ê°ì²´ ìƒì„±
+                actionOnGet: particle => particle.SetActive(true),  // Get ì‹œ í™œì„±í™”
+                actionOnRelease: particle => particle.SetActive(false), // Release ì‹œ ë¹„í™œì„±í™”
+                actionOnDestroy: Destroy,                            // Clear ë˜ëŠ” MaxSize ì´ˆê³¼ ì‹œ ì‚­ì œ
+                defaultCapacity: initialSize,                        // ì´ˆê¸° í’€ í¬ê¸°
+                maxSize: maxSize                                     // ìµœëŒ€ í’€ í¬ê¸°
             );
         }
     }
-    //»ç¿ë
+    //ì‚¬ìš©
     public GameObject GetParticle(int typeIndex)
     {
         if (typeIndex < 0 || typeIndex >= particlePools.Length)
@@ -70,7 +70,7 @@ public class ParticlePool : MonoBehaviour
         return particlePools[typeIndex].Get();
     }
     
-    //¹İÈ¯
+    //ë°˜í™˜
     public void ReturnParticle(int typeIndex, GameObject particle)
     {
         if (typeIndex < 0 || typeIndex >= particlePools.Length)

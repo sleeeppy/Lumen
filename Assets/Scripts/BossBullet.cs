@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,7 +11,7 @@ public class BossBullet : MonoBehaviour
     {
         TryGetComponent<ParticleSystem>(out ps);
         player = GameObject.FindWithTag("Player");
-        // Æ®¸®°Å ¸ðµâ È°¼ºÈ­
+        // íŠ¸ë¦¬ê±° ëª¨ë“ˆ í™œì„±í™”
         if (ps != null)
         {
             triggerModule = ps.trigger;

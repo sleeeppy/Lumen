@@ -22,12 +22,45 @@ public class BossBullet : MonoBehaviour
     }
     private void OnParticleTrigger()
     {
-        player.GetComponent<Player>().OnHitByBullet();
+        if (ps == null || player == null) return;
+        // Enter
+        List<ParticleSystem.Particle> enterParticles = new List<ParticleSystem.Particle>();
+        ps.GetTriggerParticles(ParticleSystemTriggerEventType.Enter, enterParticles);
+
+        if (enterParticles.Count > 0)
+        {
+            OnParticleTriggerEnter(enterParticles);
+        }
+
+        // Exit
+        List<ParticleSystem.Particle> exitParticles = new List<ParticleSystem.Particle>();
+        ps.GetTriggerParticles(ParticleSystemTriggerEventType.Exit, exitParticles);
+
+        if (exitParticles.Count > 0)
+        {
+            OnParticleTriggerExit(exitParticles);
+        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
             player.GetComponent<Player>().OnHitByBullet();
+    }
+
+    private void OnParticleTriggerEnter(List<ParticleSystem.Particle> enterParticles)
+    {
+        foreach (var particle in enterParticles) //입자 정보 안쓸거면 if(enterParticles.Count > 0)
+        {
+            Debug.Log("Trigger Enter");
+            player.GetComponent<Player>().OnHitByBullet();
+        }
+    }
+    private void OnParticleTriggerExit(List<ParticleSystem.Particle> exitParticles)
+    {
+        foreach (var particle in exitParticles)
+        {
+            Debug.Log("Trigger Exit");
+        }
     }
 }

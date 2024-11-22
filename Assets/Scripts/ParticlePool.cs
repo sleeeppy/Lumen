@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using UnityEngine.Pool;
+using Unity.VisualScripting;
 
 public class ParticlePool : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class ParticlePool : MonoBehaviour
     [SerializeField,TabGroup("InitialPoolSize")] private int[] initialPoolSizes;
     [SerializeField,TabGroup("MaxPoolSize")] private int[] maxPoolSizes;
 
-    private IObjectPool<GameObject>[] particlePools;
+    private ObjectPool<GameObject>[] particlePools;
     //private const string PrefabPath = "Prefabs/Boss2/";
 
     void Awake()
@@ -40,21 +41,28 @@ public class ParticlePool : MonoBehaviour
             return;
         }
 
-        // 각 프리팹별로 풀 초기화
         particlePools = new ObjectPool<GameObject>[particlePrefabs.Length];
+        Debug.Log($"Total pools: {particlePrefabs.Length}");
 
         for (int i = 0; i < particlePrefabs.Length; i++)
         {
-            int initialSize = initialPoolSizes[i];
-            int maxSize = maxPoolSizes[i];
-
-            particlePools[i] = new ObjectPool<GameObject>(
-                createFunc: () => Instantiate(particlePrefabs[i]),  // 객체 생성
-                actionOnGet: particle => particle.SetActive(true),  // Get 시 활성화
-                actionOnRelease: particle => particle.SetActive(false), // Release 시 비활성화
-                actionOnDestroy: Destroy,                            // Clear 또는 MaxSize 초과 시 삭제
-                defaultCapacity: initialSize,                        // 초기 풀 크기
-                maxSize: maxSize                                     // 최대 풀 크기
+            int index = i;
+            particlePools[index] = new ObjectPool<GameObject>(
+                createFunc: () =>
+                {
+                    GameObject prefab = particlePrefabs[index];
+                    if (prefab == null)
+                    {
+                        Debug.LogError($"Prefab at index {index} is null!");
+                        return null;
+                    }
+                    return Instantiate(prefab);
+                },
+                actionOnGet: particle => particle.SetActive(true),
+                actionOnRelease: particle => particle.SetActive(false),
+                actionOnDestroy: Destroy,
+                defaultCapacity: initialPoolSizes[index],
+                maxSize: maxPoolSizes[index]
             );
         }
     }
@@ -66,10 +74,10 @@ public class ParticlePool : MonoBehaviour
             Debug.LogError($"Invalid typeIndex: {typeIndex}");
             return null;
         }
-
+        Debug.Log($"Requesting particle with typeIndex: {typeIndex}");
         return particlePools[typeIndex].Get();
     }
-    
+   
     //반환
     public void ReturnParticle(int typeIndex, GameObject particle)
     {

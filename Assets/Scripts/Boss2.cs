@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,7 +23,7 @@ public class Boss2 : Boss, IBoss
 
     void Start()
     {
-        PhaseChange(phase);
+        PhaseChange(phase); 
     }
 
     protected override void Update()
@@ -129,38 +129,52 @@ public class Boss2 : Boss, IBoss
     private IEnumerator LaserPattern(int count, float interval)
     {
         float gap = 1.5f;
+        float indicatorGap = 1.5f;
         for (int i = 0; i < count; i++)
         {
             // 플레이어 위치 기준으로 레이저 발사
-            FireLaser(player.transform.position + new Vector3(gap, -0.6f, 0), 1.5f);
-            FireLaser(player.transform.position + new Vector3(-gap, -0.6f, 0), 1.5f);
+            ShowIndicator(new Vector3(0,bottomBorder + 0.5f,0) + new Vector3(indicatorGap, -0.6f, 0), 1.5f);
+            ShowIndicator(new Vector3(0, bottomBorder+ 0.5f, 0) + new Vector3(-indicatorGap, -0.6f, 0), 1.5f);
+            yield return new WaitForSeconds(0.3f);
+
+            indicatorGap += 1.5f;
+        }
+        for (int i = 0; i < count; i++)
+        {
+            FireLaser(new Vector3(0, bottomBorder + 0.5f, 0) + new Vector3(gap, -0.6f, 0), 1.5f);
+            FireLaser(new Vector3(0, bottomBorder + 0.5f, 0) + new Vector3(-gap, -0.6f, 0), 1.5f);
 
             gap += 1.5f;
             yield return new WaitForSeconds(interval);
         }
+        
     }
-    public void FireLaser(Vector3 targetPosition, float duration)
+    private void FireLaser(Vector3 targetPosition, float duration)
     {
-        // 풀에서 레이저 가져오기
         GameObject laser = ParticlePool.Instance.GetParticle(0); // 0: 레이저 풀 타입
-        GameObject indicator = ParticlePool.Instance.GetParticle(2); // 2: 인디케이터 풀 타입
-        if (laser != null && indicator != null)
+        
+        if (laser != null)
         {
             // 레이저 초기화
             laser.transform.position = targetPosition;
-
-            indicator.transform.position = targetPosition;
-
             // 레이저 지속 시간 후 반환
-            StartCoroutine(ReturnToPool(laser, duration));
-            StartCoroutine(ReturnToPool(indicator, duration));
+            StartCoroutine(ReturnToPool(0,laser, duration));
         }
     }
-
-    private IEnumerator ReturnToPool(GameObject particle, float duration)
+    private void ShowIndicator(Vector3 targetPosition, float duration)
+    {
+        GameObject indicator = ParticlePool.Instance.GetParticle(1); // 1: 인디케이터 풀 타입
+        if(indicator != null)
+        {
+            indicator.transform.position = targetPosition;
+            StartCoroutine(ReturnToPool(1, indicator, duration));
+        }
+    }
+    private IEnumerator ReturnToPool(int typeIndex, GameObject particle, float duration)
     {
         yield return new WaitForSeconds(duration);
-        ParticlePool.Instance.ReturnParticle(1, particle);
+
+        ParticlePool.Instance.ReturnParticle(typeIndex, particle);
     }
 
 }

@@ -23,7 +23,7 @@ public class Boss2 : Boss, IBoss
 
     void Start()
     {
-        PhaseChange(phase);
+        PhaseChange(phase); 
     }
 
     protected override void Update()
@@ -46,7 +46,7 @@ public class Boss2 : Boss, IBoss
             PhaseChange(phase);
             HP = maxHP;
         }
-        //if (HP > 0 && !isPatterning) // ÆĞÅÏ ´Ù¿Ï¼ºÇÏ°í ÁÖ¼®Ç®±â
+        //if (HP > 0 && !isPatterning) // íŒ¨í„´ ë‹¤ì™„ì„±í•˜ê³  ì£¼ì„í’€ê¸°
         //{
         //    PhaseChange(phase);
         //}
@@ -107,7 +107,7 @@ public class Boss2 : Boss, IBoss
                 ExecutePattern(Phase5, 5f);
                 break;
         }
-        randomY = Mathf.Clamp(Random.Range(bottomBorder + 4.5f, topBorder - 3), bottomBorder + 4.5f, topBorder - 3); // ¹üÀ§ Á¦ÇÑ
+        randomY = Mathf.Clamp(Random.Range(bottomBorder + 4.5f, topBorder - 3), bottomBorder + 4.5f, topBorder - 3); // ë²”ìœ„ ì œí•œ
 
         float clampedX = Mathf.Clamp(playerPos.x, leftBorder + 10, rightBorder - 10);
         transform.DOMove(new Vector3(clampedX, randomY, transform.position.z), 3f).SetEase(Ease.InOutBack);
@@ -123,44 +123,58 @@ public class Boss2 : Boss, IBoss
     {
         isPatterning = true;
         phasePattern.Invoke();
-        yield return new WaitForSeconds(waitTime); // ÁöÁ¤µÈ ½Ã°£¸¸Å­ ´ë±â
+        yield return new WaitForSeconds(waitTime); // ì§€ì •ëœ ì‹œê°„ë§Œí¼ ëŒ€ê¸°
         isPatterning = false; 
     }
     private IEnumerator LaserPattern(int count, float interval)
     {
         float gap = 1.5f;
+        float indicatorGap = 1.5f;
         for (int i = 0; i < count; i++)
         {
-            // ÇÃ·¹ÀÌ¾î À§Ä¡ ±âÁØÀ¸·Î ·¹ÀÌÀú ¹ß»ç
-            FireLaser(player.transform.position + new Vector3(gap, -0.6f, 0), 1.5f);
-            FireLaser(player.transform.position + new Vector3(-gap, -0.6f, 0), 1.5f);
+            // í”Œë ˆì´ì–´ ìœ„ì¹˜ ê¸°ì¤€ìœ¼ë¡œ ë ˆì´ì € ë°œì‚¬
+            ShowIndicator(new Vector3(0,bottomBorder + 0.5f,0) + new Vector3(indicatorGap, -0.6f, 0), 1.5f);
+            ShowIndicator(new Vector3(0, bottomBorder+ 0.5f, 0) + new Vector3(-indicatorGap, -0.6f, 0), 1.5f);
+            yield return new WaitForSeconds(0.3f);
+
+            indicatorGap += 1.5f;
+        }
+        for (int i = 0; i < count; i++)
+        {
+            FireLaser(new Vector3(0, bottomBorder + 0.5f, 0) + new Vector3(gap, -0.6f, 0), 1.5f);
+            FireLaser(new Vector3(0, bottomBorder + 0.5f, 0) + new Vector3(-gap, -0.6f, 0), 1.5f);
 
             gap += 1.5f;
             yield return new WaitForSeconds(interval);
         }
+        
     }
-    public void FireLaser(Vector3 targetPosition, float duration)
+    private void FireLaser(Vector3 targetPosition, float duration)
     {
-        // Ç®¿¡¼­ ·¹ÀÌÀú °¡Á®¿À±â
-        GameObject laser = ParticlePool.Instance.GetParticle(0); // 0: ·¹ÀÌÀú Ç® Å¸ÀÔ
-        GameObject indicator = ParticlePool.Instance.GetParticle(2); // 2: ÀÎµğÄÉÀÌÅÍ Ç® Å¸ÀÔ
-        if (laser != null && indicator != null)
+        GameObject laser = ParticlePool.Instance.GetParticle(0); // 0: ë ˆì´ì € í’€ íƒ€ì…
+        
+        if (laser != null)
         {
-            // ·¹ÀÌÀú ÃÊ±âÈ­
+            // ë ˆì´ì € ì´ˆê¸°í™”
             laser.transform.position = targetPosition;
-
-            indicator.transform.position = targetPosition;
-
-            // ·¹ÀÌÀú Áö¼Ó ½Ã°£ ÈÄ ¹İÈ¯
-            StartCoroutine(ReturnToPool(laser, duration));
-            StartCoroutine(ReturnToPool(indicator, duration));
+            // ë ˆì´ì € ì§€ì† ì‹œê°„ í›„ ë°˜í™˜
+            StartCoroutine(ReturnToPool(0,laser, duration));
         }
     }
-
-    private IEnumerator ReturnToPool(GameObject particle, float duration)
+    private void ShowIndicator(Vector3 targetPosition, float duration)
+    {
+        GameObject indicator = ParticlePool.Instance.GetParticle(1); // 1: ì¸ë””ì¼€ì´í„° í’€ íƒ€ì…
+        if(indicator != null)
+        {
+            indicator.transform.position = targetPosition;
+            StartCoroutine(ReturnToPool(1, indicator, duration));
+        }
+    }
+    private IEnumerator ReturnToPool(int typeIndex, GameObject particle, float duration)
     {
         yield return new WaitForSeconds(duration);
-        ParticlePool.Instance.ReturnParticle(1, particle);
+
+        ParticlePool.Instance.ReturnParticle(typeIndex, particle);
     }
 
 }

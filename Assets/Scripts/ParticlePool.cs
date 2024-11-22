@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using UnityEngine.Pool;
+using Unity.VisualScripting;
 
 public class ParticlePool : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class ParticlePool : MonoBehaviour
     [SerializeField,TabGroup("InitialPoolSize")] private int[] initialPoolSizes;
     [SerializeField,TabGroup("MaxPoolSize")] private int[] maxPoolSizes;
 
-    private IObjectPool<GameObject>[] particlePools;
+    private ObjectPool<GameObject>[] particlePools;
     //private const string PrefabPath = "Prefabs/Boss2/";
 
     void Awake()
@@ -31,7 +32,7 @@ public class ParticlePool : MonoBehaviour
     //{
     //    particlePrefabs = Resources.LoadAll<GameObject>(PrefabPath);
     //}
-    //ÃÊ±âÈ­
+    //ì´ˆê¸°í™”
     private void InitializePools()
     {
         if (particlePrefabs.Length != initialPoolSizes.Length || particlePrefabs.Length != maxPoolSizes.Length)
@@ -40,25 +41,32 @@ public class ParticlePool : MonoBehaviour
             return;
         }
 
-        // °¢ ÇÁ¸®ÆÕº°·Î Ç® ÃÊ±âÈ­
         particlePools = new ObjectPool<GameObject>[particlePrefabs.Length];
+        Debug.Log($"Total pools: {particlePrefabs.Length}");
 
         for (int i = 0; i < particlePrefabs.Length; i++)
         {
-            int initialSize = initialPoolSizes[i];
-            int maxSize = maxPoolSizes[i];
-
-            particlePools[i] = new ObjectPool<GameObject>(
-                createFunc: () => Instantiate(particlePrefabs[i]),  // °´Ã¼ »ý¼º
-                actionOnGet: particle => particle.SetActive(true),  // Get ½Ã È°¼ºÈ­
-                actionOnRelease: particle => particle.SetActive(false), // Release ½Ã ºñÈ°¼ºÈ­
-                actionOnDestroy: Destroy,                            // Clear ¶Ç´Â MaxSize ÃÊ°ú ½Ã »èÁ¦
-                defaultCapacity: initialSize,                        // ÃÊ±â Ç® Å©±â
-                maxSize: maxSize                                     // ÃÖ´ë Ç® Å©±â
+            int index = i;
+            particlePools[index] = new ObjectPool<GameObject>(
+                createFunc: () =>
+                {
+                    GameObject prefab = particlePrefabs[index];
+                    if (prefab == null)
+                    {
+                        Debug.LogError($"Prefab at index {index} is null!");
+                        return null;
+                    }
+                    return Instantiate(prefab);
+                },
+                actionOnGet: particle => particle.SetActive(true),
+                actionOnRelease: particle => particle.SetActive(false),
+                actionOnDestroy: Destroy,
+                defaultCapacity: initialPoolSizes[index],
+                maxSize: maxPoolSizes[index]
             );
         }
     }
-    //»ç¿ë
+    //ì‚¬ìš©
     public GameObject GetParticle(int typeIndex)
     {
         if (typeIndex < 0 || typeIndex >= particlePools.Length)
@@ -66,11 +74,11 @@ public class ParticlePool : MonoBehaviour
             Debug.LogError($"Invalid typeIndex: {typeIndex}");
             return null;
         }
-
+        Debug.Log($"Requesting particle with typeIndex: {typeIndex}");
         return particlePools[typeIndex].Get();
     }
-    
-    //¹ÝÈ¯
+   
+    //ë°˜í™˜
     public void ReturnParticle(int typeIndex, GameObject particle)
     {
         if (typeIndex < 0 || typeIndex >= particlePools.Length)

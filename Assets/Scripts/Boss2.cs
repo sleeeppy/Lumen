@@ -66,7 +66,7 @@ public class Boss2 : Boss, IBoss
     
     public void Phase1()
     {
-        StartCoroutine(LaserPattern(5, 1f));
+        StartCoroutine(LaserPattern(8, 0.5f));
     }
     public void Phase2()
     {
@@ -130,21 +130,21 @@ public class Boss2 : Boss, IBoss
     {
         float gap = 1.5f;
         float indicatorGap = 1.5f;
+        FireHomingMissile(this.gameObject.transform.position, playerPos, 5f, 2);
         for (int i = 0; i < count; i++)
         {
-            // 플레이어 위치 기준으로 레이저 발사
-            ShowIndicator(new Vector3(0,bottomBorder + 0.5f,0) + new Vector3(indicatorGap, -0.6f, 0), 1.5f);
-            ShowIndicator(new Vector3(0, bottomBorder+ 0.5f, 0) + new Vector3(-indicatorGap, -0.6f, 0), 1.5f);
+            ShowIndicator(new Vector3(0,bottomBorder + 0.5f,0) + new Vector3(indicatorGap, -0.6f, 0), 0.8f);
+            ShowIndicator(new Vector3(0, bottomBorder+ 0.5f, 0) + new Vector3(-indicatorGap, -0.6f, 0), 0.8f);
             yield return new WaitForSeconds(0.3f);
 
-            indicatorGap += 1.5f;
+            indicatorGap += 2f;
         }
         for (int i = 0; i < count; i++)
         {
             FireLaser(new Vector3(0, bottomBorder + 0.5f, 0) + new Vector3(gap, -0.6f, 0), 1.5f);
             FireLaser(new Vector3(0, bottomBorder + 0.5f, 0) + new Vector3(-gap, -0.6f, 0), 1.5f);
 
-            gap += 1.5f;
+            gap += 2f;
             yield return new WaitForSeconds(interval);
         }
         
@@ -161,6 +161,25 @@ public class Boss2 : Boss, IBoss
             StartCoroutine(ReturnToPool(0,laser, duration));
         }
     }
+    private void FireHomingMissile(Vector3 startPosition, Vector3 endPosition, float duration, int type)
+    {
+        //type = 발사할 유도탄 풀타입
+        // 유도탄 생성
+        GameObject missile = ParticlePool.Instance.GetParticle(type);
+        if(missile != null)
+        {
+            missile.transform.position = startPosition;
+            // DOTween으로 유도탄 이동
+            missile.transform.DOMove(endPosition, duration)
+                .SetEase(Ease.Linear)                   // 선형 이동
+                .OnComplete(() => StartCoroutine(ReturnToPool(type, missile, 0.5f)));   // 도착 후 반환
+
+        }
+        //// 미사일 회전 효과 (옵션)
+        //missile.transform.DOLookAt(endPosition, 0.5f)
+        //    .SetEase(Ease.OutSine);
+    }
+
     private void ShowIndicator(Vector3 targetPosition, float duration)
     {
         GameObject indicator = ParticlePool.Instance.GetParticle(1); // 1: 인디케이터 풀 타입

@@ -2449,8 +2449,9 @@ MonoBehaviour:
   particlePrefabs:
   - {fileID: 1514803555582350716, guid: e5654debf7d9a024c99da6575fbf1b18, type: 3}
   - {fileID: 8551784944229353840, guid: af55326d100313d429175592748adce1, type: 3}
-  initialPoolSizes: 0a0000000a000000
-  maxPoolSizes: 1400000014000000
+  - {fileID: 8566724289791277946, guid: b4ae2e5ac1cd83b459973da8fdf9b751, type: 3}
+  initialPoolSizes: 0a0000000a00000002000000
+  maxPoolSizes: 140000001400000002000000
 --- !u!4 &912506350
 Transform:
   m_ObjectHideFlags: 0

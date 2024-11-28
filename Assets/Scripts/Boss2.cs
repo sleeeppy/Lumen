@@ -67,6 +67,7 @@ public class Boss2 : Boss, IBoss
     public void Phase1()
     {
         StartCoroutine(LaserPattern(8, 0.5f));
+        StartCoroutine(SnowBallPattern(6, 0.5f));
     }
     public void Phase2()
     {
@@ -130,7 +131,6 @@ public class Boss2 : Boss, IBoss
     {
         float gap = 1.5f;
         float indicatorGap = 1.5f;
-        FireHomingMissile(this.gameObject.transform.position, playerPos, 5f, 2);
         for (int i = 0; i < count; i++)
         {
             ShowIndicator(new Vector3(0,bottomBorder + 0.5f,0) + new Vector3(indicatorGap, -0.6f, 0), 0.8f);
@@ -147,61 +147,60 @@ public class Boss2 : Boss, IBoss
             gap += 2f;
             yield return new WaitForSeconds(interval);
         }
-        
+    }
+    private IEnumerator SnowBallPattern(int count, float interval)
+    {
+        for (int i = 0;i < count; i++)
+        {
+            FireSnowBall(playerPos);
+            yield return new WaitForSeconds(interval);
+        }
     }
     private void FireLaser(Vector3 targetPosition, float duration)
     {
-        GameObject laser = ParticlePool.Instance.GetParticle(0); // 0: 레이저 풀 타입
+        GameObject laser = ParticlePool.Instance.GetParticle("laser");
         
         if (laser != null)
         {
             // 레이저 초기화
             laser.transform.position = targetPosition;
             // 레이저 지속 시간 후 반환
-            StartCoroutine(ReturnToPool(0,laser, duration));
+            StartCoroutine(ReturnToPool(laser, duration));
         }
     }
-    private void FireHomingMissile(Vector3 startPosition, Vector3 endPosition, float duration, int type)
+    private void FireSnowBall(Vector3 targetPosition)
     {
-        //type = 발사할 유도탄 풀타입
-        // 유도탄 생성
-        GameObject missile = ParticlePool.Instance.GetParticle(type);
-        if(missile != null)
-        {
-            missile.transform.position = startPosition;
-            // DOTween으로 유도탄 이동
-            missile.transform.DOMove(endPosition, duration)
-                .SetEase(Ease.Linear)                   // 선형 이동
-                .OnComplete(() => StartCoroutine(ReturnToPool(type, missile, 0.5f)));   // 도착 후 반환
+        GameObject snowBall = ParticlePool.Instance.GetParticle("snowBall");
 
+        if (snowBall != null)
+        {
+            Rigidbody rb = snowBall.GetComponent<Rigidbody>();
+            rb.AddForce(targetPosition * 5f, ForceMode.Impulse);
+            StartCoroutine(ReturnToPool(snowBall, 0.5f));
         }
-        //// 미사일 회전 효과 (옵션)
-        //missile.transform.DOLookAt(endPosition, 0.5f)
-        //    .SetEase(Ease.OutSine);
     }
 
     private void ShowIndicator(Vector3 targetPosition, float duration)
     {
-        GameObject indicator = ParticlePool.Instance.GetParticle(1); // 1: 인디케이터 풀 타입
+        GameObject indicator = ParticlePool.Instance.GetParticle("indicator");
         if(indicator != null)
         {
             indicator.transform.position = targetPosition;
-            StartCoroutine(ReturnToPool(1, indicator, duration));
+            StartCoroutine(ReturnToPool(indicator, duration));
         }
     }
-    private IEnumerator ReturnToPool(int typeIndex, GameObject particle, float duration)
+
+    private IEnumerator ReturnToPool(GameObject particle, float delay)
     {
         particle.TryGetComponent<BossBullet>(out BossBullet bullet);
-        if(bullet != null)
+        if (bullet != null)
         {
             if (bullet.isEntering)
             {
                 bullet.OnParticleTriggerExit();
             }
         }
-
-        yield return new WaitForSeconds(duration);
-
-        ParticlePool.Instance.ReturnParticle(typeIndex, particle);
+        yield return new WaitForSeconds(delay);
+        ParticlePool.Instance.OnParticleRelease(particle);
     }
 }

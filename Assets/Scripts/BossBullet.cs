@@ -7,7 +7,7 @@ public class BossBullet : MonoBehaviour
     private ParticleSystem ps;
     private ParticleSystem.TriggerModule triggerModule;
     private GameObject player;
-    public bool isEntering = false;
+    [HideInInspector] public bool isEntering = false;
     void Awake()
     {
         TryGetComponent<ParticleSystem>(out ps);
@@ -16,9 +16,9 @@ public class BossBullet : MonoBehaviour
         if (ps != null)
         {
             triggerModule = ps.trigger;
-            if(triggerModule.enabled == true)
+            Collider collider = player.GetComponentInChildren<CapsuleCollider>();
+            if (triggerModule.enabled)
             {
-                Collider collider = player.GetComponentInChildren<CapsuleCollider>();
                 triggerModule.SetCollider(0, collider);
             }
         }

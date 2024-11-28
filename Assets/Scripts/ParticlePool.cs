@@ -3,16 +3,22 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using UnityEngine.Pool;
 using Unity.VisualScripting;
+using System;
 
 public class ParticlePool : MonoBehaviour
 {
+    [System.Serializable]
+    private class ObjectInfo
+    {
+        public string name;
+        public GameObject prefab;
+        public int count;
+    }
     public static ParticlePool Instance { get; private set; }
-    [SerializeField,TabGroup("Prefab")] private GameObject[] particlePrefabs;
-    [SerializeField,TabGroup("InitialPoolSize")] private int[] initialPoolSizes;
-    [SerializeField,TabGroup("MaxPoolSize")] private int[] maxPoolSizes;
-
-    private ObjectPool<GameObject>[] particlePools;
-    //private const string PrefabPath = "Prefabs/Boss2/";
+    [SerializeField] private ObjectInfo[] objectInfos = null;
+    private Dictionary<string, IObjectPool<GameObject>> pools = new Dictionary<string, IObjectPool<GameObject>>();
+    private Dictionary<string, GameObject> poolCreate = new Dictionary<string, GameObject>();
+    private string objectName;
 
     void Awake()
     {
@@ -25,67 +31,72 @@ public class ParticlePool : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        //LoadParticlePrefabs();
-        InitializePools();
+        Init();
     }
-    //private void LoadParticlePrefabs()
-    //{
-    //    particlePrefabs = Resources.LoadAll<GameObject>(PrefabPath);
-    //}
-    //초기화
-    private void InitializePools()
+
+    private void Init()
     {
-        if (particlePrefabs.Length != initialPoolSizes.Length || particlePrefabs.Length != maxPoolSizes.Length)
+        for (int idx = 0; idx < objectInfos.Length; idx++)
         {
-            Debug.LogError("The lengths of particlePrefabs, initialPoolSizes, and maxPoolSizes must match.");
-            return;
-        }
+            IObjectPool<GameObject> pool = new ObjectPool<GameObject>(CreatePooledParticle, OnParticleGet, OnParticleRelease,
+            OnParticleDestroy, true, objectInfos[idx].count, objectInfos[idx].count);
 
-        particlePools = new ObjectPool<GameObject>[particlePrefabs.Length];
-        Debug.Log($"Total pools: {particlePrefabs.Length}");
+            if (poolCreate.ContainsKey(objectInfos[idx].name))
+            {
+                Debug.LogFormat("{0} 이미 등록된 오브젝트입니다.", objectInfos[idx].name);
+                return;
+            }
 
-        for (int i = 0; i < particlePrefabs.Length; i++)
-        {
-            int index = i;
-            particlePools[index] = new ObjectPool<GameObject>(
-                createFunc: () =>
-                {
-                    GameObject prefab = particlePrefabs[index];
-                    if (prefab == null)
-                    {
-                        Debug.LogError($"Prefab at index {index} is null!");
-                        return null;
-                    }
-                    return Instantiate(prefab);
-                },
-                actionOnGet: particle => particle.SetActive(true),
-                actionOnRelease: particle => particle.SetActive(false),
-                actionOnDestroy: Destroy,
-                defaultCapacity: initialPoolSizes[index],
-                maxSize: maxPoolSizes[index]
-            );
+            poolCreate.Add(objectInfos[idx].name, objectInfos[idx].prefab);
+            pools.Add(objectInfos[idx].name, pool);
+
+            // 미리 오브젝트 생성 해놓기
+            for (int i = 0; i < objectInfos[idx].count; i++)
+            {
+                objectName = objectInfos[idx].name;
+                PoolAble poolAble = CreatePooledParticle().GetComponent<PoolAble>();
+                poolAble.Pool.Release(poolAble.gameObject);
+            }
         }
     }
+
+    // 생성
+    private GameObject CreatePooledParticle()
+    {
+        GameObject pool = Instantiate(poolCreate[objectName]);
+        pool.GetComponent<PoolAble>().Pool = pools[objectName];
+        return pool;
+    }
+
+    // 활성
+    private void OnParticleGet(GameObject particle)
+    {
+        particle.SetActive(true);
+    }
+
+    // 비활성
+    public void OnParticleRelease(GameObject particle)
+    {
+        particle.SetActive(false);
+    }
+
+    // 삭제
+    private void OnParticleDestroy(GameObject particle)
+    {
+        Destroy(particle);
+    }
+
     //사용
-    public GameObject GetParticle(int typeIndex)
+    public GameObject GetParticle(string name)
     {
-        if (typeIndex < 0 || typeIndex >= particlePools.Length)
+        objectName = name;
+
+        if (poolCreate.ContainsKey(name) == false)
         {
-            Debug.LogError($"Invalid typeIndex: {typeIndex}");
+            Debug.LogFormat("{0} 오브젝트풀에 등록되지 않은 오브젝트입니다.", name);
             return null;
         }
-        return particlePools[typeIndex].Get();
-    }
-   
-    //반환
-    public void ReturnParticle(int typeIndex, GameObject particle)
-    {
-        if (typeIndex < 0 || typeIndex >= particlePools.Length)
-        {
-            Debug.LogError($"Invalid typeIndex: {typeIndex}");
-            return;
-        }
 
-        particlePools[typeIndex].Release(particle);
+        return pools[name].Get();
     }
 }

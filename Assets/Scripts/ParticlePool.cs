@@ -74,7 +74,6 @@ public class ParticlePool : MonoBehaviour
             Debug.LogError($"Invalid typeIndex: {typeIndex}");
             return null;
         }
-        Debug.Log($"Requesting particle with typeIndex: {typeIndex}");
         return particlePools[typeIndex].Get();
     }
    

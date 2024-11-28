@@ -2453,12 +2453,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ca002e19f6f5d849a1bcf9c8095ab1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  particlePrefabs:
-  - {fileID: 1514803555582350716, guid: e5654debf7d9a024c99da6575fbf1b18, type: 3}
-  - {fileID: 8551784944229353840, guid: af55326d100313d429175592748adce1, type: 3}
-  - {fileID: 8566724289791277946, guid: b4ae2e5ac1cd83b459973da8fdf9b751, type: 3}
-  initialPoolSizes: 0a0000000a00000002000000
-  maxPoolSizes: 140000001400000002000000
+  objectInfos:
+  - name: laser
+    prefab: {fileID: 1514803555582350716, guid: e5654debf7d9a024c99da6575fbf1b18,
+      type: 3}
+    count: 10
+  - name: indicator
+    prefab: {fileID: 8551784944229353840, guid: af55326d100313d429175592748adce1,
+      type: 3}
+    count: 10
+  - name: snowBall
+    prefab: {fileID: 2130190071848423985, guid: 8b25dccc8a6b285408406e45e8c4e4c3,
+      type: 3}
+    count: 10
 --- !u!4 &912506350
 Transform:
   m_ObjectHideFlags: 0

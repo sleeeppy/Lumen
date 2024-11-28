@@ -7,6 +7,7 @@ public class BossBullet : MonoBehaviour
     private ParticleSystem ps;
     private ParticleSystem.TriggerModule triggerModule;
     private GameObject player;
+    public bool isEntering = false;
     void Awake()
     {
         TryGetComponent<ParticleSystem>(out ps);
@@ -15,11 +16,14 @@ public class BossBullet : MonoBehaviour
         if (ps != null)
         {
             triggerModule = ps.trigger;
-            triggerModule.enabled = true;
-            Collider collider = player.GetComponentInChildren<CapsuleCollider>();
-            triggerModule.SetCollider(0, collider);
+            if(triggerModule.enabled == true)
+            {
+                Collider collider = player.GetComponentInChildren<CapsuleCollider>();
+                triggerModule.SetCollider(0, collider);
+            }
         }
     }
+    
     private void OnParticleTrigger()
     {
         if (ps == null || player == null) return;
@@ -29,7 +33,7 @@ public class BossBullet : MonoBehaviour
 
         if (enterParticles.Count > 0)
         {
-            OnParticleTriggerEnter(enterParticles);
+            OnParticleTriggerEnter();
         }
 
         // Exit
@@ -38,29 +42,36 @@ public class BossBullet : MonoBehaviour
 
         if (exitParticles.Count > 0)
         {
-            OnParticleTriggerExit(exitParticles);
+            OnParticleTriggerExit();
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Player"))
+        if (other.gameObject.CompareTag("Player3DCollider"))
+        {
             player.GetComponent<Player>().OnHitByBullet();
+            Debug.Log("Enter");
+            isEntering = true;
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("Player3DCollider"))
+        {
+            OnParticleTriggerExit();
+        }
     }
 
-    private void OnParticleTriggerEnter(List<ParticleSystem.Particle> enterParticles)
+    private void OnParticleTriggerEnter()
     {
-        foreach (var particle in enterParticles) //입자 정보 안쓸거면 if(enterParticles.Count > 0)
-        {
-            Debug.Log("Trigger Enter");
-            player.GetComponent<Player>().OnHitByBullet();
-        }
+        Debug.Log("Trigger Enter");
+        isEntering = true;
+        player.GetComponent<Player>().OnHitByBullet();
     }
-    private void OnParticleTriggerExit(List<ParticleSystem.Particle> exitParticles)
+    public void OnParticleTriggerExit()
     {
-        foreach (var particle in exitParticles)
-        {
-            Debug.Log("Trigger Exit");
-        }
+        Debug.Log("Trigger Exit");
+        isEntering = false;
     }
 }

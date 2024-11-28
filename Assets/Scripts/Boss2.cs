@@ -191,9 +191,17 @@ public class Boss2 : Boss, IBoss
     }
     private IEnumerator ReturnToPool(int typeIndex, GameObject particle, float duration)
     {
+        particle.TryGetComponent<BossBullet>(out BossBullet bullet);
+        if(bullet != null)
+        {
+            if (bullet.isEntering)
+            {
+                bullet.OnParticleTriggerExit();
+            }
+        }
+
         yield return new WaitForSeconds(duration);
 
         ParticlePool.Instance.ReturnParticle(typeIndex, particle);
     }
-
 }

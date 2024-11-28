@@ -14650,6 +14650,7 @@ GameObject:
   - component: {fileID: 1514803555582350718}
   - component: {fileID: 2366364115750054287}
   - component: {fileID: 7198346278630302915}
+  - component: {fileID: 3768996039714111909}
   m_Layer: 7
   m_Name: OrbitalBeamSmallBlue2
   m_TagString: Untagged
@@ -18485,7 +18486,7 @@ ParticleSystem:
         m_RotationOrder: 4
     minKillSpeed: 0
     maxKillSpeed: 10000
-    radiusScale: 1
+    radiusScale: 0.004
     collidesWith:
       serializedVersion: 2
       m_Bits: 4294967295
@@ -18496,12 +18497,12 @@ ParticleSystem:
     collidesWithDynamic: 1
     interiorCollisions: 0
   TriggerModule:
-    enabled: 1
+    enabled: 0
     serializedVersion: 2
     inside: 0
     outside: 0
     enter: 2
-    exit: 0
+    exit: 2
     colliderQueryMode: 0
     radiusScale: 0.004
     primitives: []
@@ -18879,7 +18880,7 @@ ParticleSystem:
         m_NumAlphaKeys: 2
   CustomDataModule:
     enabled: 0
-    mode0: 0
+    mode0: 1
     vectorComponentCount0: 4
     color0:
       serializedVersion: 2
@@ -19623,7 +19624,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11fee34458a8f1a418d19c38322eeccf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deletetime: 2
+--- !u!136 &3768996039714111909
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1514803555582350716}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 0.3
+  m_Height: 10
+  m_Direction: 1
+  m_Center: {x: 0, y: 5, z: 0}
 --- !u!1 &8615214424303703191
 GameObject:
   m_ObjectHideFlags: 0

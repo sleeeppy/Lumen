@@ -12,6 +12,7 @@ public class Boss2 : Boss, IBoss
     private Vector3 playerPos;
     private float randomY;
     private bool isPatterning = false;
+    private Queue<Action> patternQueue = new Queue<Action>();
 
     protected override void Awake()
     {
@@ -21,7 +22,7 @@ public class Boss2 : Boss, IBoss
         //Debug.Log($"{bottomBorder + 4.5}, {topBorder - 3}");
     }
 
-    void Start()
+    protected void Start()
     {
         PhaseChange(phase); 
     }
@@ -46,12 +47,13 @@ public class Boss2 : Boss, IBoss
             PhaseChange(phase);
             HP = maxHP;
         }
-        //if (HP > 0 && !isPatterning) // 패턴 다완성하고 주석풀기
-        //{
-        //    PhaseChange(phase);
-        //}
+        if (HP > 0 && !isPatterning) // 패턴 다완성하고 주석풀기
+        {
+            PhaseChange(phase);
+        }
 
         playerPos = player.transform.position;
+        LookAtPlayer();
 
         if(HP == 60f || HP == 30f)
         {
@@ -63,15 +65,26 @@ public class Boss2 : Boss, IBoss
             transform.DOMove(new Vector3(randomX, randomY, transform.position.z), 3f).SetEase(Ease.InOutBack);
         }
     }
-    
+    private void LookAtPlayer()
+    {
+        if (player != null)
+        {
+            bool flipSprite = transform.position.x < playerPos.x;
+
+            spriteRenderer.flipX = flipSprite;
+        }
+    }
     public void Phase1()
     {
-        StartCoroutine(LaserPattern(8, 0.5f));
-        StartCoroutine(SnowBallPattern(6, 0.5f));
+        ExecutePattern(new List<Action>
+        {
+            () => StartCoroutine(OrbitalPattern(8, 0.5f)),
+            () => StartCoroutine(SnowBallPattern(6, 0.5f))
+        });
     }
     public void Phase2()
     {
-
+        
     }
     public void Phase3()
     {
@@ -93,19 +106,19 @@ public class Boss2 : Boss, IBoss
         switch (curPhase)
         {
             case 0:
-                ExecutePattern(Phase1, 5f);
+                Phase1();
                 break;
             case 1:
-                ExecutePattern(Phase2, 5f);
+                Phase2();
                 break;
             case 2:
-                ExecutePattern(Phase3, 5f);
+                Phase3();
                 break;
             case 3:
-                ExecutePattern(Phase4, 5f);
+                Phase4();
                 break;
             case 4:
-                ExecutePattern(Phase5, 5f);
+                Phase5();
                 break;
         }
         randomY = Mathf.Clamp(Random.Range(bottomBorder + 4.5f, topBorder - 3), bottomBorder + 4.5f, topBorder - 3); // 범위 제한
@@ -113,41 +126,53 @@ public class Boss2 : Boss, IBoss
         float clampedX = Mathf.Clamp(playerPos.x, leftBorder + 10, rightBorder - 10);
         transform.DOMove(new Vector3(clampedX, randomY, transform.position.z), 3f).SetEase(Ease.InOutBack);
     }
-    private void ExecutePattern(Action phasePattern, float waitTime)
+    private void ExecutePattern(IEnumerable<Action> phasePatterns)
     {
         if (!isPatterning)
         {
-            StartCoroutine(RunPattern(phasePattern, waitTime));
+            foreach (var pattern in phasePatterns)
+            {
+                patternQueue.Enqueue(pattern);
+            }
+
+            StartCoroutine(ProcessPatterns());
         }
     }
-    private IEnumerator RunPattern(Action phasePattern, float waitTime)
+    private IEnumerator ProcessPatterns()
     {
         isPatterning = true;
-        phasePattern.Invoke();
-        yield return new WaitForSeconds(waitTime); // 지정된 시간만큼 대기
-        isPatterning = false; 
+
+        while (patternQueue.Count > 0)
+        {
+            var currentPattern = patternQueue.Dequeue();
+            currentPattern.Invoke();
+            yield return new WaitForSeconds(5f); // 패턴 대기 시간 (조정 가능)
+        }
+
+        isPatterning = false;
     }
-    private IEnumerator LaserPattern(int count, float interval)
+    private IEnumerator OrbitalPattern(int count, float interval)
     {
         float gap = 1.5f;
         float indicatorGap = 1.5f;
         for (int i = 0; i < count; i++)
         {
-            ShowIndicator(new Vector3(0,bottomBorder + 0.5f,0) + new Vector3(indicatorGap, -0.6f, 0), 0.8f);
-            ShowIndicator(new Vector3(0, bottomBorder+ 0.5f, 0) + new Vector3(-indicatorGap, -0.6f, 0), 0.8f);
+            ShowIndicator(new Vector3(0,bottomBorder + 0.5f,0) + new Vector3(indicatorGap, -0.6f, 0), 1f);
+            ShowIndicator(new Vector3(0, bottomBorder+ 0.5f, 0) + new Vector3(-indicatorGap, -0.6f, 0), 1f);
             yield return new WaitForSeconds(0.3f);
 
             indicatorGap += 2f;
         }
         for (int i = 0; i < count; i++)
         {
-            FireLaser(new Vector3(0, bottomBorder + 0.5f, 0) + new Vector3(gap, -0.6f, 0), 1.5f);
-            FireLaser(new Vector3(0, bottomBorder + 0.5f, 0) + new Vector3(-gap, -0.6f, 0), 1.5f);
+            FireOrbital(new Vector3(0, bottomBorder + 0.1f, 0) + new Vector3(gap, 0, 0), 1.5f);
+            FireOrbital(new Vector3(0, bottomBorder + 0.1f, 0) + new Vector3(-gap, 0, 0), 1.5f);
 
             gap += 2f;
             yield return new WaitForSeconds(interval);
         }
     }
+
     private IEnumerator SnowBallPattern(int count, float interval)
     {
         for (int i = 0;i < count; i++)
@@ -156,7 +181,7 @@ public class Boss2 : Boss, IBoss
             yield return new WaitForSeconds(interval);
         }
     }
-    private void FireLaser(Vector3 targetPosition, float duration)
+    private void FireOrbital(Vector3 targetPosition, float duration)
     {
         GameObject laser = ParticlePool.Instance.GetParticle("laser");
         
@@ -174,9 +199,10 @@ public class Boss2 : Boss, IBoss
 
         if (snowBall != null)
         {
+            snowBall.transform.position = transform.position;
             Rigidbody rb = snowBall.GetComponent<Rigidbody>();
-            rb.AddForce(targetPosition * 5f, ForceMode.Impulse);
-            StartCoroutine(ReturnToPool(snowBall, 0.5f));
+            Vector3 dir = (targetPosition - transform.position).normalized;
+            rb.AddForce(dir * 10f, ForceMode.Impulse);
         }
     }
 
@@ -195,10 +221,7 @@ public class Boss2 : Boss, IBoss
         particle.TryGetComponent<BossBullet>(out BossBullet bullet);
         if (bullet != null)
         {
-            if (bullet.isEntering)
-            {
-                bullet.OnParticleTriggerExit();
-            }
+            bullet.LifeTimeExit();
         }
         yield return new WaitForSeconds(delay);
         ParticlePool.Instance.OnParticleRelease(particle);

@@ -2459,7 +2459,7 @@ MonoBehaviour:
       type: 3}
     count: 10
   - name: indicator
-    prefab: {fileID: 8551784944229353840, guid: af55326d100313d429175592748adce1,
+    prefab: {fileID: 8114680296406217459, guid: 3d8c714c2061d874694499e8e459854b,
       type: 3}
     count: 10
   - name: snowBall

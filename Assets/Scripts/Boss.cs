@@ -41,7 +41,7 @@ public class Boss : MonoBehaviour
 
     private bool isHit = false;
     private float hitTimer = 0f;
-    private SpriteRenderer spriteRenderer;
+    protected SpriteRenderer spriteRenderer;
 
     private Coroutine colorChangeCoroutine; // 색상 변경 코루틴을 저장할 변수
 

@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2372577908394493478}
   - component: {fileID: 5150606079026530298}
-  - component: {fileID: 1360151616151072344}
   m_Layer: 0
   m_Name: LaserBeamBlue2
   m_TagString: BossBullet
@@ -132,15 +131,3 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
---- !u!114 &1360151616151072344
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9029702210521013167}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b258513aa1d12f54d92b5cfb13810ae1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

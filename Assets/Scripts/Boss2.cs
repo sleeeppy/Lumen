@@ -78,8 +78,8 @@ public class Boss2 : Boss, IBoss
     {
         ExecutePattern(new List<Action>
         {
-            () => StartCoroutine(OrbitalPattern(8, 0.5f)),
-            () => StartCoroutine(SnowBallPattern(6, 0.5f))
+            () => StartCoroutine(OrbitalPattern(9, 0.1f)),
+            () => StartCoroutine(SnowBallPattern(6, 0.15f))
         });
     }
     public void Phase2()
@@ -146,7 +146,7 @@ public class Boss2 : Boss, IBoss
         {
             var currentPattern = patternQueue.Dequeue();
             currentPattern.Invoke();
-            yield return new WaitForSeconds(5f); // 패턴 대기 시간 (조정 가능)
+            yield return new WaitForSeconds(3f); // 패턴 대기 시간 (조정 가능)
         }
 
         isPatterning = false;
@@ -159,9 +159,10 @@ public class Boss2 : Boss, IBoss
         {
             ShowIndicator(new Vector3(0,bottomBorder + 0.5f,0) + new Vector3(indicatorGap, -0.6f, 0), 1f);
             ShowIndicator(new Vector3(0, bottomBorder+ 0.5f, 0) + new Vector3(-indicatorGap, -0.6f, 0), 1f);
-            yield return new WaitForSeconds(0.3f);
 
             indicatorGap += 2f;
+
+            yield return new WaitForSeconds(0.1f);
         }
         for (int i = 0; i < count; i++)
         {
@@ -169,6 +170,7 @@ public class Boss2 : Boss, IBoss
             FireOrbital(new Vector3(0, bottomBorder + 0.1f, 0) + new Vector3(-gap, 0, 0), 1.5f);
 
             gap += 2f;
+
             yield return new WaitForSeconds(interval);
         }
     }
@@ -183,14 +185,14 @@ public class Boss2 : Boss, IBoss
     }
     private void FireOrbital(Vector3 targetPosition, float duration)
     {
-        GameObject laser = ParticlePool.Instance.GetParticle("laser");
+        GameObject orbital = ParticlePool.Instance.GetParticle("orbital");
         
-        if (laser != null)
+        if (orbital != null)
         {
             // 레이저 초기화
-            laser.transform.position = targetPosition;
+            orbital.transform.position = targetPosition;
             // 레이저 지속 시간 후 반환
-            StartCoroutine(ReturnToPool(laser, duration));
+            StartCoroutine(ReturnToPool(orbital, duration));
         }
     }
     private void FireSnowBall(Vector3 targetPosition)

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 namespace RetroArsenal
@@ -63,9 +63,8 @@ namespace RetroArsenal
             }
 
             RaycastHit hit;
-
             if (Physics.SphereCast(myTransform.position, rad, dir, out hit, dist)
-                && !hit.collider.CompareTag("Border"))
+                && !hit.collider.CompareTag("Border") && !hit.collider.CompareTag("BossBullet"))
             {
                 // 총알이 보스를 피격했을 경우
                 if (hit.collider.CompareTag("Boss3DCollider"))
@@ -82,6 +81,14 @@ namespace RetroArsenal
                     {
                         // HandleCollision에 Bullet gameObject를 넘김
                         re_boss.HandleCollision(gameObject);
+                    }
+                }
+                else if (hit.collider.CompareTag("Player3DCollider"))
+                {
+                    Player player = hit.collider.gameObject.GetComponentInParent<Player>();
+                    if(player != null)
+                    {
+                        player.OnHitByBullet();
                     }
                 }
 

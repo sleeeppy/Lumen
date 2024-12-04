@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -48,13 +48,32 @@ public class PolygonBeamStatic : MonoBehaviour
 			Vector3 end = transform.position + (transform.forward * beamLength);
 			RaycastHit hit;
 			
-			if (beamCollides && Physics.Raycast(transform.position, transform.forward, out hit))
+			if (beamCollides && Physics.Raycast(transform.position, transform.forward, out hit) && !hit.collider.CompareTag("BossBullet") && !hit.collider.CompareTag("PlayerBullet"))
 			{
 				end = hit.point - (transform.forward * beamEndOffset);
 				end = Vector3.Distance(transform.position, end) > beamLength 
 					? transform.position + (transform.forward * beamLength) 
 					: end;
-			}
+
+                if (hit.collider.CompareTag("Boss3DCollider"))
+                {
+                    Boss boss = hit.collider.GetComponentInParent<Boss>();
+                    if (boss != null)
+                    {
+                        // Debug.Log($"{hit.collider.name}");
+                        boss.HandleCollision(gameObject);
+                    }
+                }
+
+                else if (hit.collider.CompareTag("Player3DCollider"))
+                {
+                    Player player = hit.collider.GetComponentInParent<Player>();
+                    if (player != null)
+                    {
+                        player.OnHitByBullet();
+                    }
+                }
+            }
 			else
 			{
 				end = transform.position + (transform.forward * beamLength);

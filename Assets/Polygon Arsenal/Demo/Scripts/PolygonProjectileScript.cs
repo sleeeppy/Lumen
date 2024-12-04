@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 namespace PolygonArsenal
@@ -41,9 +41,26 @@ namespace PolygonArsenal
             dir = dir.normalized;
 
             float dist = transform.GetComponent<Rigidbody>().velocity.magnitude * Time.deltaTime;
-
-            if (Physics.SphereCast(transform.position, rad, dir, out hit, dist))
+            
+            if (Physics.SphereCast(transform.position, rad, dir, out hit, dist) && !hit.collider.CompareTag("Border") && !hit.collider.CompareTag("BossBullet"))
             {
+                if (hit.collider.CompareTag("Boss3DCollider"))
+                {
+                    Boss boss = hit.collider.gameObject.GetComponentInParent<Boss>();
+                    if (boss != null)
+                    {
+                        // HandleCollision에 Bullet gameObject를 넘김
+                        boss.HandleCollision(gameObject);
+                    }
+                }
+                else if (hit.collider.CompareTag("Player3DCollider"))
+                {
+                    Player player = hit.collider.gameObject.GetComponentInParent<Player>();
+                    if (player != null)
+                    {
+                        player.OnHitByBullet();
+                    }
+                }
                 transform.position = hit.point + (hit.normal * collideOffset);
 
                 GameObject impactP = Instantiate(impactParticle, transform.position, Quaternion.FromToRotation(Vector3.up, hit.normal)) as GameObject;

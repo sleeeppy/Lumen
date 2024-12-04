@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7154864880096893286}
   - component: {fileID: 98177267574152500}
   - component: {fileID: 1272262221188397917}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: EndClouds
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4881,7 +4881,7 @@ GameObject:
   - component: {fileID: 1514803554314071915}
   - component: {fileID: 1514803554314071917}
   - component: {fileID: 1514803554314071914}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: EndSparks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9778,7 +9778,7 @@ GameObject:
   - component: {fileID: 1514803554752572039}
   - component: {fileID: 1514803554752572036}
   - component: {fileID: 1514803554752572037}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: ChargeOuter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14653,7 +14653,7 @@ GameObject:
   - component: {fileID: 3768996039714111909}
   - component: {fileID: 2285243003743520178}
   - component: {fileID: 1785590943362566165}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: OrbitalBeamSmallBlue2
   m_TagString: BossBullet
   m_Icon: {fileID: 0}
@@ -14669,7 +14669,7 @@ Transform:
   m_GameObject: {fileID: 1514803555582350716}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 0.8, z: 0}
+  m_LocalScale: {x: 1, y: 0.9, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8615214425749868827}
@@ -19680,7 +19680,7 @@ GameObject:
   - component: {fileID: 8615214424303703188}
   - component: {fileID: 8615214424303703186}
   - component: {fileID: 8615214424303703189}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: EndLaser
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24550,7 +24550,7 @@ GameObject:
   - component: {fileID: 8615214425129333420}
   - component: {fileID: 8615214425129333418}
   - component: {fileID: 8615214425129333421}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: LingerSparks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29447,7 +29447,7 @@ GameObject:
   - component: {fileID: 8615214425749868827}
   - component: {fileID: 8615214425749868825}
   - component: {fileID: 8615214425749868824}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: ChargeSparks
   m_TagString: Untagged
   m_Icon: {fileID: 0}

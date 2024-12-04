@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
 using System.Collections;
+using Unity.Mathematics;
 
 public class Inventory : MonoBehaviour
 {
@@ -95,6 +96,7 @@ public class Inventory : MonoBehaviour
         equippedPositions[5] = new Vector2(-256, -164);
         equippedPositions[6] = new Vector2(-265, -153);
         equippedPositions[8] = new Vector2(-446, 275);
+        equippedPositions[9] = new Vector2(-439, 265);
         
         // ... 나머지 버튼의 위치 설정 ...
 
@@ -345,38 +347,6 @@ public class Inventory : MonoBehaviour
             Debug.Log($"현재 장착된 아이템 수: {_items.Count}");
         }
 
-        // 새로운 메서드 추가: 아이템 효과 해제
-        // private void UnEquip(Item item)
-        // {
-        //     switch (item)
-        //     {
-        //         case Item.Ring1:
-        //             _itemLogic.UnEquipRing1();
-        //             break;
-        //         case Item.Ring2:
-        //             _itemLogic.UnEquipRing2();
-        //             break;
-        //         case Item.Ring3:
-        //             _itemLogic.UnEquipRing3();
-        //             break;
-                
-        //         // Add More
-
-        //         case Item.Bracelet1:
-        //             _itemLogic.UnEquipBracelet1();
-        //             break;
-        //         case Item.Bracelet2:
-        //             _itemLogic.UnEquipBracelet2();
-        //             break;
-        //         case Item.Nail1:
-        //             _itemLogic.UnEquipNail1();
-        //             break;
-        //         case Item.Nail2:
-        //             _itemLogic.UnEquipNail2();
-        //             break;
-        //     }
-        // }
-
         private void SaveEquippedItemsToJson()
         {
             string json = JsonConvert.SerializeObject(_items);
@@ -488,11 +458,13 @@ public class Inventory : MonoBehaviour
             //Debug.Log($"{equippedPositions[8]}");
             if (index == 8)
                 itemButtons[index].transform.rotation = Quaternion.Euler(0, 0, -81);
+            else if (index == 9)
+                itemButtons[index].transform.rotation = quaternion.Euler(0, 0, -81); 
         }
         else
         {
             btnTransform.anchoredPosition = originalPositions[index]; // 원래 위치로 이동
-            if(index == 8)
+            if(index == 8 || index == 9)
                 itemButtons[index].transform.rotation = Quaternion.Euler(0, 0, 0);
         }
 

@@ -37,8 +37,8 @@ public class HUDIndicator : MonoBehaviour
     private Vector2 GetIndicatorPosition(Vector3 screenPoint)
     {
         // 화면의 경계 바깥으로 화살표 위치 보정
-        float x = Mathf.Clamp(screenPoint.x, 0.1f, 0.9f);
-        float y = Mathf.Clamp(screenPoint.y, 0.1f, 0.9f);
+        float x = Mathf.Clamp(screenPoint.x, 0.05f, 0.95f);
+        float y = Mathf.Clamp(screenPoint.y, 0.05f, 0.95f);
 
         // UI 캔버스 내 위치로 변환
         Vector2 viewportPosition = new Vector2(x, y);

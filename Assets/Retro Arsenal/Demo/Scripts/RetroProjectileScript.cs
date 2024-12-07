@@ -88,13 +88,25 @@ namespace RetroArsenal
                     Player player = hit.collider.gameObject.GetComponentInParent<Player>();
                     if(player != null)
                     {
-                        player.OnHitByBullet();
+                        if (!player.isInvincibility) // 무적 상태가 아니면 충돌 처리
+                        {
+                            player.OnHitByBullet();
+
+                            // 임팩트 효과 생성
+                            GameObject impactP = Instantiate(impactParticle, myTransform.position, Quaternion.FromToRotation(Vector3.up, hit.normal)) as GameObject;
+                            Destroy(impactP, 5.0f);
+                        }
                     }
                 }
 
                 myTransform.position = hit.point + (hit.normal * collideOffset);
 
-                GameObject impactP = Instantiate(impactParticle, myTransform.position, Quaternion.FromToRotation(Vector3.up, hit.normal)) as GameObject;
+                if (!hit.collider.CompareTag("Player3DCollider")) // 플레이어가 아닐때 임팩트 처리
+                {
+                    GameObject impactP = Instantiate(impactParticle, myTransform.position, Quaternion.FromToRotation(Vector3.up, hit.normal)) as GameObject;
+                    Destroy(impactP, 5.0f);
+                }
+                //GameObject impactP = Instantiate(impactParticle, myTransform.position, Quaternion.FromToRotation(Vector3.up, hit.normal)) as GameObject;
 
                 if (hit.transform.tag == "Target") // Projectile will affect objects tagged as Target
                 {
@@ -112,7 +124,7 @@ namespace RetroArsenal
                     Destroy(curTrail, 3f);
                 }
                 Destroy(projectileParticle, 3f);
-                Destroy(impactP, 5.0f);
+                //Destroy(impactP, 5.0f);
                 DestroyMissile();
             }
             else

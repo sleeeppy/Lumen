@@ -186,7 +186,6 @@ public class Boss2 : Boss, IBoss
     private void FireOrbital(Vector3 targetPosition, float duration)
     {
         GameObject orbital = ParticlePool.Instance.GetParticle("orbital");
-        
         if (orbital != null)
         {
             // 레이저 초기화

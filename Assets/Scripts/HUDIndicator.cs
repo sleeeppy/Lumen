@@ -9,7 +9,8 @@ public class HUDIndicator : MonoBehaviour
     [SerializeField] private Camera mainCamera;       // 메인 카메라
     [SerializeField] private RectTransform canvasRect; // UI 캔버스 RectTransform
     [SerializeField] private Transform boss;          // 보스 Transform
-    
+    [SerializeField] private Image indicatorImage; // 화살표 이미지
+
     // Update is called once per frame
     void Update()
     {
@@ -30,8 +31,11 @@ public class HUDIndicator : MonoBehaviour
 
         // 보스 방향으로 회전
         Vector3 bossDirection = boss.position - mainCamera.transform.position;
-        float angle = Mathf.Atan2(bossDirection.y, bossDirection.x) * Mathf.Rad2Deg;
-        indicator.rotation = Quaternion.Euler(0, 0, angle - 90); // 화살표 방향 보정
+        indicatorImage.rectTransform.localScale = new Vector3(
+            bossDirection.x > 0 ? 1 : -1, // 오른쪽 방향이면 그대로, 왼쪽 방향이면 뒤집기
+            bossDirection.y > 0 ? 1 : -1, // 위쪽 방향이면 그대로, 아래쪽 방향이면 뒤집기
+            1
+        );
     }
 
     private Vector2 GetIndicatorPosition(Vector3 screenPoint)

@@ -9,7 +9,7 @@ public class HUDIndicator : MonoBehaviour
     [SerializeField] private Camera mainCamera;       // 메인 카메라
     [SerializeField] private RectTransform canvasRect; // UI 캔버스 RectTransform
     [SerializeField] private Transform boss;          // 보스 Transform
-    [SerializeField] private Image indicatorImage; // 화살표 이미지
+    [SerializeField] private SpriteRenderer indicatorRenderer; // 화살표 렌더러
 
     // Update is called once per frame
     void Update()
@@ -28,14 +28,15 @@ public class HUDIndicator : MonoBehaviour
         // 화면 밖 위치 계산
         Vector2 indicatorPosition = GetIndicatorPosition(screenPoint);
         indicator.anchoredPosition = indicatorPosition;
-
-        // 보스 방향으로 회전
-        Vector3 bossDirection = boss.position - mainCamera.transform.position;
-        indicatorImage.rectTransform.localScale = new Vector3(
-            bossDirection.x > 0 ? 1 : -1, // 오른쪽 방향이면 그대로, 왼쪽 방향이면 뒤집기
-            bossDirection.y > 0 ? 1 : -1, // 위쪽 방향이면 그대로, 아래쪽 방향이면 뒤집기
-            1
-        );
+        // 보스 방향에 따라 화살표 회전
+        if (Mathf.Abs(screenPoint.y - 0.5f) > Mathf.Abs(screenPoint.x - 0.5f))
+        {
+            indicator.transform.localRotation = Quaternion.Euler(0, 0, screenPoint.y < 0.5f ? -90f : 90f);
+        }
+        else
+        {
+            indicator.transform.localRotation = Quaternion.Euler(0, 0, screenPoint.x < 0.5f ? 180f : 0f);
+        }
     }
 
     private Vector2 GetIndicatorPosition(Vector3 screenPoint)

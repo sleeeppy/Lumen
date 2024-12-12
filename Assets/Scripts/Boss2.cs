@@ -179,7 +179,7 @@ public class Boss2 : Boss, IBoss
     {
         for (int i = 0;i < count; i++)
         {
-            FireSnowBall(playerPos);
+            FireSnowBall();
             yield return new WaitForSeconds(interval);
         }
     }
@@ -194,16 +194,15 @@ public class Boss2 : Boss, IBoss
             StartCoroutine(ReturnToPool(orbital, duration));
         }
     }
-    private void FireSnowBall(Vector3 targetPosition)
+    private void FireSnowBall()
     {
         GameObject snowBall = ParticlePool.Instance.GetParticle("snowBall");
-
-        if (snowBall != null)
+        
+        if(snowBall != null)
         {
             snowBall.transform.position = transform.position;
-            Rigidbody rb = snowBall.GetComponent<Rigidbody>();
-            Vector3 dir = (targetPosition - transform.position).normalized;
-            rb.AddForce(dir * 10f, ForceMode.Impulse);
+            BossProjectile projectile = snowBall.GetComponent<BossProjectile>();
+            projectile.Initialize();
         }
     }
 

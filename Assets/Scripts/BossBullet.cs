@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BossBullet : MonoBehaviour
 {
-    private GameObject player;
+    protected GameObject player;
     [HideInInspector] public bool isEntering = false;
     void Awake()
     {

@@ -14,9 +14,9 @@ GameObject:
   - component: {fileID: 832271529887873528}
   - component: {fileID: 941086834257779971}
   - component: {fileID: 1726249038994405965}
-  - component: {fileID: 7983061092064612029}
   - component: {fileID: 4163239251819201132}
   - component: {fileID: 3575647142747333899}
+  - component: {fileID: 2884363728504533790}
   m_Layer: 0
   m_Name: BubbleMissile2
   m_TagString: BossBullet
@@ -5031,19 +5031,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa0e9090d4beb434497c4b1f1ca86030, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &7983061092064612029
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1088268627427467393}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 11fee34458a8f1a418d19c38322eeccf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isEntering: 0
 --- !u!54 &4163239251819201132
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -5073,6 +5060,21 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.3
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2884363728504533790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1088268627427467393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac8fc02aac5007f48a92097725aa959c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isEntering: 0
+  type: 0
+  speed: 1
 --- !u!1 &3425432979607126208
 GameObject:
   m_ObjectHideFlags: 0

@@ -20,7 +20,7 @@ public class BossBullet : MonoBehaviour
             Debug.Log("Enter");
             isEntering = true;
         }
-        if (other.gameObject.CompareTag("Border"))
+        if (other.gameObject.CompareTag("Border") || other.gameObject.CompareTag("Player3DCollider"))
         {
             ParticlePool.Instance.OnParticleRelease(gameObject);
         }

@@ -83,7 +83,7 @@ public class NPC : MonoBehaviour
             StartDialogue();
             justOnce = true;
 
-            StartCoroutine(LerpFieldOfView(vCam.m_Lens.FieldOfView, 30f, 0.35f));
+            StartCoroutine(LerpFov(vCam.m_Lens.FieldOfView, 30f, 0.35f));
         }
         
         // 텍스트 출력 중에 anyKeyDown을 눌렀을 때 즉시 출력 완료
@@ -116,7 +116,7 @@ public class NPC : MonoBehaviour
 
     void EndDialogue()
     {
-        StartCoroutine(LerpFieldOfView(vCam.m_Lens.FieldOfView, 35f, 0.35f));
+        StartCoroutine(LerpFov(vCam.m_Lens.FieldOfView, 35f, 0.35f));
         WaitOneFrame();
         
         playerScript.moveSpeed = originSpeed;
@@ -221,11 +221,14 @@ public class NPC : MonoBehaviour
             {
                 textBox.SetActive(false);
                 Inventory.instance.ShowInventory();
-                StartCoroutine(LerpFieldOfView(vCam.m_Lens.FieldOfView, 23.5f, 0.4f));
+                StartCoroutine(LerpFov(vCam.m_Lens.FieldOfView, 23.5f, 0.4f));
                 Debug.Log("상점 NPC와의 대화가 모두 끝났습니다!");
             }
-            else
+
+            if (Id == "1")
+            {
                 LoadNextScene();
+            }
         }
     }
 
@@ -286,7 +289,7 @@ public class NPC : MonoBehaviour
         }
     }
 
-    private IEnumerator LerpFieldOfView(float startValue, float endValue, float duration)
+    private IEnumerator LerpFov(float startValue, float endValue, float duration)
     {
         float elapsedTime = 0f;
         while (elapsedTime < duration)

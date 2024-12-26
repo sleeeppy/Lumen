@@ -146,7 +146,7 @@ public class Boss2 : Boss, IBoss
         {
             var currentPattern = patternQueue.Dequeue();
             currentPattern.Invoke();
-            yield return new WaitForSeconds(3f); // 패턴 대기 시간 (조정 가능)
+            yield return new WaitForSeconds(2f); // 패턴 대기 시간 (조정 가능)
         }
 
         isPatterning = false;
@@ -183,6 +183,7 @@ public class Boss2 : Boss, IBoss
             yield return new WaitForSeconds(interval);
         }
     }
+    
     private void FireOrbital(Vector3 targetPosition, float duration)
     {
         GameObject orbital = ParticlePool.Instance.GetParticle("orbital");
@@ -194,6 +195,7 @@ public class Boss2 : Boss, IBoss
             StartCoroutine(ReturnToPool(orbital, duration));
         }
     }
+    
     private void FireSnowBall()
     {
         GameObject snowBall = ParticlePool.Instance.GetParticle("snowBall");

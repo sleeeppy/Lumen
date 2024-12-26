@@ -112,4 +112,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isEntering: 0
   type: 0
-  speed: 5
+  speed: 10

@@ -5,7 +5,7 @@ using UnityEngine;
 public abstract class ProjectileBase : MonoBehaviour
 {
     protected Rigidbody rb;
-    [HideInInspector] public float speed;
+    public float speed;
 
     public virtual void Setup(Transform target)
     {

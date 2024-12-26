@@ -57,7 +57,7 @@ public class Inventory : MonoBehaviour
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         Debug.Log("OnSceneLoaded: " + scene.name);
-        if(scene.name == "Game")
+        if (scene.name == "Game"|| scene.name.Contains("Boss"))
         {
             inven.LoadEquippedItemsFromJson(); // 장착된 아이템을 JSON에서 로드
         }

@@ -32,7 +32,7 @@ public class Boss2 : Boss, IBoss
         slider.value = HP;
         phaseText.text = "phase " + phase;
 
-        if (HP <= 0 && phase != 0)
+        if (HP <= 0 && phase != 0 || Input.GetKeyDown(KeyCode.V))
         {
             phase--;
 
@@ -79,24 +79,39 @@ public class Boss2 : Boss, IBoss
         ExecutePattern(new List<Action>
         {
             () => StartCoroutine(OrbitalPattern(9, 0.1f)),
-            () => StartCoroutine(SnowBallPattern(6, 0.15f))
+            () => StartCoroutine(SnowBallPattern(6, 0.15f,ProjectileType.Straight))
         });
     }
     public void Phase2()
     {
-        
+        ExecutePattern(new List<Action>
+        {
+            () => StartCoroutine(BubbleMissilePattern(6, 0.3f,ProjectileType.Homing))
+        });
     }
     public void Phase3()
     {
-
+        ExecutePattern(new List<Action>
+        {
+            () => StartCoroutine(WaterDropPattern(10,0.2f)),
+            () => StartCoroutine(BubbleMissilePattern(6, 0.3f, ProjectileType.Straight))
+        });
     }
     public void Phase4()
     {
-
+        ExecutePattern(new List<Action>
+        {
+            () => StartCoroutine(SnowBallPattern(6, 0.15f, ProjectileType.Homing)),
+            () => StartCoroutine(BubbleMissilePattern(8,0.3f, ProjectileType.Straight))
+        });
     }
     public void Phase5()
     {
-
+        ExecutePattern(new List<Action>
+        {
+            () => StartCoroutine(OrbitalPattern(9,0.1f)),
+            () => StartCoroutine(BubbleMissilePattern(5,0.1f, ProjectileType.Homing))
+        });
     }
 
     public void PhaseChange(int bossPhase)
@@ -153,8 +168,8 @@ public class Boss2 : Boss, IBoss
     }
     private IEnumerator OrbitalPattern(int count, float interval)
     {
-        float gap = 1.5f;
-        float indicatorGap = 1.5f;
+        float gap = 0;
+        float indicatorGap = 0f;
         for (int i = 0; i < count; i++)
         {
             ShowIndicator(new Vector3(0,bottomBorder + 0.5f,0) + new Vector3(indicatorGap, -0.6f, 0), 1f);
@@ -175,11 +190,29 @@ public class Boss2 : Boss, IBoss
         }
     }
 
-    private IEnumerator SnowBallPattern(int count, float interval)
+    private IEnumerator SnowBallPattern(int count, float interval,ProjectileType type)
     {
         for (int i = 0;i < count; i++)
         {
-            FireSnowBall();
+            FireSnowBall(type);
+            yield return new WaitForSeconds(interval);
+        }
+    }
+
+    private IEnumerator BubbleMissilePattern(int count, float interval,ProjectileType type)
+    {
+        for(int i = 0; i < count; i++)
+        {
+            FireBubble(type);
+            yield return new WaitForSeconds(interval);
+        }
+    }
+    private IEnumerator WaterDropPattern(int count, float interval)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            
+            FireWaterMissile();
             yield return new WaitForSeconds(interval);
         }
     }
@@ -194,14 +227,36 @@ public class Boss2 : Boss, IBoss
             StartCoroutine(ReturnToPool(orbital, duration));
         }
     }
-    private void FireSnowBall()
+    private void FireWaterMissile()
+    {
+        GameObject waterMissile = ParticlePool.Instance.GetParticle("waterMissile");
+
+        if (waterMissile != null)
+        {
+            waterMissile.transform.position = playerPos + new Vector3(0,2f);
+        }
+    }
+    private void FireBubble(ProjectileType type)
+    {
+        GameObject bubble = ParticlePool.Instance.GetParticle("bubbleMissile");
+        
+        if(bubble != null)
+        {
+            bubble.transform.position = transform.position;
+            BossProjectile projectile = bubble.GetComponent<BossProjectile>();
+            projectile.type = type;
+            projectile.Initialize();
+        }
+    }
+    private void FireSnowBall(ProjectileType type)
     {
         GameObject snowBall = ParticlePool.Instance.GetParticle("snowBall");
-        
-        if(snowBall != null)
+
+        if (snowBall != null)
         {
             snowBall.transform.position = transform.position;
             BossProjectile projectile = snowBall.GetComponent<BossProjectile>();
+            projectile.type = type;
             projectile.Initialize();
         }
     }

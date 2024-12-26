@@ -11,7 +11,7 @@ public enum ProjectileType
 }
 public class BossProjectile : BossBullet
 {
-    [SerializeField] ProjectileType type;
+    public ProjectileType type;
     [SerializeField] private float speed;
     private ProjectileBase projectile;
     private Transform target;

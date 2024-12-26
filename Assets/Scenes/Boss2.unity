@@ -1772,7 +1772,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.23127414, y: 0.42456007, z: -10}
+  m_LocalPosition: {x: -0.23141272, y: 0.42457008, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2562,6 +2562,14 @@ MonoBehaviour:
     count: 10
   - name: snowBall
     prefab: {fileID: 1214614404472651599, guid: c6c6e70b4b955714dbe520d2c955d909,
+      type: 3}
+    count: 10
+  - name: bubbleMissile
+    prefab: {fileID: 2124173044395449838, guid: c097e019db5609c44a5e19e58a00e3ee,
+      type: 3}
+    count: 10
+  - name: waterMissile
+    prefab: {fileID: 4424122795295397854, guid: cea9045f7c66ab74da86cacb6f8b4318,
       type: 3}
     count: 10
 --- !u!4 &912506350

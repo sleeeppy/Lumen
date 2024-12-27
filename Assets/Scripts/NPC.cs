@@ -227,7 +227,11 @@ public class NPC : MonoBehaviour
 
             if (Id == "1")
             {
-                LoadNextScene();
+                SceneLoader.instance.LoadBoss2Scene();
+            }
+            else if (Id == "2")
+            {
+                SceneLoader.instance.LoadGameScene();
             }
         }
     }
@@ -262,11 +266,6 @@ public class NPC : MonoBehaviour
         chatText.text = currentFullText; // 전체 텍스트를 즉시 출력
         isTyping = false; // 타이핑 완료로 전환
         dialoguePointer.SetActive(true); // 화살표 활성화
-    }
-
-    void LoadNextScene()
-    {
-        SceneLoader.instance.LoadGameScene();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

@@ -36,6 +36,11 @@ public class SceneLoader : MonoBehaviour
         SceneManager.LoadScene(2);
     }
 
+    public void LoadBoss2Scene()
+    {
+        SceneManager.LoadScene(3);
+    }
+
     public void ExitGame()
     {
         Application.Quit();

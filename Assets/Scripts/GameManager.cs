@@ -143,12 +143,17 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void LoadLobbyScene()
+    public void LoadMainScene()
+    {
+        SceneManager.LoadScene("Main");
+    }
+
+    public void LoadLobbyScene()
     {
         SceneManager.LoadScene("Lobby");
     }
 
-    void ExitGame()
+    public void ExitGame()
     {
         Application.Quit();
     }

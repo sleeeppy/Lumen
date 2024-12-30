@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        SceneLoader.instance.LoadMainScene();
+        SceneManager.LoadScene("Main");
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -57,8 +57,8 @@ public class GameManager : MonoBehaviour
             Button startButton = GameObject.Find("Start Button").GetComponent<Button>();
             Button exitButton = GameObject.Find("Exit Button").GetComponent<Button>();
 
-            startButton.onClick.AddListener(SceneLoader.instance.LoadLobbyScene);
-            exitButton.onClick.AddListener(SceneLoader.instance.ExitGame);
+            startButton.onClick.AddListener(LoadLobbyScene);
+            exitButton.onClick.AddListener(ExitGame);
 
             // 버튼에 이벤트 추가
             startButton.gameObject.AddComponent<EventTrigger>().triggers = new List<EventTrigger.Entry>();
@@ -143,8 +143,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // void GoToLobbyScene()
-    // {
-    //     SceneLoader.instance.LoadLobbyScene();
-    // }
+    void LoadLobbyScene()
+    {
+        SceneManager.LoadScene("Lobby");
+    }
+
+    void ExitGame()
+    {
+        Application.Quit();
+    }
 }

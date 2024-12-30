@@ -227,11 +227,11 @@ public class NPC : MonoBehaviour
 
             if (Id == "1")
             {
-                SceneLoader.instance.LoadBoss2Scene();
+                SceneManager.LoadScene("Boss2");
             }
             else if (Id == "2")
             {
-                SceneLoader.instance.LoadGameScene();
+                SceneManager.LoadScene("Game");
             }
         }
     }

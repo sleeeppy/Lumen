@@ -168,7 +168,7 @@ public class Boss2 : Boss
     }
     private IEnumerator OrbitalPattern(int count, float interval)
     {
-        float gap = 0;
+        float gap = 0f;
         float indicatorGap = 0f;
         for (int i = 0; i < count; i++)
         {

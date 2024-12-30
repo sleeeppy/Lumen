@@ -3,6 +3,10 @@ guid: ae50256b9edf0434da1df2b610b37582
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
+<<<<<<< HEAD:Assets/Animation/Player/NewIdle.anim.meta
+  mainObjectFileID: 0
+=======
+>>>>>>> main:Assets/Scripts/Manager.meta
   userData: 
   assetBundleName: 
   assetBundleVariant: 

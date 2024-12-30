@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using Random = UnityEngine.Random;
 
-public class Boss2 : Boss
+public class Boss2 : Boss, IBoss
 {
     private GameObject player;
     private Vector3 playerPos;
@@ -168,7 +168,7 @@ public class Boss2 : Boss
     }
     private IEnumerator OrbitalPattern(int count, float interval)
     {
-        float gap = 0;
+        float gap = 0f;
         float indicatorGap = 0f;
         for (int i = 0; i < count; i++)
         {

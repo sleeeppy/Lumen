@@ -741,7 +741,7 @@ public class Player : MonoBehaviour
 
     public void Die()
     {
-        SceneManager.LoadScene("Lobby");
+        SceneLoader.instance.LoadLobbyScene();
     }
 
     IEnumerator DelaySliderValue()

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using Random = UnityEngine.Random;
 
-public class Boss2 : Boss, IBoss
+public class Boss2 : Boss
 {
     private GameObject player;
     private Vector3 playerPos;

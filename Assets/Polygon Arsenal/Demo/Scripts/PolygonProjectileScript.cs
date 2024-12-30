@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UIElements;
 
 namespace PolygonArsenal
 {
@@ -42,15 +43,17 @@ namespace PolygonArsenal
 
             float dist = transform.GetComponent<Rigidbody>().velocity.magnitude * Time.deltaTime;
             
-            if (Physics.SphereCast(transform.position, rad, dir, out hit, dist) && !hit.collider.CompareTag("Border") && !hit.collider.CompareTag("BossBullet"))
+            if (Physics.SphereCast(transform.position, rad, dir, out hit, dist) && !hit.collider.CompareTag("Border") && !hit.collider.CompareTag("BossBullet") && !hit.collider.CompareTag("PlayerBullet"))
             {
-                if (hit.collider.CompareTag("Boss3DCollider"))
+                if (hit.collider.CompareTag("Boss3DCollider") && !gameObject.CompareTag("BossBullet"))
                 {
                     Boss boss = hit.collider.gameObject.GetComponentInParent<Boss>();
                     if (boss != null)
                     {
                         // HandleCollision에 Bullet gameObject를 넘김
                         boss.HandleCollision(gameObject);
+                        GameObject impactP = Instantiate(impactParticle, transform.position, Quaternion.FromToRotation(Vector3.up, hit.normal)) as GameObject;
+                        Destroy(impactP, 5.0f);
                     }
                 }
                 else if (hit.collider.CompareTag("Player3DCollider"))
@@ -58,12 +61,23 @@ namespace PolygonArsenal
                     Player player = hit.collider.gameObject.GetComponentInParent<Player>();
                     if (player != null)
                     {
-                        player.OnHitByBullet();
+                        if (!player.isInvincibility) // 무적 상태가 아니면 충돌 처리
+                        {
+                            player.OnHitByBullet();
+
+                            // 임팩트 효과 생성
+                            GameObject impactP = Instantiate(impactParticle, transform.position, Quaternion.FromToRotation(Vector3.up, hit.normal)) as GameObject;
+                            Destroy(impactP, 5.0f);
+                        }
                     }
                 }
                 transform.position = hit.point + (hit.normal * collideOffset);
-
-                GameObject impactP = Instantiate(impactParticle, transform.position, Quaternion.FromToRotation(Vector3.up, hit.normal)) as GameObject;
+                if (!hit.collider.CompareTag("Player3DCollider") && !hit.collider.CompareTag("Boss3DCollider")) // 플레이어가 아닐때 임팩트 처리
+                {
+                    GameObject impactP = Instantiate(impactParticle, transform.position, Quaternion.FromToRotation(Vector3.up, hit.normal)) as GameObject;
+                    Destroy(impactP, 5.0f);
+                }
+                //GameObject impactP = Instantiate(impactParticle, transform.position, Quaternion.FromToRotation(Vector3.up, hit.normal)) as GameObject;
 
                 if (hit.transform.tag == "Destructible") // Projectile will destroy objects tagged as Destructible
                 {
@@ -77,7 +91,7 @@ namespace PolygonArsenal
                     Destroy(curTrail, 3f);
                 }
                 Destroy(projectileParticle, 3f);
-                Destroy(impactP, 5.0f);
+                //Destroy(impactP, 5.0f);
                 Destroy(gameObject);
 
                 ParticleSystem[] trails = GetComponentsInChildren<ParticleSystem>();

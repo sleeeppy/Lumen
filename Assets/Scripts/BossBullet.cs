@@ -4,24 +4,23 @@ using UnityEngine;
 
 public class BossBullet : MonoBehaviour
 {
-    protected Player player;
+    protected GameObject player;
     [HideInInspector] public bool isEntering = false;
     void Awake()
     {
-        player = GameObject.FindWithTag("Player").GetComponent<Player>();
+        player = GameObject.FindWithTag("Player");
         
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Player3DCollider") && !player.isInvincibility)
+        if (other.gameObject.CompareTag("Player3DCollider"))
         {
-            player.OnHitByBullet();
+            player.GetComponent<Player>().OnHitByBullet();
             Debug.Log("Enter");
             isEntering = true;
-            ParticlePool.Instance.OnParticleRelease(gameObject);
         }
-        if (other.gameObject.CompareTag("Border"))
+        if (other.gameObject.CompareTag("Border") || other.gameObject.CompareTag("Player3DCollider"))
         {
             ParticlePool.Instance.OnParticleRelease(gameObject);
         }

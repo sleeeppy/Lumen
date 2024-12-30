@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1533391612490250598}
   - component: {fileID: 1533391612490250599}
   - component: {fileID: -1199774219588518368}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: LaserBeamPurpleStatic
   m_TagString: PlayerBullet
   m_Icon: {fileID: 0}

@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 1831278123539632331}
   - component: {fileID: 4412074108084847408}
   - component: {fileID: 603705934580525672}
-  - component: {fileID: 2665833629485435377}
   m_Layer: 0
   m_Name: BubbleMissileOBJ2
   m_TagString: BossBullet
@@ -114,15 +113,3 @@ MonoBehaviour:
   isEntering: 0
   type: 1
   speed: 5
---- !u!114 &2665833629485435377
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2124173044395449838}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c9e8e57de6f66942883cd7abaa97805, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

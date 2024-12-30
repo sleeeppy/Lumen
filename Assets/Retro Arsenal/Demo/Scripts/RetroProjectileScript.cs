@@ -64,18 +64,23 @@ namespace RetroArsenal
 
             RaycastHit hit;
             if (Physics.SphereCast(myTransform.position, rad, dir, out hit, dist)
-                && !hit.collider.CompareTag("Border") && !hit.collider.CompareTag("BossBullet") && !hit.collider.CompareTag("PlayerBullet"))
+                && !hit.collider.CompareTag("Border") && !hit.collider.CompareTag("BossBullet"))
             {
                 // 총알이 보스를 피격했을 경우
-                if (hit.collider.CompareTag("Boss3DCollider") && !gameObject.CompareTag("BossBullet"))
+                if (hit.collider.CompareTag("Boss3DCollider"))
                 {
                     Boss boss = hit.collider.gameObject.GetComponentInParent<Boss>();
                     if (boss != null)
                     {
                         // HandleCollision에 Bullet gameObject를 넘김
                         boss.HandleCollision(gameObject);
-                        GameObject impactP = Instantiate(impactParticle, myTransform.position, Quaternion.FromToRotation(Vector3.up, hit.normal)) as GameObject;
-                        Destroy(impactP, 5.0f);
+                    }
+                    //테스트용입니다. 테스트후 성공하면 삭제하지말아주세요ㅠㅠ
+                    Re_Boss re_boss = hit.collider.gameObject.GetComponentInParent<Re_Boss>();
+                    if (re_boss != null)
+                    {
+                        // HandleCollision에 Bullet gameObject를 넘김
+                        re_boss.HandleCollision(gameObject);
                     }
                 }
                 else if (hit.collider.CompareTag("Player3DCollider"))
@@ -96,7 +101,7 @@ namespace RetroArsenal
 
                 myTransform.position = hit.point + (hit.normal * collideOffset);
 
-                if (!hit.collider.CompareTag("Player3DCollider") && !hit.collider.CompareTag("Boss3DCollider")) // 플레이어가 아닐때 임팩트 처리
+                if (!hit.collider.CompareTag("Player3DCollider")) // 플레이어가 아닐때 임팩트 처리
                 {
                     GameObject impactP = Instantiate(impactParticle, myTransform.position, Quaternion.FromToRotation(Vector3.up, hit.normal)) as GameObject;
                     Destroy(impactP, 5.0f);
@@ -149,7 +154,7 @@ namespace RetroArsenal
         //     return screenPoint.x >= 0 && screenPoint.x <= 1 && screenPoint.y >= 0 && screenPoint.y <= 1 && screenPoint.z > 0;
         // }
 
-        public void DestroyMissile()
+        private void DestroyMissile()
         {
             destroyed = true;
 

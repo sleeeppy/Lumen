@@ -10,7 +10,7 @@ public class Managers : MonoBehaviour
     private static Managers _instance;
 
     private ObjectManager _objectManager = new ObjectManager();
-
+    
     public ObjectManager Object { get { return Instance._objectManager; } }
 
     private static void Init()

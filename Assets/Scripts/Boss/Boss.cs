@@ -171,7 +171,7 @@ public class Boss : MonoBehaviour
     protected virtual void Die()
     {
         phaseText.text = "x" + phase;
-        bulletEmitter.Kill();
+        bulletEmitter?.Kill();
         gameObject.SetActive(false);
     }
 

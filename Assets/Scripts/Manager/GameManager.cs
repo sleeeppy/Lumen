@@ -7,6 +7,8 @@ using UnityEngine.EventSystems;
 using TMPro;
 using DG.Tweening;
 
+// 레거시 코드입니다. 수정바랍니다. 
+
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;

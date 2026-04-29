@@ -51,5 +51,6 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Lumen.sln"
+    "dotnet.defaultSolution": "Lumen.sln",
+    "dotrush.roslyn.projectOrSolutionFiles": []
 }

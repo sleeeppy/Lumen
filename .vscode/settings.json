@@ -52,5 +52,7 @@
         "Temp/": true
     },
     "dotnet.defaultSolution": "Lumen.sln",
-    "dotrush.roslyn.projectOrSolutionFiles": []
+    "dotrush.roslyn.projectOrSolutionFiles": [
+        "/Users/sleeeppy/UnityProjects/Lumen/Library/com.singularitygroup.hotreload/Solution/Lumen.sln"
+    ]
 }

@@ -91,7 +91,6 @@ public class Player : MonoBehaviour
     public bool IsLongJump { set; private get; }
 
     [HideInInspector] public bool isFlying;
-
     
     private float curTime;
     Material material;

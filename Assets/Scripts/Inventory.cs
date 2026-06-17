@@ -11,7 +11,6 @@ using Newtonsoft.Json;
 using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
 using System.Collections;
-using Unity.Mathematics;
 
 public class Inventory : MonoBehaviour
 {
@@ -34,6 +33,11 @@ public class Inventory : MonoBehaviour
     private Vector2 originPos;
     private Vector2[] originalPositions; // 원래 위치 배열
     [SerializeField] private GameObject warningText;
+
+    // GetComponent 반복 호출을 피하기 위한 캐시 (Start 에서 1회 초기화)
+    private RectTransform[] buttonRects;
+    private Image[] itemImages;
+    private RectTransform descriptionRect;
 
     private void Awake()
     {
@@ -71,22 +75,21 @@ public class Inventory : MonoBehaviour
     private void Start()
     {
         inven = new Inven();
-        inven.Items = new List<Inven.Item>();
-
-        // 기본 아이템 장착
-        // inven.Equip(Inven.Item.Bracelet1); // Bracelet1 장착
-        // inven.Equip(Inven.Item.Nail1); // Nail1 장착
+        inven.Items = new List<ItemId>();
 
         // 인벤토리 UI 초기화
         InitializeInventoryUI();
 
-        originPos = DescriptionUI.GetComponent<RectTransform>().anchoredPosition;
+        descriptionRect = DescriptionUI.GetComponent<RectTransform>();
+        originPos = descriptionRect.anchoredPosition;
 
-        // 원래 위치 저장
+        // 버튼 RectTransform 캐싱 + 원래 위치 저장
+        buttonRects = new RectTransform[itemButtons.Length];
         originalPositions = new Vector2[itemButtons.Length];
         for (int i = 0; i < itemButtons.Length; i++)
         {
-            originalPositions[i] = itemButtons[i].GetComponent<RectTransform>().anchoredPosition;
+            buttonRects[i] = itemButtons[i].GetComponent<RectTransform>();
+            originalPositions[i] = buttonRects[i].anchoredPosition;
         }
 
         // 장착된 위치 설정 (예시로 설정, 필요에 따라 조정)
@@ -100,16 +103,17 @@ public class Inventory : MonoBehaviour
         
         // ... 나머지 버튼의 위치 설정 ...
 
-        // 게임 오브젝트 초기화
+        // 게임 오브젝트 Image 캐싱 + 초기화
+        itemImages = new Image[itemGameObjects.Length];
         for (int i = 0; i < itemGameObjects.Length; i++)
         {
-            Image img = itemGameObjects[i].GetComponent<Image>();
-            img.sprite = unequippedSprites[i];
+            itemImages[i] = itemGameObjects[i].GetComponent<Image>();
+            itemImages[i].sprite = unequippedSprites[i];
         }
 
         // 기본 아이템의 UI 업데이트
-        OnItemButtonClick(5); // Bracelet1의 인덱스
-        OnItemButtonClick(8); // Nail1의 인덱스
+        OnItemButtonClick((int)ItemId.Bracelet1);
+        OnItemButtonClick((int)ItemId.Nail1);
     }
 
     private void Update()
@@ -187,164 +191,54 @@ public class Inventory : MonoBehaviour
 
     class Inven
     {
-        private delegate void ItemDelegate();
-        private ItemDelegate _itemDelegate;
-
-        public enum Item
-        {
-            Ring1,
-            Ring2,
-            Ring3,
-            Ring4,
-            Ring5,
-            Bracelet1,
-            Bracelet2,
-            Bracelet3,
-            Nail1,
-            Nail2,
-        }
-
-        private List<Item> _items;
-        private ItemLogic _itemLogic;
+        private List<ItemId> _items;
 
         public Inven()
         {
-            _itemLogic = new ItemLogic();
-            _items = new List<Item>();
+            _items = new List<ItemId>();
         }
 
-        public List<Item> Items
+        public List<ItemId> Items
         {
             get { return _items; }
-            set
-            {
-                _items = value;
-                UpdateItemDelegate();
-            }
+            set { _items = value; }
         }
 
-        private void UpdateItemDelegate()
-        {
-            _itemDelegate = null;
-
-            foreach (var item in _items)
-            {
-                switch (item)
-                {
-                    case Item.Ring1:
-                        _itemDelegate += _itemLogic.Ring1;
-                        break;
-                    case Item.Ring2:
-                        _itemDelegate += _itemLogic.Ring2;
-                        break;
-                    case Item.Ring3:
-                        _itemDelegate += _itemLogic.Ring3;
-                        break;
-                    case Item.Ring4:
-                        _itemDelegate += _itemLogic.Ring4;
-                        break;
-                    case Item.Ring5:
-                        _itemDelegate += _itemLogic.Ring5;
-                        break;
-                    case Item.Bracelet1:
-                        _itemDelegate += _itemLogic.Bracelet1;
-                        break;
-                    case Item.Bracelet2:
-                        _itemDelegate += _itemLogic.Bracelet2;
-                        break;
-                    case Item.Bracelet3:
-                        _itemDelegate += _itemLogic.Bracelet3;
-                        break;
-                    case Item.Nail1:
-                        _itemDelegate += _itemLogic.Nail1;
-                        break;
-                    case Item.Nail2:
-                        _itemDelegate += _itemLogic.Nail2;
-                        break;
-                        // 다른 아이템도 추가
-                }
-            }
-
-            // _itemDelegate의 상태를 로그로 출력
-            Debug.Log("현재 _itemDelegate 상태: " + (_itemDelegate != null ? _itemDelegate.GetInvocationList().Length.ToString() : "null"));
-        }
-
-        public void Equip(Item item)
+        public void Equip(ItemId item)
         {
             if (_items.Contains(item))
             {
                 // 장착 해제
                 _items.Remove(item);
-                UpdateItemDelegate();
                 SaveEquippedItemsToJson();
+                return;
+            }
+
+            // 아이템 분류별 장착 제한 체크
+            ItemCategory category = ItemDatabase.Get(item).Category;
+            int equippedCount = 0;
+            foreach (var equipped in _items)
+            {
+                if (ItemDatabase.Get(equipped).Category == category)
+                    equippedCount++;
+            }
+
+            if (equippedCount < ItemDatabase.GetEquipLimit(category))
+            {
+                _items.Add(item);
+                SaveEquippedItemsToJson(); // 장착 정보를 JSON 파일에 저장
             }
             else
             {
-                // 아이템 종류별 장착 제한
-                int equippedCount = 0;
-                foreach (var i in _items)
-                {
-                    if (GetItemType(i) == GetItemType(item))
-                        equippedCount++;
-                }
-
-                if (CanEquip(item, equippedCount))
-                {
-                    _items.Add(item);
-                    UpdateItemDelegate();
-                    SaveEquippedItemsToJson(); // 장착 정보를 JSON 파일에 저장
-                }
-                else
-                {
-                    instance.CantEquip(); // 인스턴스를 통해 메서드 호출
-                    Debug.Log("해당 유형의 아이템은 더 이상 장착할 수 없습니다.");
-                    return;
-                }
+                instance.CantEquip(); // 인스턴스를 통해 메서드 호출
             }
         }
 
-        private string GetItemType(Item item)
-        {
-            switch (item)
-            {
-                case Item.Ring1:
-                case Item.Ring2:
-                case Item.Ring3:
-                case Item.Ring4:
-                case Item.Ring5:
-                    return "Ring";
-                case Item.Bracelet1:
-                case Item.Bracelet2:
-                case Item.Bracelet3:
-                    return "Bracelet";
-                case Item.Nail1:
-                case Item.Nail2:
-                    return "Nail";
-                default:
-                    return "None";
-            }
-        }
-
-        private bool CanEquip(Item item, int currentCount)
-        {
-            string type = GetItemType(item);
-            switch (type)
-            {
-                case "Ring":
-                    return currentCount < 2;
-                case "Bracelet":
-                    return currentCount < 1;
-                case "Nail":
-                    return currentCount < 1;
-                default:
-                    return false;
-            }
-        }
-
+        // 장착된 모든 아이템의 효과를 실제 게임에 적용한다 (씬 로드 후 1회 호출).
         public void EquipItems()
         {
-            _itemDelegate?.Invoke();
-            Debug.Log($"현재 장착된 아이템 수: {_items.Count}");
+            foreach (var item in _items)
+                ItemDatabase.Get(item).ApplyEffect?.Invoke();
         }
 
         private void SaveEquippedItemsToJson()
@@ -360,7 +254,7 @@ public class Inventory : MonoBehaviour
             if (File.Exists(path))
             {
                 string json = File.ReadAllText(path);
-                _items = JsonConvert.DeserializeObject<List<Item>>(json);
+                _items = JsonConvert.DeserializeObject<List<ItemId>>(json);
                 Debug.Log("장착된 아이템을 JSON 파일에서 불러왔습니다: " + json); // JSON 불러올 때 로그 출력
                 EquipItems(); // 아이템 효과 적용
             }
@@ -433,39 +327,40 @@ public class Inventory : MonoBehaviour
 
     public void OnItemButtonClick(int index)
     {
-        // Debug.Log($"버튼 클릭: {itemButtons[index].name}");
-        Inven.Item item = (Inven.Item)index;
+        ItemId item = (ItemId)index;
         inven.Equip(item);
 
+        Image img = itemImages[index];
+        bool isEquipped = inven.Items.Contains(item);
+
         // 게임 오브젝트의 이미지 변경
-        Image img = itemGameObjects[index].GetComponent<Image>(); // itemGameObjects의 이미지 가져오기
-        if (inven.Items.Contains(item))
+        if (isEquipped)
         {
             img.sprite = equippedSprites[index];
             itemGameObjects[index].transform.DOScale(1, 0.7f).From(1.3f).SetEase(Ease.InQuint);
-            itemGameObjects[index].GetComponent<Image>().DOFade(1, 0.7f).From(0).SetEase(Ease.InQuint);
+            img.DOFade(1, 0.7f).From(0).SetEase(Ease.InQuint);
         }
         else
         {
             img.sprite = unequippedSprites[index];
-            itemGameObjects[index].GetComponent<Image>().DOFade(1, 0.4f).From(0).SetEase(Ease.InQuint);
+            img.DOFade(1, 0.4f).From(0).SetEase(Ease.InQuint);
         }
-        // 버튼 위치 이동
-        RectTransform btnTransform = itemButtons[index].GetComponent<RectTransform>();
-        if (inven.Items.Contains(item))
+
+        // 버튼 위치/회전 이동
+        RectTransform btnTransform = buttonRects[index];
+        bool isNail = item == ItemId.Nail1 || item == ItemId.Nail2;
+
+        if (isEquipped)
         {
             btnTransform.anchoredPosition = equippedPositions[index]; // 장착된 위치로 이동
-            //Debug.Log($"{equippedPositions[8]}");
-            if (index == 8)
-                itemButtons[index].transform.rotation = Quaternion.Euler(0, 0, -81);
-            else if (index == 9)
-                itemButtons[index].transform.rotation = quaternion.Euler(0, 0, -81); 
+            if (isNail)
+                btnTransform.rotation = Quaternion.Euler(0, 0, -81);
         }
         else
         {
             btnTransform.anchoredPosition = originalPositions[index]; // 원래 위치로 이동
-            if(index == 8 || index == 9)
-                itemButtons[index].transform.rotation = Quaternion.Euler(0, 0, 0);
+            if (isNail)
+                btnTransform.rotation = Quaternion.Euler(0, 0, 0);
         }
 
         OnItemButtonExit(itemButtons[index]);
@@ -473,95 +368,26 @@ public class Inventory : MonoBehaviour
 
     private void OnItemButtonHover(Button btn)
     {
-        // Debug.Log($"버튼 호버 중: {btn.name}");
         // 아이템 정보 업데이트
         int index = Array.IndexOf(itemButtons, btn);
         if (index >= 0 && index < itemButtons.Length)
         {
-            Inven.Item item = (Inven.Item)index;
-            (string itemName, string description) = GetItemDescription(item);
-            itemDescriptionText.text = description;
-            itemNameText.text = itemName;
+            ItemDefinition def = ItemDatabase.Get((ItemId)index);
+            itemDescriptionText.text = def.Description;
+            itemNameText.text = def.DisplayName;
             DescriptionUI.SetActive(true);
-        }
-        else
-        {
-            // Debug.LogError("아이템 인덱스가 범위를 벗어났습니다.");
         }
 
         DOTween.To(() => originPos.x,
-        x => DescriptionUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(x, originPos.y), 0f, 1.2f)
-        .SetEase(Ease.OutExpo)
-        .OnComplete(() =>
-        {
-
-        });
+            x => descriptionRect.anchoredPosition = new Vector2(x, originPos.y), 0f, 1.2f)
+            .SetEase(Ease.OutExpo);
     }
 
     private void OnItemButtonExit(Button btn)
     {
-        // Debug.Log($"버튼 호버 종료: {btn.name}");
-        DOTween.To(() => DescriptionUI.GetComponent<RectTransform>().anchoredPosition.x,
-        x => DescriptionUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(x, originPos.y), originPos.x, 0.8f)
-        .SetEase(Ease.OutExpo)
-        .OnComplete(() =>
-        {
-
-        });
-    }
-
-    private (string itemName, string description) GetItemDescription(Inven.Item item)
-    {
-        string description = "";
-        string itemName = "";
-
-        switch (item)
-        {
-            case Inven.Item.Ring1:
-                itemName = "하트 로켓";
-                description = "최대 체력이 1 증가합니다.";
-                break;
-            case Inven.Item.Ring2:
-                itemName = "별의 반지";
-                description = "최대 에너지가 소폭 증가합니다.";
-                break;
-            case Inven.Item.Ring3:
-                itemName = "Ring3";
-                description = "공격력을 증가시킵니다.";
-                break;
-            case Inven.Item.Ring4:
-                itemName = "Ring4";
-                description = "공격력을 증가시킵니다.";
-                break;
-            case Inven.Item.Ring5:
-                itemName = "Ring5";
-                description = "공격력을 증가시킵니다.";
-                break;
-            case Inven.Item.Bracelet1:
-                itemName = "에리스의 팔찌";
-                description = "공격 타입이 기본 공격으로 변경 됩니다.";
-                break;
-            case Inven.Item.Bracelet2:
-                itemName = "루나의 팔찌";
-                description = "공격 타입이 레이저 공격으로 변경됩니다.";
-                break;
-            case Inven.Item.Bracelet3:
-                itemName = "자석 수갑";
-                description = "공격 타입이 유도 공격으로 변경됩니다.";
-                break;
-            case Inven.Item.Nail1:
-                itemName = "별의 메아리";
-                description = "플레이어 주변 탄막을 제거합니다.";
-                break;
-            case Inven.Item.Nail2:
-                itemName = "레인보우 스파크";
-                description = "지속시간동안 무적 상태가 되며 공격속도가 대폭 증가합니다.\n (개발중입니다.)";
-                break;
-            default:
-                return ("", "");
-        }
-
-        return (itemName, description);
+        DOTween.To(() => descriptionRect.anchoredPosition.x,
+            x => descriptionRect.anchoredPosition = new Vector2(x, originPos.y), originPos.x, 0.8f)
+            .SetEase(Ease.OutExpo);
     }
 
     private void OnApplicationQuit()

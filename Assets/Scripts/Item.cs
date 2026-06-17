@@ -1,90 +1,79 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
-public class ItemLogic : MonoBehaviour
+/// <summary>
+/// 아이템 장착 시 실제로 게임에 적용되는 효과 모음.
+/// 이전에는 MonoBehaviour(ItemLogic)였지만 인스턴스가 new 로 잘못 생성되고 있었고,
+/// 모든 메서드가 FindObjectOfType 로 대상을 찾으므로 컴포넌트일 이유가 없어 static 으로 정리했다.
+/// ItemDatabase 의 각 ItemDefinition.ApplyEffect 에서 참조한다.
+/// </summary>
+public static class ItemEffects
 {
-    public void Ring1()
+    public static void IncreaseMaxLife()
     {
-        Player player = FindObjectOfType<Player>();
+        Player player = Object.FindObjectOfType<Player>();
+        if (player == null)
+            return;
+
+        player.maxLife += 1;
+        player.life += 1;
+        player.UpdateLifeIcon(player.life);
+    }
+
+    public static void IncreaseMaxGauge()
+    {
+        Player player = Object.FindObjectOfType<Player>();
         if (player != null)
-        {
-            player.maxLife += 1; // 최대 체력 증가
-            player.life += 1;
-            player.UpdateLifeIcon(player.life);
-            Debug.Log("최대 체력 1 증가");
-        }
+            player.gauge.maxValue += 0.2f;
     }
 
-    public void Ring2()
+    public static void SetBasicAttack()
     {
-        Player player = FindObjectOfType<Player>();
-        if (player != null)
-        {
-            player.gauge.maxValue += 0.2f; // 최대 게이지 증가
-            Debug.Log("최대 게이지 0.2 증가");
-        }
-    }
-
-    public void Ring3()
-    {
-        // Ring3의 효과 구현
-        Debug.Log("Ring3 효과 발동: 공격력 증가");
-    }
-
-    public void Ring4()
-    {
-        // Ring4의 효과 구현
-        Debug.Log("Ring4 효과 발동: 공격력 증가");
-    }
-
-    public void Ring5()
-    {
-        // Ring5의 효과 구현
-        Debug.Log("Ring5 효과 발동: 공격력 증가");
-    }
-
-    public void Bracelet1()
-    {
-        Attack attack = FindObjectOfType<Attack>();
+        Attack attack = Object.FindObjectOfType<Attack>();
         if (attack != null)
-        {
-            attack.whatAttack = "Baracelet1";
-        }
-        // Bracelet1의 효과 구현
-        Debug.Log("Bracelet1 효과 발동: 기본 공격으로 변경");
+            attack.whatAttack = AttackType.Basic;
     }
 
-    public void Bracelet2()
+    public static void SetLaserAttack()
     {
-        Attack attack = FindObjectOfType<Attack>();
+        Attack attack = Object.FindObjectOfType<Attack>();
         if (attack != null)
-        {
-            attack.whatAttack = "Baracelet2";
-        }
-        Debug.Log("Bracelet2 효과 발동: 레이저 공격으로 변경");
+            attack.whatAttack = AttackType.Laser;
     }
 
-    public void Bracelet3()
+    public static void EquipNail1()
     {
-        // Bracelet3의 효과 구현
-        Debug.Log("Bracelet3 효과 발동: 속도 증가");
-    }
-
-    public void Nail1()
-    {
-        Player player = FindObjectOfType<Player>();
+        Player player = Object.FindObjectOfType<Player>();
         if (player != null)
-        {
             player.isEquippedSkill[0] = true;
-        }
     }
 
-    public void Nail2()
+    public static void EquipNail2()
     {
-        Player player = FindObjectOfType<Player>();
+        Player player = Object.FindObjectOfType<Player>();
         if (player != null)
-        {
             player.isEquippedSkill[1] = true;
-        }
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // 미구현 스텁 (틀만). 구현 시 이 메서드 본문만 채우면 된다.
+    // ─────────────────────────────────────────────────────────────
+
+    // TODO(미구현): 공격력 증가. Ring3/4/5 가 공유한다.
+    //   현재 Player/Attack 에 공격력(데미지) 스탯이 없으므로, 스탯을 먼저 추가한 뒤
+    //   여기서 올린다. 반지마다 증가량이 달라야 하면 ItemDefinition 에 수치 필드를
+    //   추가해 데이터로 분기할 것(클래스 분리 불필요).
+    public static void IncreaseAttackPower()
+    {
+        // 예) var attack = Object.FindObjectOfType<Attack>(); attack.damage += amount;
+    }
+
+    // TODO(미구현): 공격 타입을 유도(homing) 공격으로 변경.
+    //   whatAttack 을 Homing 으로 바꿔도 Attack.FireHoming() 본문이 비어 있어 발사되지 않는다.
+    //   Attack.FireHoming() 구현이 함께 필요.
+    public static void SetHomingAttack()
+    {
+        Attack attack = Object.FindObjectOfType<Attack>();
+        if (attack != null)
+            attack.whatAttack = AttackType.Homing;
     }
 }

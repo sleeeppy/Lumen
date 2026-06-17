@@ -133,7 +133,7 @@ public class Boss : MonoBehaviour
             Attack attack = FindObjectOfType<Attack>();
             if (attack != null)
             {
-                if (attack.whatAttack != "Baracelet2")
+                if (attack.whatAttack != AttackType.Laser)
                     Destroy(bulletObject);
             }
         }

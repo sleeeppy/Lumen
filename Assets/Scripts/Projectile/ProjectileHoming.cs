@@ -14,6 +14,4 @@ public class ProjectileHoming : ProjectileBase
     {
         MoveTo((target.position - transform.position).normalized);
     }
-
-    
 }

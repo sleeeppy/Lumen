@@ -3,6 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// 플레이어 공격 타입. 팔찌(Bracelet) 아이템으로 전환된다.
+// 이전에는 "Baracelet1" 같은 매직 문자열(오타 포함)로 비교했으나 enum 으로 정리했다.
+public enum AttackType
+{
+    None,
+    Basic,   // 기본 공격 (Bracelet1)
+    Laser,   // 레이저 공격 (Bracelet2)
+    Homing,  // 유도 공격 (Bracelet3)
+}
+
 public class Attack : MonoBehaviour
 {
     [SerializeField] public GameObject firePos;
@@ -16,7 +26,7 @@ public class Attack : MonoBehaviour
 
     private GameObject currentLaser; // 현재 레이저 오브젝트를 저장할 변수
 
-    [HideInInspector] public string whatAttack;
+    [HideInInspector] public AttackType whatAttack;
 
     private bool wasMousePressedWhileFlying = false; // 날고 있을 때 마우스가 눌렸는지 추적하는 변수
 
@@ -33,11 +43,13 @@ public class Attack : MonoBehaviour
 
         if (curTime >= bulletCoolTime)
         {
-            if (whatAttack == "Baracelet1")
+            if (whatAttack == AttackType.Basic)
                 Fire();
+            else if (whatAttack == AttackType.Homing)
+                FireHoming();
         }
 
-        if (whatAttack == "Baracelet2")
+        if (whatAttack == AttackType.Laser)
             FireLaser();
 
         // 레이저 방향 업데이트
@@ -132,6 +144,13 @@ public class Attack : MonoBehaviour
             Destroy(currentLaser); // 레이저 파괴
             currentLaser = null; // 현재 레이저 변수 초기화
         }
+    }
+
+    // TODO(미구현): 유도(homing) 공격. Bracelet3(AttackType.Homing) 장착 시 호출된다.
+    //   firePos 에서 유도 발사체(ProjectileHoming 등)를 생성해 발사하고, 발사 후 curTime = 0 으로
+    //   쿨다운을 리셋할 것. 본문이 비어 있는 동안 Bracelet3 을 장착하면 발사되지 않는다.
+    void FireHoming()
+    {
     }
 
     void UpdateLaserDirection()

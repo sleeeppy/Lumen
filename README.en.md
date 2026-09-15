@@ -16,7 +16,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/sleeeppy/Lumen/releases/latest/download/Lumen-macOS.zip"><b>⬇ Download</b></a>
+  <a href="https://github.com/sleeeppy/Lumen/releases/latest/download/Lumen-macOS.zip"><b>⬇ macOS</b></a>
+  &nbsp;·&nbsp;
+  <a href="https://github.com/sleeeppy/Lumen/releases/latest/download/Lumen-Windows.zip"><b>⬇ Windows</b></a>
   &nbsp;·&nbsp;
   <a href="https://youtu.be/kgnrUYgdiXc"><b>▶ Trailer</b></a>
 </p>
@@ -129,7 +131,10 @@ Depending on the NPC, you open the shop, the first boss, or the second boss.
 
 ## How to run
 
-To play without the project, [download the game](https://github.com/sleeeppy/Lumen/releases/latest/download/Lumen-macOS.zip) and open `Lumen.app`. macOS only.
+To play without the project, download the build for your OS.
+
+- [macOS](https://github.com/sleeeppy/Lumen/releases/latest/download/Lumen-macOS.zip) — unzip and open `Lumen.app`
+- [Windows](https://github.com/sleeeppy/Lumen/releases/latest/download/Lumen-Windows.zip) — unzip and run `Lumen.exe`
 
 **Title → lobby → boss.** Dying sends you back to the lobby.
 
@@ -145,7 +150,9 @@ To open the project, use **Unity 2021.3.45f2** (URP) and press Play on `Assets/S
 ---
 
 <p align="center">
-  <a href="https://github.com/sleeeppy/Lumen/releases/latest/download/Lumen-macOS.zip"><b>⬇ Download</b></a>
+  <a href="https://github.com/sleeeppy/Lumen/releases/latest/download/Lumen-macOS.zip"><b>⬇ macOS</b></a>
+  &nbsp;·&nbsp;
+  <a href="https://github.com/sleeeppy/Lumen/releases/latest/download/Lumen-Windows.zip"><b>⬇ Windows</b></a>
   &nbsp;·&nbsp;
   <a href="https://youtu.be/kgnrUYgdiXc"><b>▶ Trailer</b></a>
 </p>

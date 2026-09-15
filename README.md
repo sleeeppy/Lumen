@@ -16,7 +16,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/sleeeppy/Lumen/releases/latest/download/Lumen-macOS.zip"><b>⬇ 게임 다운로드</b></a>
+  <a href="https://github.com/sleeeppy/Lumen/releases/latest/download/Lumen-macOS.zip"><b>⬇ macOS</b></a>
+  &nbsp;·&nbsp;
+  <a href="https://github.com/sleeeppy/Lumen/releases/latest/download/Lumen-Windows.zip"><b>⬇ Windows</b></a>
   &nbsp;·&nbsp;
   <a href="https://youtu.be/kgnrUYgdiXc"><b>▶ 시연 영상</b></a>
 </p>
@@ -129,7 +131,10 @@ NPC에 따라 상점, 첫 번째 보스, 두 번째 보스로 나뉩니다.
 
 ## 실행
 
-프로젝트 없이 플레이하려면 [게임 다운로드](https://github.com/sleeeppy/Lumen/releases/latest/download/Lumen-macOS.zip) 후 `Lumen.app`을 실행하면 됩니다. macOS용입니다.
+프로젝트 없이 플레이하려면 OS에 맞는 파일을 받으세요.
+
+- [macOS](https://github.com/sleeeppy/Lumen/releases/latest/download/Lumen-macOS.zip) — 압축을 풀고 `Lumen.app` 실행
+- [Windows](https://github.com/sleeeppy/Lumen/releases/latest/download/Lumen-Windows.zip) — 압축을 풀고 `Lumen.exe` 실행
 
 **타이틀 → 로비 → 보스전.** 쓰러지면 로비로 돌아갑니다.
 
@@ -145,7 +150,9 @@ NPC에 따라 상점, 첫 번째 보스, 두 번째 보스로 나뉩니다.
 ---
 
 <p align="center">
-  <a href="https://github.com/sleeeppy/Lumen/releases/latest/download/Lumen-macOS.zip"><b>⬇ 게임 다운로드</b></a>
+  <a href="https://github.com/sleeeppy/Lumen/releases/latest/download/Lumen-macOS.zip"><b>⬇ macOS</b></a>
+  &nbsp;·&nbsp;
+  <a href="https://github.com/sleeeppy/Lumen/releases/latest/download/Lumen-Windows.zip"><b>⬇ Windows</b></a>
   &nbsp;·&nbsp;
   <a href="https://youtu.be/kgnrUYgdiXc"><b>▶ 시연 영상</b></a>
 </p>

@@ -1,9 +1,6 @@
 <p align="right"><b>한국어</b> · <a href="./README.en.md">English</a></p>
 
-<p align="center">
-  <img src="docs/images/splash.png" alt="Lumen" width="560">
-</p>
-
+<h1 align="center"> Lumen </h1>
 <p align="center">
   달빛 아래 옥상에서 펼쳐지는 <b>2D 탄막 액션</b><br>
   대시와 비행으로 탄막을 가르고, 장신구로 전투를 바꿉니다.

@@ -1,7 +1,7 @@
 <p align="right"><a href="./README.md">한국어</a> · <b>English</b></p>
 
 <p align="center">
-  <img src="docs/images/splash.png" alt="Lumen" width="560">
+  <h1 align="center">Lumen</h1>
 </p>
 
 <p align="center">

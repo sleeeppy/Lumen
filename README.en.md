@@ -27,10 +27,6 @@
   </a>
 </p>
 
-<p align="center">
-  <a href="https://youtu.be/kgnrUYgdiXc"><b>▶ Watch the trailer</b></a>
-</p>
-
 ---
 
 ## Screenshots
@@ -94,13 +90,6 @@ Dash and flight spend the **energy gauge**. Standing on the ground fills it back
 - **Skills** — damaging the boss fills a gauge. Press `Q` to use a nail.
 - **Phases** — each time HP hits zero, orbitals, homing shots, and falling bullets mix together.
 
-<p align="center">
-  <img src="docs/images/skill-echo.png" width="52" alt="Star Echo">
-  &nbsp;&nbsp;
-  <img src="docs/images/skill-spark.png" width="52" alt="Rainbow Spark">
-</p>
-<p align="center"><sub>Nail skills — Star Echo · Rainbow Spark</sub></p>
-
 ---
 
 ## Loadout
@@ -162,6 +151,5 @@ To open the project, use **Unity 2021.3.45f2** (URP) and press Play on `Assets/S
 </p>
 
 <p align="center">
-  Unity 2021.3 LTS · URP · Cinemachine · DOTween · Feel · BulletPro<br>
   Made by <b>ChoCollect</b>
 </p>

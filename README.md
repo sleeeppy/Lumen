@@ -27,10 +27,6 @@
   </a>
 </p>
 
-<p align="center">
-  <a href="https://youtu.be/kgnrUYgdiXc"><b>▶ 시연 영상 보기</b></a>
-</p>
-
 ---
 
 ## 게임 화면
@@ -94,13 +90,6 @@
 - **스킬** — 보스에게 피해를 주면 게이지가 찹니다. `Q`로 네일을 씁니다.
 - **페이즈** — 체력이 바닥날 때마다 궤도탄, 유도탄, 낙하탄이 섞입니다.
 
-<p align="center">
-  <img src="docs/images/skill-echo.png" width="52" alt="별의 메아리">
-  &nbsp;&nbsp;
-  <img src="docs/images/skill-spark.png" width="52" alt="레인보우 스파크">
-</p>
-<p align="center"><sub>네일 스킬 — 별의 메아리 · 레인보우 스파크</sub></p>
-
 ---
 
 ## 장비
@@ -162,6 +151,5 @@ NPC에 따라 상점, 첫 번째 보스, 두 번째 보스로 나뉩니다.
 </p>
 
 <p align="center">
-  Unity 2021.3 LTS · URP · Cinemachine · DOTween · Feel · BulletPro<br>
   제작 <b>ChoCollect</b>
 </p>

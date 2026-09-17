@@ -174,13 +174,13 @@ Dash and flight spend the **energy gauge**. Standing on the ground fills it back
   <tr>
     <td align="center" width="33%">
       <img src="https://github.com/sleeeppy.png" width="140"/><br/>
-      <b>sleeeppy</b><br/>
+      <b>Hangyeol Kim</b><br/>
       Developer / Game Design<br/>
       <a href="https://github.com/sleeeppy">@sleeeppy</a>
     </td>
     <td align="center" width="33%">
       <img src="https://github.com/yujun07.png" width="140"/><br/>
-      <b>Yujun</b><br/>
+      <b>Yujun Han</b><br/>
       Developer<br/>
       <a href="https://github.com/yujun07">@yujun07</a>
     </td>

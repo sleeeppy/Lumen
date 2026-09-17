@@ -174,13 +174,13 @@
   <tr>
     <td align="center" width="33%">
       <img src="https://github.com/sleeeppy.png" width="140"/><br/>
-      <b>sleeeppy</b><br/>
+      <b>김한결</b><br/>
       Developer / Game Design<br/>
       <a href="https://github.com/sleeeppy">@sleeeppy</a>
     </td>
     <td align="center" width="33%">
       <img src="https://github.com/yujun07.png" width="140"/><br/>
-      <b>Yujun</b><br/>
+      <b>한유준</b><br/>
       Developer<br/>
       <a href="https://github.com/yujun07">@yujun07</a>
     </td>

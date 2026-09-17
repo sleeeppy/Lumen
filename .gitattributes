@@ -1,2 +1,16 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# GitHub Linguist: keep language stats on game C#, not asset-store shaders.
+# Feel / arsenal / TMP shaders were out-weighing Assets/Scripts.
+Assets/Feel/** linguist-vendored
+Assets/BulletPro/** linguist-vendored
+"Assets/Polygon Arsenal/**" linguist-vendored
+"Assets/Retro Arsenal/**" linguist-vendored
+"Assets/Sprite Shaders Ultimate/**" linguist-vendored
+"Assets/TextMesh Pro/**" linguist-vendored
+Assets/Plugins/** linguist-vendored
+Assets/UIShaderEffects-EdgeEffects/** linguist-vendored
+Assets/Water/** linguist-vendored
+Assets/AllSkyFree/** linguist-vendored
+Packages/** linguist-vendored
